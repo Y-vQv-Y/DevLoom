@@ -19,6 +19,7 @@ import { authHeaders, basicAuthCredential as getBasicAuthCred, getBaseUrl, getGi
 import { Icons } from '@/components/Icons';
 import { Toast, TypingDots } from '@/components/ui';
 import { GITLAB_DEFAULT_BASE, githubAppInstallUrl, gitPlatformLabel } from '@/git';
+import { GIT_IDENTITY_OAUTH_ENABLED } from '@/features';
 import { useTheme } from '@/theme';
 
 const hostOf = (u: string) => u.match(/^https?:\/\/([^/]+)/)?.[1] ?? '';
@@ -56,7 +57,7 @@ export default function GitOAuthScreen() {
   // 拉取第三方 OAuth 授权地址（gitee/gitea/gitlab）。github 安装地址已同步初始化，跳过。
   // 用内联 async 取数，setState 均在异步回调里；reloadKey 变化（重试）会重新拉取。
   useEffect(() => {
-    if (isGithub) return;
+    if (!GIT_IDENTITY_OAUTH_ENABLED || isGithub) return;
     let active = true;
     (async () => {
       try {
@@ -72,6 +73,10 @@ export default function GitOAuthScreen() {
     })();
     return () => { active = false; };
   }, [isGithub, platform, label, reloadKey]);
+
+  useEffect(() => {
+    if (!GIT_IDENTITY_OAUTH_ENABLED) router.replace('/git-identities');
+  }, [router]);
 
   const close = () => (router.canGoBack() ? router.back() : router.replace('/git-identities'));
 
@@ -118,6 +123,8 @@ export default function GitOAuthScreen() {
     void Clipboard.setStringAsync(shareUrl);
     showToast('链接已复制');
   }, [shareUrl, showToast]);
+
+  if (!GIT_IDENTITY_OAUTH_ENABLED) return null;
 
   return (
     <View style={{ flex: 1, backgroundColor: t.bg }}>

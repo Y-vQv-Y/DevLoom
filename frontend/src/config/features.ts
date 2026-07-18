@@ -16,3 +16,7 @@ export const COMMUNITY_PLAYGROUND_ENABLED = enabled("VITE_ENABLE_COMMUNITY_PLAYG
 // OAuth shortcuts for Git identities require authorization URL endpoints or
 // external GitHub Apps. Manual access-token identities remain available.
 export const GIT_IDENTITY_OAUTH_ENABLED = enabled("VITE_ENABLE_GIT_IDENTITY_OAUTH")
+
+// Automatic project review requires an external Git review service. The
+// open-source backend exposes no auto-review route.
+export const AUTO_REVIEW_ENABLED = enabled("VITE_ENABLE_AUTO_REVIEW")

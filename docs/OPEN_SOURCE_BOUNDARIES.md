@@ -15,7 +15,8 @@ The Go backend does not implement these feature groups:
 | Wallet, plans, recharge, check-in, invitation, payment | `VITE_ENABLE_COMMERCIAL_BILLING=false` / `EXPO_PUBLIC_ENABLE_COMMERCIAL_BILLING=false` |
 | Enterprise license and seat status | `VITE_ENABLE_ENTERPRISE_LICENSE=false` |
 | Playground listing and publishing | `VITE_ENABLE_COMMUNITY_PLAYGROUND=false` |
-| Git identity OAuth authorization shortcuts | `VITE_ENABLE_GIT_IDENTITY_OAUTH=false` |
+| Git identity OAuth authorization shortcuts | `VITE_ENABLE_GIT_IDENTITY_OAUTH=false` / `EXPO_PUBLIC_ENABLE_GIT_IDENTITY_OAUTH=false` |
+| Project automatic review | `VITE_ENABLE_AUTO_REVIEW=false` |
 | Apple login and account deletion | `EXPO_PUBLIC_ENABLE_APPLE_AUTH=false` |
 
 Do not enable a flag until a compatible backend extension is deployed. Manual Git Token identities remain available without Git OAuth shortcuts.

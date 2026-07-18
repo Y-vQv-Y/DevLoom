@@ -19,6 +19,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
+import { AUTO_REVIEW_ENABLED } from "@/config/features"
 
 interface ProjectInfoProps {
   project?: DomainProject
@@ -130,23 +131,25 @@ const ProjectInfo = ({
           </ItemDescription>
         </ItemContent>
         <ItemActions>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant={project?.auto_review_enabled ? "secondary" : "ghost"}
-                size="sm"
-                disabled={isRepoUnbound}
-                onClick={handleAutoReview}
-                className={`cursor-pointer disabled:cursor-not-allowed ${project?.auto_review_enabled ? "" : "text-muted-foreground"}`}
-              >
-                <IconViewfinder className="size-4" />
+          {AUTO_REVIEW_ENABLED && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={project?.auto_review_enabled ? "secondary" : "ghost"}
+                  size="sm"
+                  disabled={isRepoUnbound}
+                  onClick={handleAutoReview}
+                  className={`cursor-pointer disabled:cursor-not-allowed ${project?.auto_review_enabled ? "" : "text-muted-foreground"}`}
+                >
+                  <IconViewfinder className="size-4" />
+                  {autoReviewLabel}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
                 {autoReviewLabel}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              {autoReviewLabel}
-            </TooltipContent>
-          </Tooltip>
+              </TooltipContent>
+            </Tooltip>
+          )}
           <Button
             variant="secondary"
             size="sm"

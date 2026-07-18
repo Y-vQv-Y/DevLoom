@@ -18,8 +18,7 @@ redis:
   db: 0
 
 session:
-  secret: "change-me-to-a-random-32-byte-key"
-  expire: 86400
+  expire_day: 30
 
 smtp:
   host: "smtp.example.com"

@@ -7,3 +7,8 @@ export const COMMERCIAL_BILLING_ENABLED =
 // account deletion. Enable both only with a compatible backend extension.
 export const APPLE_AUTH_ENABLED =
   process.env.EXPO_PUBLIC_ENABLE_APPLE_AUTH?.trim().toLowerCase() === 'true';
+
+// OAuth shortcuts need authorization URL endpoints that are not included in
+// the open-source backend. Manual access-token identities remain available.
+export const GIT_IDENTITY_OAUTH_ENABLED =
+  process.env.EXPO_PUBLIC_ENABLE_GIT_IDENTITY_OAUTH?.trim().toLowerCase() === 'true';

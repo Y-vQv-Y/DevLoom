@@ -22,4 +22,4 @@ Add backend tests next to the Go package being changed. Keep frontend tests in `
 Recent history favors short conventional subjects such as `fix: ...`, `feat: ...`, and scoped forms like `test(lifecycle): ...`. Keep commit messages imperative and specific. Pull requests should summarize user impact, list touched surfaces (`backend`, `frontend`, `desktop`, `mobile`), mention config or migration changes, and include screenshots for UI work. Link issues when available.
 
 ## Security & Configuration Tips
-Use `backend/config/server/config.yaml.example` as the starting point for local config, and never commit secrets such as `session.secret`, `admin_token`, OAuth credentials, or signing material. If you change release packaging or versioning, review the workflows in `.github/workflows/` before merging.
+Use `backend/config/server/config.yaml.example` as the starting point for local config, and never commit `admin_token`, database or Redis passwords, OAuth credentials, EAS tokens, or signing material. If you change release packaging or versioning, review the workflows in `.github/workflows/` before merging.

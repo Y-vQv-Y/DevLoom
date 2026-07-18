@@ -23,7 +23,7 @@ DevLoom is an AGPL-3.0 AI development control plane for repositories, models, pr
 
 The repository is not a complete standalone runtime. Full AI task execution requires Taskflow, runner/host, preview, development-image, and installer artifacts that are referenced by configuration but are not built here. Supply compatible implementations or images before production deployment.
 
-Commercial billing, playground publishing, Git identity OAuth shortcuts, Apple authentication/account deletion, and enterprise-license UI are disabled by default because their APIs are not implemented by the open-source Go backend. Manual Git access-token identities and password-based accounts remain available.
+Commercial billing, playground publishing, Git identity OAuth shortcuts, automatic project review, Apple authentication/account deletion, and enterprise-license UI are disabled by default because their APIs are not implemented by the open-source Go backend. Manual Git access-token identities and password-based accounts remain available.
 
 ## Screenshots
 
@@ -87,7 +87,7 @@ Plan, recharge, check-in, invitation, and payment APIs are not implemented by th
 
 The generated frontend client also retains license endpoints documented as implemented by an external enterprise extension. The open-source Go backend does not register them, so `VITE_ENABLE_ENTERPRISE_LICENSE=false` hides the license page and prevents seat-status calls by default.
 
-Playground publishing, Git identity OAuth shortcuts, and mobile Apple authentication/account deletion are also default-off. See [`docs/OPEN_SOURCE_BOUNDARIES.md`](./docs/OPEN_SOURCE_BOUNDARIES.md) for the route and runtime boundary audit.
+Playground publishing, Git identity OAuth shortcuts, automatic project review, and mobile Apple authentication/account deletion are also default-off. See [`docs/OPEN_SOURCE_BOUNDARIES.md`](./docs/OPEN_SOURCE_BOUNDARIES.md) for the route and runtime boundary audit.
 
 ### Build and Release
 

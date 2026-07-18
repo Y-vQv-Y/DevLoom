@@ -12,6 +12,7 @@ module.exports = () => {
     ios: {
       ...baseConfig.ios,
       bundleIdentifier: process.env.IOS_BUNDLE_ID?.trim() || baseConfig.ios.bundleIdentifier,
+      ...(process.env.IOS_TEAM_ID?.trim() ? { appleTeamId: process.env.IOS_TEAM_ID.trim() } : {}),
       usesAppleSignIn: appleAuthEnabled,
     },
     android: {
@@ -25,6 +26,9 @@ module.exports = () => {
     extra: {
       ...baseConfig.extra,
       ...(projectId ? { eas: { projectId } } : {}),
+      ...(process.env.EXPO_PUBLIC_UPDATES_SERVER?.trim()
+        ? { updatesServer: process.env.EXPO_PUBLIC_UPDATES_SERVER.trim() }
+        : {}),
     },
   };
 };

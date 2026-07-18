@@ -14,6 +14,7 @@ import type { GitIdentity } from '@/api/types';
 import { Icons, providerIcon } from '@/components/Icons';
 import { Card, EmptyView, GlassNav, IconButton, LoadingView, PrimaryButton, PickerSheet, type PickerOption } from '@/components/ui';
 import { gitPlatformLabel, OAUTH_PLATFORMS } from '@/git';
+import { GIT_IDENTITY_OAUTH_ENABLED } from '@/features';
 import { spacing, useTheme, type Theme } from '@/theme';
 
 const MANUAL_KEY = '__manual__';
@@ -97,8 +98,15 @@ export default function GitIdentitiesScreen() {
 
   // 添加方式：OAuth 平台一键授权 + 手动填 Token
   const addOptions: PickerOption[] = useMemo(() => [
-    ...OAUTH_PLATFORMS.map((p) => ({ key: p.key, title: p.label, sub: '一键授权', icon: providerIcon(p.key) })),
-    { key: MANUAL_KEY, title: '其他平台', sub: '手动填写 Access Token', icon: 'key' },
+    ...(GIT_IDENTITY_OAUTH_ENABLED
+      ? OAUTH_PLATFORMS.map((p) => ({ key: p.key, title: p.label, sub: '一键授权', icon: providerIcon(p.key) }))
+      : []),
+    {
+      key: MANUAL_KEY,
+      title: GIT_IDENTITY_OAUTH_ENABLED ? '其他平台' : '手动添加',
+      sub: '填写 Access Token',
+      icon: 'key',
+    },
   ], []);
 
   const onPickAdd = useCallback((k: string) => {

@@ -16,7 +16,7 @@ CI 使用 Node.js 22、pnpm 9 和 Go 1.25.x。无需在本地编译。
 3. 确认工作流可以使用 `GITHUB_TOKEN`；发布工作流已声明 `contents: write` 和 `packages: write`。
 4. 打开 `Actions > CI > Run workflow`，首次手动运行 CI。
 
-普通 CI 不要求任何 Secrets。商业、企业授权、广场、Git OAuth 和 Apple 登录默认关闭。
+普通 CI 不要求任何 Secrets。商业、企业授权、广场、Git OAuth、自动审查和 Apple 登录默认关闭。
 
 ## Repository Variables
 
@@ -29,8 +29,17 @@ CI 使用 Node.js 22、pnpm 9 和 Go 1.25.x。无需在本地编译。
 | `VITE_ENABLE_ENTERPRISE_LICENSE` | `false` | 外部企业许可证接口 |
 | `VITE_ENABLE_COMMUNITY_PLAYGROUND` | `false` | 外部广场列表与发布接口 |
 | `VITE_ENABLE_GIT_IDENTITY_OAUTH` | `false` | Git 身份 OAuth 快捷绑定 |
+| `VITE_ENABLE_AUTO_REVIEW` | `false` | 外部 Git 审查服务的项目自动审查入口 |
 | `VITE_GITHUB_APP_INSTALL_URL` | 空 | GitHub App 安装地址 |
 | `VITE_GLOBAL_GITHUB_APP_INSTALL_URL` | 空 | 国际区域 GitHub App 安装地址 |
+| `VITE_DOCS_URL` | 仓库 README | 文档入口 |
+| `VITE_PUBLIC_SITE_URL` | GitHub 仓库 | 官网入口 |
+| `VITE_ANNOUNCEMENT_URL` | GitHub Releases | 公告入口 |
+| `VITE_FORUM_URL` | GitHub Issues | 论坛入口 |
+| `VITE_CONSULTATION_URL` | 新建 GitHub Issue | 咨询入口 |
+| `VITE_COMPANY_URL` | GitHub 账号主页 | 公司入口 |
+| `VITE_COMMUNITY_URL` | GitHub Issues | 社区入口 |
+| `VITE_SUPPORT_URL` | GitHub Issues | 支持入口 |
 | `ENABLE_MOBILE_RELEASE` | `false` | 每次 Release 自动执行 EAS |
 | `EXPO_PROJECT_ID` | 无 | EAS 项目 ID，移动构建必填 |
 | `EXPO_OWNER` | 无 | Expo 账号或组织 |
@@ -40,8 +49,11 @@ CI 使用 Node.js 22、pnpm 9 和 Go 1.25.x。无需在本地编译。
 | `IOS_BUNDLE_ID` | `io.github.yvqvy.devloom` | iOS Bundle Identifier |
 | `ANDROID_PACKAGE` | `io.github.yvqvy.devloom` | Android Application ID |
 | `EXPO_PUBLIC_ENABLE_APPLE_AUTH` | `false` | Apple 登录与账号注销扩展 |
+| `EXPO_PUBLIC_ENABLE_GIT_IDENTITY_OAUTH` | `false` | 移动端 Git 身份 OAuth 快捷绑定 |
 
-不要在缺少对应后端接口时开启前五个功能开关。手动 Git Access Token 绑定不依赖 Git OAuth。
+不要在缺少对应后端接口时开启上述扩展功能开关。手动 Git Access Token 绑定不依赖 Git OAuth。
+
+商业扩展启用后，套餐金额可通过 `VITE_PRICE_<CN|GLOBAL>_<BASIC|PRO|ULTRA>_<MONTHLY|YEARLY>` 配置；充值包使用 `VITE_CREDIT_PACKAGE_<1-4>_<CREDITS|CN_AMOUNT|GLOBAL_AMOUNT>`。这些值为空时不显示具体金额或充值包，且不会自行提供支付后端。
 
 ## Repository Secrets
 

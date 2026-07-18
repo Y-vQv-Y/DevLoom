@@ -31,6 +31,7 @@ test("项目基础组件使用 consoleProject i18n key", () => {
   assert.match(sourceFiles.editImage, /t\("consoleProject\.image\.title"\)/);
   assert.match(sourceFiles.autoReview, /t\("consoleProject\.autoReview\.title"\)/);
   assert.match(sourceFiles.projectInfo, /t\("consoleProject\.info\.startAi"\)/);
+  assert.match(sourceFiles.projectInfo, /AUTO_REVIEW_ENABLED/);
   assert.match(sourceFiles.projectInfo, /t\("consoleProject\.delete\.description"/);
   assert.doesNotMatch(combinedSource, cjkPattern);
 });
