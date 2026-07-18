@@ -95,7 +95,7 @@ git push origin v1.0.0
 
 - `publish=false`：仅构建并保留 Actions Artifacts，不发布 GHCR 或 GitHub Release。
 - `publish=true`：使用 `0.0.<run_number>` 作为版本并发布。
-- `mobile=true`：同时启动 Android 和 iOS EAS production 构建。
+- `mobile=true`：在 EAS 配置完整时启动 Android 和 iOS production 构建；缺少 Token 或 Project ID 时会警告并跳过，不阻断其他发布产物。
 
 ## Release 产物
 
@@ -116,6 +116,8 @@ devloom-source.tar.gz
 
 移动端产物保存在 EAS 项目中，不会直接上传到 GitHub Release。`mobile/app.config.js` 会将 Actions 中的 Expo Project ID、Owner、更新地址、Bundle ID、Package 和 Apple 登录开关写入 EAS 配置。
 
+要获得真实 Android/iOS 安装产物，必须同时配置 Secret `EXPO_TOKEN` 和 Variable `EXPO_PROJECT_ID`。如果暂时不构建移动端，请将 `ENABLE_MOBILE_RELEASE` 删除或设为 `false`，手动运行 Release 时保持 `mobile=false`。
+
 ## 部署边界
 
 Actions 只构建本仓库包含的服务。完整 AI 任务仍需要外部 Taskflow、runner/host、preview、开发镜像和宿主机安装包；Release 不会生成 `TASKFLOW_IMAGE` 或 `PREVIEW_IMAGE`。详细边界见 `docs/OPEN_SOURCE_BOUNDARIES.md`。
@@ -126,5 +128,6 @@ Actions 只构建本仓库包含的服务。完整 AI 任务仍需要外部 Task
 - `Validate generated diff` 失败：Ent 或 Swagger 源文件变化后未提交生成结果。
 - Electron 无产物：检查 `desktop/release/`、图标文件和 electron-builder 配置。
 - GHCR 返回权限错误：检查仓库或组织是否限制 `GITHUB_TOKEN` 写入 Packages。
-- EAS 提示未认证：检查 `EXPO_TOKEN`、`EXPO_PROJECT_ID`、Owner 和项目访问权限。
+- EAS 被跳过：配置 Secret `EXPO_TOKEN` 和 Variable `EXPO_PROJECT_ID`；两者任一为空都会主动跳过。
+- EAS 提示未认证：检查 Token 是否过期、`EXPO_OWNER`、Project ID 和项目访问权限。
 - iOS/Android 构建失败：在 EAS 项目中检查证书、Provisioning Profile、Keystore、Bundle ID 和 Package 是否一致。

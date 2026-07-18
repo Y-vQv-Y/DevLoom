@@ -276,21 +276,32 @@ jobs:
       ANDROID_PACKAGE: ${{ vars.ANDROID_PACKAGE || 'io.github.yvqvy.devloom' }}
       IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
     steps:
+      - name: Check EAS configuration
+        id: eas-config
+        shell: bash
+        run: |
+          if [[ -z "$EXPO_TOKEN" || -z "$EXPO_PROJECT_ID" ]]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Mobile build skipped::Configure the EXPO_TOKEN repository secret and EXPO_PROJECT_ID repository variable to build ${{ matrix.platform }}."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/checkout@v4
+        if: steps.eas-config.outputs.configured == 'true'
       - uses: actions/setup-node@v4
+        if: steps.eas-config.outputs.configured == 'true'
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: mobile/package-lock.json
       - run: npm ci
+        if: steps.eas-config.outputs.configured == 'true'
         working-directory: mobile
       - name: Build on EAS
+        if: steps.eas-config.outputs.configured == 'true'
         working-directory: mobile
         shell: bash
-        run: |
-          : "${EXPO_TOKEN:?Configure the EXPO_TOKEN repository secret}"
-          : "${EXPO_PROJECT_ID:?Configure the EXPO_PROJECT_ID repository variable}"
-          npx eas-cli@latest build --platform "${{ matrix.platform }}" --profile production --non-interactive --wait
+        run: npx eas-cli@latest build --platform "${{ matrix.platform }}" --profile production --non-interactive --wait
 
   release:
     name: GitHub Release
