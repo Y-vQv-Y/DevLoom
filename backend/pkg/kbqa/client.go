@@ -1,4 +1,4 @@
-// Package kbqa 封装 baizhi 知识库的 OpenAI 兼容问答接口（/share/v1/chat/completions），
+// Package kbqa 封装 OpenAI 兼容知识库的问答接口（/share/v1/chat/completions），
 // 供微信公众号文本消息自动问答使用。单轮问答，stream=false 直接取完整答案。
 package kbqa
 
@@ -40,7 +40,7 @@ var systemPrompt = fmt.Sprintf(
 		"控制在 %d 字以内，并确保回答完整、能自然收尾，不要在句子或链接中途断开。"+
 		"不要使用 markdown 标题、加粗、表格等格式。", answerCharBudget)
 
-// NewClient 创建客户端。baseURL 形如 https://monkeycode.docs.baizhi.cloud
+// NewClient 创建客户端。baseURL 形如 https://kb.example.com
 func NewClient(baseURL, apiKey, model string) *Client {
 	if model == "" {
 		model = defaultModel

@@ -10,10 +10,10 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/chaitin/MonkeyCode/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
 
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/pkg/request"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/request"
 )
 
 type DingTalkSender struct{}

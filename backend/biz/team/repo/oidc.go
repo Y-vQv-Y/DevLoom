@@ -8,15 +8,15 @@ import (
 	"github.com/google/uuid"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/db/team"
-	"github.com/chaitin/MonkeyCode/backend/db/teammember"
-	"github.com/chaitin/MonkeyCode/backend/db/teamoidcconfig"
-	"github.com/chaitin/MonkeyCode/backend/db/user"
-	"github.com/chaitin/MonkeyCode/backend/db/useridentity"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/pkg/oidc"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/team"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teammember"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamoidcconfig"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/user"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/useridentity"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/oidc"
 )
 
 type TeamOIDCRepo struct {

@@ -12,7 +12,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/chaitin/MonkeyCode/backend/errcode"
+	"github.com/Y-vQv-Y/DevLoom/backend/errcode"
 )
 
 type extensionPackageManifest struct {

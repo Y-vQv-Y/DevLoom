@@ -7,6 +7,8 @@ import type { TFunction } from "i18next";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { BRAND } from "@/config/brand";
+import { COMMERCIAL_BILLING_ENABLED } from "@/config/features";
 import { TerminalFooter, TerminalHeader } from "./terminal-chrome";
 import {
   CREDIT_RECHARGE_PACKAGES,
@@ -17,8 +19,8 @@ import {
   type SubscriptionPlanPriceId,
 } from "@/utils/pricing";
 
-const GITHUB_LINK = "https://github.com/chaitin/MonkeyCode/";
-const CONSULT_LINK = "https://baizhi.cloud/consult";
+const GITHUB_LINK = BRAND.repositoryUrl;
+const CONSULT_LINK = BRAND.consultationUrl;
 
 const themeVars = {
   "--a-bg": "#0a0d0a",
@@ -41,7 +43,7 @@ const themeVars = {
 const featureItems = [
   {
     key: "01",
-    cmd: "--free --no-install",
+    cmd: "--open-source --browser",
     i18nKey: "free",
   },
   {
@@ -102,49 +104,18 @@ const mobileClientItems = [
   {
     platform: "Android",
     icon: IconBrandAndroid,
-    href: "https://release.monkeycode-ai.com/public/mobile/app/monkeycode-latest.apk",
+    href: BRAND.announcementsUrl,
     i18nKey: "android",
   },
   {
     platform: "iOS",
     icon: IconBrandApple,
-    href: "https://apps.apple.com/cn/app/monkeycode%E7%BC%96%E7%A8%8B%E5%8A%A9%E6%89%8B/id6777423440",
+    href: BRAND.announcementsUrl,
     i18nKey: "ios",
   },
 ] as const;
 
 const selfHostingAdvantageKeys = ["dataBoundary", "governance", "integration", "offline"] as const;
-
-const compareColumns = ["MonkeyCode", "Cursor", "Claude Code", "Codex"] as const;
-
-const compareRows = [
-  { key: "online", values: [1, 1, 1, 1] },
-  { key: "localIde", values: [0, 1, 1, 1] },
-  { key: "localCli", values: [0, 1, 1, 1] },
-  { key: "specManagement", values: [1, 0, 0, 0] },
-  { key: "cloudEnvironment", values: [1, 2, 2, 2] },
-  { key: "completion", values: [0, 1, 0, 0] },
-  { key: "review", values: [1, 2, 2, 2] },
-  { key: "collaboration", values: [1, 0, 0, 0] },
-  { key: "domesticModels", values: [1, 0, 0, 0] },
-  { key: "selfHosting", values: [1, 0, 0, 0] },
-  { key: "openSource", values: [1, 0, 0, 0] },
-] as const;
-
-const testimonialKeys = [
-  "aiwenming",
-  "yitao",
-  "full",
-  "liHongxi",
-  "clever",
-  "situBei",
-  "sinianLiu",
-  "timeTraveler",
-  "darkStreet",
-  "xiaotantan",
-  "nanshan",
-  "ajie",
-] as const;
 
 type PricingFeature = {
   status?: "supported" | "partial" | "unsupported";
@@ -164,7 +135,7 @@ type PricingTier = {
 const pricingTiers: PricingTier[] = [
   {
     key: "free",
-    cmd: "monkey account --free",
+    cmd: "devloom account --basic",
     planId: "basic",
     features: [
       { key: "concurrency1" },
@@ -180,7 +151,7 @@ const pricingTiers: PricingTier[] = [
   },
   {
     key: "pro",
-    cmd: "monkey account --pro",
+    cmd: "devloom account --pro",
     planId: "pro",
     features: [
       { key: "concurrency3" },
@@ -195,7 +166,7 @@ const pricingTiers: PricingTier[] = [
   },
   {
     key: "ultra",
-    cmd: "monkey account --ultra",
+    cmd: "devloom account --ultra",
     planId: "ultra",
     features: [
       { key: "concurrency3" },
@@ -311,7 +282,7 @@ function PromptLine({
 }) {
   return (
     <div className={cn("text-[13px] leading-7 text-[var(--a-fg)]", className)}>
-      <span className="text-[var(--a-accent)]">dev@monkey</span>
+      <span className="text-[var(--a-accent)]">dev@devloom</span>
       <span className="text-[var(--a-fg-dim)]">:</span>
       <span className="text-[var(--a-info)]">{path}</span>
       <span className="text-[var(--a-fg-dim)]"> $ </span>
@@ -363,13 +334,6 @@ export default function TerminalNativePage() {
   const [openFaq, setOpenFaq] = React.useState(0);
   const [billingPeriod, setBillingPeriod] = React.useState<BillingPeriod>("monthly");
   const selfHostingAdvantages = selfHostingAdvantageKeys.map((key) => t(`terminalNative.selfHosting.advantages.${key}`));
-  const testimonialItems = testimonialKeys.map((key) => ({
-    key,
-    quote: String(t(`terminalNative.testimonials.items.${key}.quote`)),
-    name: String(t(`terminalNative.testimonials.items.${key}.name`)),
-    role: String(t(`terminalNative.testimonials.items.${key}.role`)),
-  }));
-
   return (
     <div
       className="relative min-h-screen overflow-x-hidden bg-[var(--a-bg)] text-[var(--a-fg)]"
@@ -418,8 +382,8 @@ export default function TerminalNativePage() {
               <div className="pointer-events-none absolute left-[18%] top-[8%] h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(124,242,156,0.12),transparent_70%)] blur-3xl" />
               <div className="relative">
                 <h1 className="text-4xl font-semibold leading-[1.03] tracking-[-0.04em] text-white sm:text-5xl lg:text-[68px]">
-                  <span>Monkey</span>
-                  <span className="text-[var(--a-accent)] [text-shadow:0_0_24px_rgba(124,242,156,0.35)]">Code</span>
+                  <span>Dev</span>
+                  <span className="text-[var(--a-accent)] [text-shadow:0_0_24px_rgba(124,242,156,0.35)]">Loom</span>
                 </h1>
                 <p className="mt-4 max-w-[540px] text-2xl font-medium leading-[1.08] tracking-[-0.03em] text-[var(--a-fg)] sm:text-[30px]">
                   {t("terminalNative.hero.tagline")}
@@ -565,7 +529,7 @@ export default function TerminalNativePage() {
         >
           <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="rounded-md border border-[var(--a-line)] bg-[var(--a-panel)] p-6">
-              <div className="text-[10px] tracking-[0.12em] text-[var(--a-accent)]">$ monkey deploy --self-hosted</div>
+              <div className="text-[10px] tracking-[0.12em] text-[var(--a-accent)]">$ devloom deploy --self-hosted</div>
               <h3 className="mt-3 text-2xl font-semibold tracking-[-0.02em] text-[var(--a-fg)]">
                 {t("terminalNative.selfHosting.cardTitle")}
               </h3>
@@ -586,101 +550,9 @@ export default function TerminalNativePage() {
           </div>
         </SectionShell>
 
-        <SectionShell
-          id="why"
-          index="05"
-          label="WHY MONKEYCODE"
-          title={t("terminalNative.compare.title")}
-          subtitle={t("terminalNative.compare.subtitle")}
-        >
-          <div className="overflow-x-auto rounded-md border border-[var(--a-line-2)] bg-[var(--a-panel)]">
-            <table className="min-w-[900px] w-full border-collapse">
-              <thead>
-                <tr className="border-b border-[var(--a-line-2)] bg-[var(--a-bg-2)]">
-                  <th className="px-5 py-4 text-left text-[11px] tracking-[0.12em] text-[var(--a-fg-mute)]"># {t("terminalNative.compare.dimension")}</th>
-                  {compareColumns.map((column, index) => (
-                    <th
-                      key={column}
-                      className={cn(
-                        "px-3 py-4 text-center text-xs font-medium tracking-[0.06em]",
-                        index === 0
-                          ? "border-x border-[rgba(124,242,156,0.18)] bg-[rgba(124,242,156,0.04)] text-[var(--a-accent)]"
-                          : "border-l border-[var(--a-line)] text-[var(--a-fg)]"
-                      )}
-                    >
-                      <div className="relative">
-                        {column}
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {compareRows.map((row, rowIndex) => (
-                  <tr key={row.key} className={rowIndex % 2 === 1 ? "bg-[rgba(255,255,255,0.012)]" : ""}>
-                    <td className="border-b border-[var(--a-line)] px-5 py-4 text-sm text-[var(--a-fg)]">{t(`terminalNative.compare.rows.${row.key}`)}</td>
-                    {row.values.map((value, cellIndex) => (
-                      <td
-                        key={`${row.key}-${cellIndex}`}
-                        className={cn(
-                          "border-b border-[var(--a-line)] px-3 py-4 text-center",
-                          cellIndex === 0
-                            ? "border-x border-x-[rgba(124,242,156,0.18)] bg-[rgba(124,242,156,0.04)]"
-                            : "border-l border-l-[var(--a-line)]"
-                        )}
-                      >
-                        {value === 1 ? (
-                          <span className="inline-flex size-[18px] items-center justify-center rounded-[3px] bg-[var(--a-accent)] text-[11px] font-bold text-[var(--a-bg)]">
-                            ✓
-                          </span>
-                        ) : value === 2 ? (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <span className="inline-flex size-[18px] cursor-help items-center justify-center rounded-[3px] bg-[rgba(247,185,85,0.72)] text-[11px] font-bold text-[var(--a-bg)]">
-                                ✓
-                              </span>
-                            </TooltipTrigger>
-                            <TooltipContent>{t("terminalNative.compare.partialTooltip")}</TooltipContent>
-                          </Tooltip>
-                        ) : (
-                          <span className="inline-flex size-[18px] items-center justify-center text-[13px] text-[var(--a-fg-mute)]">✕</span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="mt-4 text-[11px] tracking-[0.04em] text-[var(--a-fg-mute)]">
-            // {t("terminalNative.compare.note")}
-          </div>
-        </SectionShell>
-
-        <SectionShell
-          id="testimonials"
-          index="06"
-          label="WHAT DEVS SAY"
-          title={t("terminalNative.testimonials.title")}
-          subtitle={t("terminalNative.testimonials.subtitle")}
-        >
-          <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
-            {[...testimonialItems].sort((a, b) => a.quote.length - b.quote.length).map((item) => (
-              <div key={item.key} className="relative flex h-full flex-col rounded-md border border-[var(--a-line)] bg-[var(--a-panel)] p-6">
-                <div className="absolute left-5 top-4 text-4xl leading-none text-[var(--a-accent-dim)] opacity-40">❝</div>
-                <p className="relative flex-1 text-sm leading-7 text-[var(--a-fg)]">{item.quote}</p>
-                <div className="mt-5 border-t border-dashed border-[var(--a-line-2)] pt-4">
-                  <div className="text-sm text-[var(--a-accent)]">{item.name}</div>
-                  <div className="mt-1 text-[13px] text-[var(--a-fg-dim)]">{item.role}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </SectionShell>
-
-        <SectionShell
+        {COMMERCIAL_BILLING_ENABLED ? <SectionShell
           id="pricing"
-          index="07"
+          index="05"
           label="PRICING"
           title={t("terminalNative.pricing.title")}
           subtitle={t("terminalNative.pricing.subtitle")}
@@ -844,9 +716,11 @@ export default function TerminalNativePage() {
                     <span className="inline-flex size-6 items-center justify-center rounded bg-[rgba(247,185,85,0.08)] text-[13px] text-[var(--a-warn)]">
                       <IconCoins className="size-4" />
                     </span>
-                    <span className="flex-1 text-sm font-medium text-[var(--a-fg)]">{t(`terminalNative.pricing.recharge.items.${item.labelKey}.points`)}</span>
+                    <span className="flex-1 text-sm font-medium text-[var(--a-fg)]">
+                      {t("walletDialog.recharge.creditsLabel", { points: item.credits.toLocaleString() })}
+                    </span>
                     <span className="rounded bg-[rgba(124,242,156,0.08)] px-2 py-1 text-[11px] tracking-[0.04em] text-[var(--a-accent)]">
-                      {t(`terminalNative.pricing.recharge.items.${item.labelKey}.extra`)}
+                      {t("terminalNative.pricing.recharge.operatorConfigured")}
                     </span>
                     <span className="text-base font-semibold text-[var(--a-fg)]">
                       {formatRegionCurrency(getCreditRechargeAmount(pricingRegion, item), pricingRegion)}
@@ -885,11 +759,11 @@ export default function TerminalNativePage() {
               <span className="text-sm text-[var(--a-accent)]">→ {t("terminalNative.pricing.enterprise.action")}</span>
             </a>
           </div>
-        </SectionShell>
+        </SectionShell> : null}
 
         <SectionShell
           id="faq"
-          index="08"
+          index={COMMERCIAL_BILLING_ENABLED ? "06" : "05"}
           label="FAQ"
           title={t("terminalNative.faq.title")}
           subtitle={t("terminalNative.faq.subtitle")}
@@ -917,7 +791,7 @@ export default function TerminalNativePage() {
         <section className="mx-auto max-w-[1280px] px-5 pb-10 pt-6 text-center sm:px-8 sm:pb-14 sm:pt-10">
           <div className="pointer-events-none absolute left-1/2 h-[280px] w-[600px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(124,242,156,0.15),transparent_70%)] blur-3xl" />
           <div className="relative">
-            <div className="text-[11px] tracking-[0.12em] text-[var(--a-accent)]">┌─ START WITH MONKEYCODE ─┐</div>
+            <div className="text-[11px] tracking-[0.12em] text-[var(--a-accent)]">┌─ START WITH DEVLOOM ─┐</div>
             <h2 className="mt-5 text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-white sm:text-5xl lg:text-[56px]">
               {t("terminalNative.finalCta.titlePrefix")}
               <br />

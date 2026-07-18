@@ -3,15 +3,15 @@ package config
 import "testing"
 
 func TestObjectStorageDefaults(t *testing.T) {
-	t.Setenv("MCAI_OBJECT_STORAGE_ENABLED", "")
-	t.Setenv("MCAI_OBJECT_STORAGE_PROVIDER", "")
-	t.Setenv("MCAI_OBJECT_STORAGE_FORCE_PATH_STYLE", "")
-	t.Setenv("MCAI_OBJECT_STORAGE_PRESIGN_EXPIRES", "")
-	t.Setenv("MCAI_OBJECT_STORAGE_MAX_SIZE", "")
-	t.Setenv("MCAI_OBJECT_STORAGE_TEMP_PREFIX", "")
-	t.Setenv("MCAI_TASKFLOW_GRPC_URL", "")
-	t.Setenv("MCAI_TASK_CREATE_REQ_TTL_SECONDS", "")
-	t.Setenv("MCAI_INIT_TEAM_EXTENSION_PACKAGE_DIR", "")
+	t.Setenv("DEVLOOM_OBJECT_STORAGE_ENABLED", "")
+	t.Setenv("DEVLOOM_OBJECT_STORAGE_PROVIDER", "")
+	t.Setenv("DEVLOOM_OBJECT_STORAGE_FORCE_PATH_STYLE", "")
+	t.Setenv("DEVLOOM_OBJECT_STORAGE_PRESIGN_EXPIRES", "")
+	t.Setenv("DEVLOOM_OBJECT_STORAGE_MAX_SIZE", "")
+	t.Setenv("DEVLOOM_OBJECT_STORAGE_TEMP_PREFIX", "")
+	t.Setenv("DEVLOOM_TASKFLOW_GRPC_URL", "")
+	t.Setenv("DEVLOOM_TASK_CREATE_REQ_TTL_SECONDS", "")
+	t.Setenv("DEVLOOM_INIT_TEAM_EXTENSION_PACKAGE_DIR", "")
 
 	cfg, err := Init(t.TempDir())
 	if err != nil {
@@ -80,7 +80,7 @@ func TestObjectStorageDefaults(t *testing.T) {
 }
 
 func TestTaskCreateReqTTLCanBeConfiguredByEnv(t *testing.T) {
-	t.Setenv("MCAI_TASK_CREATE_REQ_TTL_SECONDS", "3600")
+	t.Setenv("DEVLOOM_TASK_CREATE_REQ_TTL_SECONDS", "3600")
 
 	cfg, err := Init(t.TempDir())
 	if err != nil {

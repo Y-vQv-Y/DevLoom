@@ -473,7 +473,7 @@ export const ProjectFileManager = ({ project, onFileSelect, onLoaded, className 
             ) : (
               <AceEditor
                 mode={languageMode}
-                theme="monkeycode"
+                theme="devloom"
                 width="100%"
                 height="100%"
                 readOnly={true}

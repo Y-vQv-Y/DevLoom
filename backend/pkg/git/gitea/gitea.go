@@ -10,7 +10,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/chaitin/MonkeyCode/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
 )
 
 // Gitea 客户端

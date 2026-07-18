@@ -9,7 +9,7 @@ import (
 	"github.com/GoYoko/web"
 	"github.com/google/uuid"
 
-	"github.com/chaitin/MonkeyCode/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
 )
 
 func TestHandlerRegistersMCPHubRoutes(t *testing.T) {

@@ -1,7 +1,7 @@
 /**
  * 轻量 HTTP 客户端。
  *
- * 鉴权沿用 Web 端的会话 Cookie（monkeycode_ai_session）。React Native 的原生网络层
+ * 鉴权沿用 Web 端的会话 Cookie（devloom_session）。React Native 的原生网络层
  * （iOS NSURLSession / Android OkHttp）会自动持久化并回传 Cookie，因此登录成功后
  * 后续请求无需手动携带 token。
  */
@@ -32,7 +32,7 @@ import type {
 } from './types';
 import { base64Encode } from '@/messages/base64';
 
-export const DEFAULT_BASE_URL = 'https://monkeycode-ai.com';
+export const DEFAULT_BASE_URL = (process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8888').replace(/\/+$/, '');
 
 let baseUrl = DEFAULT_BASE_URL;
 let basicAuth = ''; // 形如 "user:pass"，用于连接带 HTTP Basic Auth 的测试环境（反向代理层鉴权）

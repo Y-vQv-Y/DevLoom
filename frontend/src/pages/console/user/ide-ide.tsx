@@ -13,6 +13,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { useTranslation } from "react-i18next"
+import { BRAND } from "@/config/brand"
 
 export default function IDEIDE() {
   const { t } = useTranslation()
@@ -31,14 +32,14 @@ export default function IDEIDE() {
       <EmptyContent>
         <div className="flex gap-2">
           <Button asChild variant="outline">
-            <a href="https://github.com/chaitin/MonkeyCode" target="_blank">
+            <a href="https://github.com/Y-vQv-Y/DevLoom" target="_blank">
               <ExternalLink />
               {t("consoleIde.openSourceRepository")}
             </a>
           </Button>
           <Button>
             <BookOpenIcon />
-            <a href="https://monkeycode.docs.baizhi.cloud/node/019a6cdd-28c5-74ce-a39b-859e15a06c95" target="_blank">{t("consoleIde.readDocs")}</a>
+            <a href={BRAND.documentationUrl} target="_blank">{t("consoleIde.readDocs")}</a>
           </Button>
         </div>
       </EmptyContent>

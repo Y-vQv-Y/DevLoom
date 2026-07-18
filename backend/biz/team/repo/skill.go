@@ -16,16 +16,16 @@ import (
 	"github.com/google/uuid"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/biz/agentresource"
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/db/agentskill"
-	"github.com/chaitin/MonkeyCode/backend/db/agentskillgroupbinding"
-	"github.com/chaitin/MonkeyCode/backend/db/agentskillrepo"
-	"github.com/chaitin/MonkeyCode/backend/db/agentskillversion"
-	"github.com/chaitin/MonkeyCode/backend/db/teamgroup"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/ent/types"
-	"github.com/chaitin/MonkeyCode/backend/pkg/entx"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/agentresource"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/agentskill"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/agentskillgroupbinding"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/agentskillrepo"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/agentskillversion"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamgroup"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/ent/types"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/entx"
 )
 
 type teamSkillRepo struct {

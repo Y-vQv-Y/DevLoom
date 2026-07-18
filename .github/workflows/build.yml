@@ -1,81 +1,184 @@
-name: Service Images
+name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
-  NODE_VERSION: "20"
+  NODE_VERSION: "22"
+  PNPM_VERSION: "9"
+  GO_VERSION: "1.25.x"
 
 jobs:
-  build:
+  backend:
+    name: Go test and build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - uses: actions/setup-go@v5
         with:
-          version: 9
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+          cache-dependency-path: backend/go.sum
+      - name: Test
+        run: go test ./...
+      - name: Build server binary
+        run: |
+          mkdir -p ../artifacts/backend
+          CGO_ENABLED=0 go build -trimpath -o ../artifacts/backend/devloom-server ./cmd/server
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backend-linux-amd64
+          path: artifacts/backend/devloom-server
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+  frontend:
+    name: Web lint, test, and build
+    runs-on: ubuntu-latest
+    env:
+      VITE_ENABLE_COMMERCIAL_BILLING: ${{ vars.VITE_ENABLE_COMMERCIAL_BILLING || 'false' }}
+      VITE_ENABLE_ENTERPRISE_LICENSE: ${{ vars.VITE_ENABLE_ENTERPRISE_LICENSE || 'false' }}
+      VITE_ENABLE_COMMUNITY_PLAYGROUND: ${{ vars.VITE_ENABLE_COMMUNITY_PLAYGROUND || 'false' }}
+      VITE_ENABLE_GIT_IDENTITY_OAUTH: ${{ vars.VITE_ENABLE_GIT_IDENTITY_OAUTH || 'false' }}
+      VITE_GITHUB_APP_INSTALL_URL: ${{ vars.VITE_GITHUB_APP_INSTALL_URL }}
+      VITE_GLOBAL_GITHUB_APP_INSTALL_URL: ${{ vars.VITE_GLOBAL_GITHUB_APP_INSTALL_URL }}
+      VITE_TLDRAW_LICENSE_KEY: ${{ secrets.VITE_TLDRAW_LICENSE_KEY }}
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "pnpm"
+          cache: pnpm
           cache-dependency-path: frontend/pnpm-lock.yaml
-
-      - name: Install dependencies
-        working-directory: frontend
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
-        working-directory: frontend
-        run: pnpm run build:online
-
-      - name: Upload dist
+      - run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+      - name: Regression tests
+        run: pnpm test
+      - name: Build online edition
+        run: pnpm build:online
+      - name: Save online build
         run: |
-          mkdir -p _build/dist && cp -r frontend/dist/* _build/dist/
-      - name: Upload dist artifact
-        uses: actions/upload-artifact@v4
+          mkdir -p ../artifacts/frontend-online
+          cp -R dist/. ../artifacts/frontend-online/
+      - name: Build offline edition
+        run: pnpm build:offline
+      - name: Save offline build
+        run: |
+          mkdir -p ../artifacts/frontend-offline
+          cp -R dist/. ../artifacts/frontend-offline/
+      - uses: actions/upload-artifact@v4
         with:
-          name: dist
-          path: _build/dist/
+          name: frontend-builds
+          path: |
+            artifacts/frontend-online
+            artifacts/frontend-offline
 
-  docker:
-    needs: build
+  mobile:
+    name: Expo configuration and export
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    env:
+      EXPO_PUBLIC_API_URL: ${{ vars.DEVLOOM_MOBILE_API_URL || 'http://127.0.0.1:8888' }}
+      EXPO_PUBLIC_ENABLE_COMMERCIAL_BILLING: ${{ vars.EXPO_PUBLIC_ENABLE_COMMERCIAL_BILLING || 'false' }}
+      EXPO_PUBLIC_ENABLE_APPLE_AUTH: ${{ vars.EXPO_PUBLIC_ENABLE_APPLE_AUTH || 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test -- --runInBand
+      - name: Validate native configuration
+        run: npx expo config --type public
+      - name: Export web bundle
+        run: npx expo export --platform web --output-dir ../artifacts/mobile-web
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobile-web
+          path: artifacts/mobile-web
+
+  generated:
+    name: Regenerate backend API artifacts
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Download dist
-        uses: actions/download-artifact@v4
+      - uses: actions/setup-go@v5
         with:
-          name: dist
-          path: frontend/docker/dist
-
-      - name: Prepare docker context
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+          cache-dependency-path: backend/go.sum
+      - name: Install Swagger generator
+        run: go install github.com/swaggo/swag/cmd/swag@v1.16.4
+      - name: Regenerate Go artifacts
+        working-directory: backend
         run: |
-          [ -f frontend/docker/dist/index.html ] || (echo "Artifact structure:" && find . -maxdepth 4 -type d && exit 1)
-          ls -la frontend/docker/dist/ | head -25
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+          go generate ./ent
+          swag init -ot json --pd -g cmd/server/main.go
+      - name: Validate generated diff
+        run: git diff --exit-code -- backend/db backend/docs/swagger.json
+      - uses: actions/upload-artifact@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          name: regenerated-backend-api
+          path: |
+            backend/db
+            backend/docs/swagger.json
 
-      - name: Build and push
+  docker:
+    name: Docker image build
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend-builds
+          path: artifacts/frontend
+      - name: Prepare frontend Docker context
+        run: |
+          mkdir -p frontend/docker/dist
+          cp -R artifacts/frontend/frontend-online/. frontend/docker/dist/
+      - uses: docker/setup-buildx-action@v3
+      - name: Build frontend image
         uses: docker/build-push-action@v6
         with:
           context: frontend/docker
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/monkeycode-frontend:${{ github.sha }}
-            ghcr.io/${{ github.repository_owner }}/monkeycode-frontend:latest
+          push: false
+          tags: devloom-frontend:ci
+      - name: Build backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: backend
+          file: backend/build/Dockerfile
+          push: false
+          tags: devloom-backend:ci
           platforms: linux/amd64
+      - name: Build ingress image
+        uses: docker/build-push-action@v6
+        with:
+          context: backend
+          file: backend/build/Dockerfile.ingress
+          push: false
+          tags: devloom-ingress:ci

@@ -26,7 +26,7 @@ export default function SharedTerminalPage() {
 
   const [currentTheme, setCurrentTheme] = useState(() => {
     const savedTheme = localStorage.getItem('terminalTheme');
-    return savedTheme ? savedTheme : 'MonkeyCode';
+    return savedTheme ? savedTheme : 'DevLoom';
   });
 
 

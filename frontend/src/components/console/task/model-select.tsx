@@ -28,16 +28,17 @@ import { cn } from "@/lib/utils"
 import { IconChevronDown } from "@tabler/icons-react"
 import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { COMMERCIAL_BILLING_ENABLED } from "@/config/features"
 
 const BUILTIN_MODEL_OPTIONS = [
   {
-    model: "monkeycode-basic",
+    model: "devloom-basic",
   },
   {
-    model: "monkeycode-pro",
+    model: "devloom-pro",
   },
   {
-    model: "monkeycode-ultra",
+    model: "devloom-ultra",
   },
 ] as const
 
@@ -63,25 +64,28 @@ export default function ModelSelect({
   const { t } = useTranslation()
   const isMobile = useIsMobile()
   const getBuiltinModelLabel = useCallback((modelName?: string | null) => {
-    if (modelName === "monkeycode-basic") {
+    if (modelName === "devloom-basic") {
       return t("taskWorkflow.model.basic")
     }
-    if (modelName === "monkeycode-pro") {
+    if (modelName === "devloom-pro") {
       return t("taskWorkflow.model.pro")
     }
-    if (modelName === "monkeycode-ultra") {
+    if (modelName === "devloom-ultra") {
       return t("taskWorkflow.model.ultra")
     }
     return ""
   }, [t])
   const getBuiltinModelBadge = useCallback((modelName?: string | null) => {
-    if (modelName === "monkeycode-basic") {
+    if (!COMMERCIAL_BILLING_ENABLED) {
+      return t("taskWorkflow.model.operatorConfigured")
+    }
+    if (modelName === "devloom-basic") {
       return t("taskWorkflow.model.freeUsage")
     }
-    if (modelName === "monkeycode-pro") {
+    if (modelName === "devloom-pro") {
       return t("taskWorkflow.model.proUsage")
     }
-    if (modelName === "monkeycode-ultra") {
+    if (modelName === "devloom-ultra") {
       return t("taskWorkflow.model.ultraUsage")
     }
     return undefined
@@ -123,10 +127,10 @@ export default function ModelSelect({
         key: option.model,
         label: getBuiltinModelLabel(option.model),
         badge: getBuiltinModelBadge(option.model),
-        badgeVariant: option.model === "monkeycode-basic" ? "default" as const : "secondary" as const,
-        iconName: option.model === "monkeycode-basic"
+        badgeVariant: option.model === "devloom-basic" ? "default" as const : "secondary" as const,
+        iconName: option.model === "devloom-basic"
           ? "gift"
-          : option.model === "monkeycode-pro"
+          : option.model === "devloom-pro"
             ? "vip-1"
             : "vip-2",
         models: supportedModels.filter((model) => getBuiltinModelName(model.model) === option.model),
@@ -172,8 +176,8 @@ export default function ModelSelect({
       ...builtinModelGroups,
       {
         key: "other-public-models",
-        label: t("taskWorkflow.model.paid"),
-        badge: t("taskWorkflow.model.paidUsage"),
+        label: t(COMMERCIAL_BILLING_ENABLED ? "taskWorkflow.model.paid" : "taskWorkflow.model.public"),
+        badge: COMMERCIAL_BILLING_ENABLED ? t("taskWorkflow.model.paidUsage") : t("taskWorkflow.model.operatorConfigured"),
         iconName: "qiandaizi",
         models: otherPaidModels,
       },

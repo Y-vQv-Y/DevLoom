@@ -1,6 +1,6 @@
 export const defaultSkills = [
-  "MonkeyCodeOfficialPlugins/main/skills/feature-design",
-  "MonkeyCodeOfficialPlugins/main/skills/project-wiki",
-  "MonkeyCodeOfficialPlugins/main/skills/feature-implementer",
-  "MonkeyCodeOfficialPlugins/main/skills/implementation-planner",
+  "DevLoomOfficialPlugins/main/skills/feature-design",
+  "DevLoomOfficialPlugins/main/skills/project-wiki",
+  "DevLoomOfficialPlugins/main/skills/feature-implementer",
+  "DevLoomOfficialPlugins/main/skills/implementation-planner",
 ];

@@ -13,9 +13,9 @@ import (
 
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/config"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/templates"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/templates"
 )
 
 type EmailClient struct {
@@ -33,10 +33,13 @@ func (c *EmailClient) SendResetPasswordEmail(ctx context.Context, to, username, 
 	if err != nil {
 		return err
 	}
+	siteURL := strings.TrimRight(c.cfg.Server.BaseURL, "/")
 	var buf bytes.Buffer
 	if err := tmpl.Execute(&buf, map[string]string{
 		"user":      username,
 		"reset_url": resetURL,
+		"site_url":  siteURL,
+		"logo_url":  brandLogoURL(siteURL),
 	}); err != nil {
 		return err
 	}
@@ -48,14 +51,24 @@ func (c *EmailClient) SendBindEmailVerification(ctx context.Context, to, usernam
 	if err != nil {
 		return err
 	}
+	siteURL := strings.TrimRight(c.cfg.Server.BaseURL, "/")
 	var buf bytes.Buffer
 	if err := tmpl.Execute(&buf, map[string]string{
 		"user":       username,
 		"verify_url": verifyURL,
+		"site_url":   siteURL,
+		"logo_url":   brandLogoURL(siteURL),
 	}); err != nil {
 		return err
 	}
 	return c.Send("Verify Your Email", to, buf.String())
+}
+
+func brandLogoURL(siteURL string) string {
+	if siteURL == "" {
+		return ""
+	}
+	return siteURL + "/logo-light.png"
 }
 
 type Smtp struct {
@@ -77,7 +90,7 @@ func (s *Smtp) Send(subject, receiver, content string) error {
 	defer c.Close()
 
 	header := make(map[string]string)
-	header["From"] = "MonkeyCode-AI" + "<" + s.cfg.SMTP.From + ">"
+	header["From"] = "DevLoom" + "<" + s.cfg.SMTP.From + ">"
 	header["To"] = receiver
 	header["Subject"] = subject
 	header["Content-Type"] = "text/html; charset=UTF-8"

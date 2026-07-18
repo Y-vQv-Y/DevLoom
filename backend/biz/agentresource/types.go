@@ -12,7 +12,7 @@ import (
 
 	"github.com/google/uuid"
 
-	enttypes "github.com/chaitin/MonkeyCode/backend/ent/types"
+	enttypes "github.com/Y-vQv-Y/DevLoom/backend/ent/types"
 )
 
 // RuleWithVersion is an agent rule joined with the row referenced by its
@@ -148,7 +148,7 @@ type MaterializedAsset struct {
 }
 
 // SkillRef is a skill addressed by a presigned GET URL — the resolver no
-// longer downloads + unzips the skill itself; the codingmatrix agent does
+// longer downloads + unzips the skill itself; the devloom agent does
 // that inside the task VM. This is the replacement for MaterializedAsset on
 // the skill dispatch path and exists to keep the gRPC PushTasks payload
 // under the 4MiB ceiling regardless of how many skills are in scope.
@@ -159,7 +159,7 @@ type SkillRef struct {
 }
 
 // PluginRef is the plugin counterpart of SkillRef. EntryFilename comes from
-// parsed_meta.entry and is needed by mcai-backend to write the
+// parsed_meta.entry and is needed by devloom-backend to write the
 // opencode.json `plugin` array — the agent itself does not consume it.
 type PluginRef struct {
 	Name          string

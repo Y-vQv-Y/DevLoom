@@ -3,7 +3,7 @@ package plugin
 import (
 	"github.com/samber/do"
 
-	v1 "github.com/chaitin/MonkeyCode/backend/biz/plugin/handler/v1"
+	v1 "github.com/Y-vQv-Y/DevLoom/backend/biz/plugin/handler/v1"
 )
 
 func ProvidePlugin(i *do.Injector) {

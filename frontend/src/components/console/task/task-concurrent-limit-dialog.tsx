@@ -9,6 +9,7 @@ import { IconPlayerStopFilled } from "@tabler/icons-react"
 import { useCallback, useState, useEffect } from "react"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
+import { COMMERCIAL_BILLING_ENABLED } from "@/config/features"
 
 interface TaskConcurrentLimitDialogProps {
   open: boolean
@@ -25,7 +26,7 @@ export function TaskConcurrentLimitDialog({ open, onOpenChange, onStopped }: Tas
   const [stoppingId, setStoppingId] = useState<string | null>(null)
   const { subscription } = useCommonData()
   const hasAdvancedPlan = hasProSubscription(subscription)
-  const planLabel = (() => {
+  const planLabel = !COMMERCIAL_BILLING_ENABLED ? t("taskWorkflow.plan.openSource") : (() => {
     switch (subscription?.plan) {
       case "flagship":
       case "ultra":

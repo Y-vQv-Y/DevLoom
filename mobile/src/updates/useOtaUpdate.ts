@@ -76,7 +76,7 @@ function isHttpUrl(value: string): boolean {
  *
  * 用 path 而非 query：`<updatesServer>/app-version/<platform>.json` —— 这样可以直接
  * 作为静态文件托管在 OSS/CDN 上（每个平台一个 JSON，内容为 { version, url }）。
- * 生产 updatesServer 指向发布静态目录，如 https://release.monkeycode-ai.com/public/mobile。
+ * 生产 updatesServer 通过 EXPO_PUBLIC_UPDATES_SERVER 指向自行托管的发布目录。
  */
 export async function checkAppUpdate(): Promise<AppUpdate> {
   const base = (Constants.expoConfig?.extra as { updatesServer?: string } | undefined)?.updatesServer?.replace(/\/$/, '');

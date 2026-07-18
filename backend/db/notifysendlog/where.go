@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/db/predicate"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/predicate"
 	"github.com/google/uuid"
 )
 

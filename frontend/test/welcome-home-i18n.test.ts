@@ -35,10 +35,10 @@ test("欢迎页主体小组件使用 welcomeHome i18n key", () => {
 });
 
 test("欢迎页主体小组件提供中英文资源", () => {
-  assert.equal(cn.welcomeHome.banner.headlinePrefix, "MonkeyCode 是");
-  assert.equal(en.welcomeHome.banner.headlinePrefix, "MonkeyCode is");
-  assert.equal(cn.welcomeHome.sdd.title, "三个关键词，概括 MonkeyCode 最值得宣传的点");
-  assert.equal(en.welcomeHome.sdd.title, "Three keywords that capture what MonkeyCode should highlight most");
+  assert.equal(cn.welcomeHome.banner.headlinePrefix, "DevLoom 是");
+  assert.equal(en.welcomeHome.banner.headlinePrefix, "DevLoom is");
+  assert.equal(cn.welcomeHome.sdd.title, "三个关键词，概括 DevLoom 最值得宣传的点");
+  assert.equal(en.welcomeHome.sdd.title, "Three keywords that capture what DevLoom should highlight most");
   assert.equal(cn.welcomeHome.downloads.action, "下载");
   assert.equal(en.welcomeHome.downloads.action, "Download");
 });

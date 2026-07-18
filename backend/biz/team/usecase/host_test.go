@@ -11,8 +11,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 
-	"github.com/chaitin/MonkeyCode/backend/config"
-	"github.com/chaitin/MonkeyCode/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
 )
 
 func TestGetInstallCommandStoresTokenForTwoHours(t *testing.T) {
@@ -28,7 +28,7 @@ func TestGetInstallCommandStoresTokenForTwoHours(t *testing.T) {
 			Server: struct {
 				Addr    string `mapstructure:"addr"`
 				BaseURL string `mapstructure:"base_url"`
-			}{BaseURL: "http://monkeycode.local"},
+			}{BaseURL: "http://devloom.local"},
 		},
 		redis: rdb,
 	}

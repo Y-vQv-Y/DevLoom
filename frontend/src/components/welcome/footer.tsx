@@ -1,25 +1,24 @@
 
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import { useAppRuntime } from "@/components/app-runtime-provider"
-
-const CHAITIN_LINK = "https://www.chaitin.cn/"
-const BAIZHI_LINK = "https://www.baizhi.cloud/"
-const CYBERSERVAL_LINK = "https://www.cyberserval.com/"
-const SAFELINE_WAF_LINK = "https://cyberserval.tech/home"
+import { BRAND } from "@/config/brand"
 
 const resourceLinks = [
   {
+    titleKey: "welcomeShell.footer.website",
+    href: BRAND.websiteUrl
+  },
+  {
     titleKey: "welcomeShell.footer.productDocs",
-    href: "https://monkeycode.docs.baizhi.cloud/"
+    href: BRAND.documentationUrl
   },
   {
     titleKey: "welcomeShell.footer.forum",
-    href: "https://bbs.baizhi.cloud/"
+    href: BRAND.forumUrl
   },
   {
     titleKey: "welcomeShell.nav.openSourceRepo",
-    href: "https://github.com/chaitin/MonkeyCode/"
+    href: BRAND.repositoryUrl
   }
 ]
 
@@ -33,23 +32,18 @@ const legalLinks = [
     href: "/user-agreement"
   },
   {
-    titleKey: "welcomeShell.footer.icp",
-    href: "https://beian.miit.gov.cn/"
+    titleKey: "welcomeShell.footer.releases",
+    href: BRAND.announcementsUrl
   }
 ]
 
 const Footer = () => {
   const { t } = useTranslation()
-  const { serverConfig } = useAppRuntime()
-  const isGlobalRegion = serverConfig?.region === "global"
-  const companyLinks = isGlobalRegion ? [
-      { titleKey: "welcomeShell.footer.cyberserval", href: CYBERSERVAL_LINK },
-      { titleKey: "welcomeShell.footer.safelineWaf", href: SAFELINE_WAF_LINK }
-    ]
-    : [
-      { titleKey: "welcomeShell.footer.chaitin", href: CHAITIN_LINK },
-      { titleKey: "welcomeShell.footer.baizhi", href: BAIZHI_LINK }
-    ]
+  const companyLinks = [
+    { titleKey: "welcomeShell.footer.company", href: BRAND.companyUrl },
+    { titleKey: "welcomeShell.footer.repository", href: BRAND.repositoryUrl },
+    { titleKey: "welcomeShell.footer.consultation", href: BRAND.consultationUrl }
+  ]
   const links = [
     {
       titleKey: "welcomeShell.footer.resources",
@@ -78,8 +72,6 @@ const Footer = () => {
             <h3 className="text-background leading-8">{t(link.titleKey)}</h3>
             <ul className="text-background/50 text-sm flex flex-col gap-2">
               {link.links.map((link) => {
-                if (isGlobalRegion && link.titleKey === "welcomeShell.footer.icp") return null
-
                 return (
                   <li key={link.titleKey}>
                     {link.href.startsWith("/") ? (

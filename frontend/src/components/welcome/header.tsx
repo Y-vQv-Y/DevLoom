@@ -6,9 +6,11 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
+import { BRAND } from "@/config/brand";
+import { COMMUNITY_PLAYGROUND_ENABLED } from "@/config/features";
 
-const docsLink = "https://monkeycode.docs.baizhi.cloud/";
-const githubLink = "https://github.com/chaitin/MonkeyCode";
+const docsLink = BRAND.documentationUrl;
+const githubLink = BRAND.repositoryUrl;
 
 const Header = () => {
   const { auth, serverConfig } = useAppRuntime();
@@ -30,7 +32,9 @@ const Header = () => {
       ]
     : [
         { labelKey: "welcomeShell.nav.intro", to: "/" },
-        { labelKey: "welcomeShell.nav.playground", to: "/playground" },
+        ...(COMMUNITY_PLAYGROUND_ENABLED
+          ? [{ labelKey: "welcomeShell.nav.playground", to: "/playground" }]
+          : []),
       ];
   const activeNav = navItems.find((item) =>
     item.to === "/" ? location.pathname === "/" : location.pathname.startsWith(item.to)
@@ -73,9 +77,9 @@ const Header = () => {
                     <img
                       src="/logo-light.png"
                       className="size-9 rounded-xl border border-[#243329] bg-[#111814] p-1.5"
-                      alt="MonkeyCode Logo"
+                      alt="DevLoom Logo"
                     />
-                    MONKEYCODE
+                    DEVLOOM
                   </DrawerTitle>
                 </DrawerHeader>
                 <div className="space-y-5 px-4 py-5">
@@ -141,11 +145,11 @@ const Header = () => {
 
             <Link to="/" className="flex min-w-0 items-center gap-3">
               <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-[#243329] bg-[#111814] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
-                <img src="/logo-light.png" className="size-7" alt="MonkeyCode Logo" />
+                <img src="/logo-light.png" className="size-7" alt="DevLoom Logo" />
               </div>
               <div className="min-w-0">
                 <div className="truncate text-[11px] uppercase tracking-[0.26em] text-[#7cf29c]">Terminal Native</div>
-                <div className="truncate text-sm font-medium text-[#e8efe9] sm:text-[15px]">MonkeyCode</div>
+                <div className="truncate text-sm font-medium text-[#e8efe9] sm:text-[15px]">DevLoom</div>
               </div>
             </Link>
           </div>
@@ -248,30 +252,32 @@ const Header = () => {
             </DrawerTrigger>
             <DrawerContent className={cn(isPixelPage && "border-2 border-slate-900 bg-[#fffdf8]")}>
               <DrawerHeader>
-                <DrawerTitle className={cn(isPixelPage && "font-pixel text-xs text-slate-900")}>MonkeyCode</DrawerTitle>
+                <DrawerTitle className={cn(isPixelPage && "font-pixel text-xs text-slate-900")}>DevLoom</DrawerTitle>
               </DrawerHeader>
               <div className="flex flex-col gap-2 my-4">
                 <Button variant="link" className={cn(isPixelPage && "justify-start text-slate-900 no-underline")} asChild>
                   <Link to="/">{t("welcomeShell.nav.intro")}</Link>
                 </Button>
+                {COMMUNITY_PLAYGROUND_ENABLED ? (
+                  <Button variant="link" className={cn(isPixelPage && "justify-start text-slate-900 no-underline")} asChild>
+                    <Link to="/playground">{t("welcomeShell.nav.playground")}</Link>
+                  </Button>
+                ) : null}
                 <Button variant="link" className={cn(isPixelPage && "justify-start text-slate-900 no-underline")} asChild>
-                  <Link to="/playground">{t("welcomeShell.nav.playground")}</Link>
-                </Button>
-                <Button variant="link" className={cn(isPixelPage && "justify-start text-slate-900 no-underline")} asChild>
-                  <Link to="https://monkeycode.docs.baizhi.cloud/" target="_blank">{t("welcomeShell.nav.docsFull")}</Link>
+                  <Link to={docsLink} target="_blank">{t("welcomeShell.nav.docsFull")}</Link>
                 </Button>
               </div>
             </DrawerContent>
           </Drawer>
           <Link to="/" className={cn("mr-6 flex flex-row items-center gap-3 text-base font-semibold cursor-pointer", isPixelPage && "text-slate-950")}>
-            <img src="/logo-light.png" className={cn("size-8", isPixelPage && "border-2 border-slate-900 bg-white p-1")} alt="MonkeyCode Logo" />
-            <span className={cn(isPixelPage ? "font-pixel text-sm tracking-normal sm:text-base" : "text-base")}>MonkeyCode</span>
+            <img src="/logo-light.png" className={cn("size-8", isPixelPage && "border-2 border-slate-900 bg-white p-1")} alt="DevLoom Logo" />
+            <span className={cn(isPixelPage ? "font-pixel text-sm tracking-normal sm:text-base" : "text-base")}>DevLoom</span>
           </Link>
         </div>
         <div className="hidden md:flex flex-row items-center gap-2">
           <Link to="/" className={cn("mr-6 flex flex-row items-center gap-3 text-base font-semibold cursor-pointer", isPixelPage && "text-slate-950")}>
-            <img src="/logo-light.png" className={cn("size-8", isPixelPage && "border-2 border-slate-900 bg-white p-1")} alt="MonkeyCode Logo" />
-            <span className={cn(isPixelPage ? "font-pixel text-sm tracking-normal sm:text-base" : "text-base")}>MonkeyCode</span>
+            <img src="/logo-light.png" className={cn("size-8", isPixelPage && "border-2 border-slate-900 bg-white p-1")} alt="DevLoom Logo" />
+            <span className={cn(isPixelPage ? "font-pixel text-sm tracking-normal sm:text-base" : "text-base")}>DevLoom</span>
           </Link>
           <Button variant={"link"} className={cn(
             isPixelPage ? "rounded-none border-2 border-transparent text-slate-900 no-underline hover:bg-amber-50" : "",
@@ -279,14 +285,16 @@ const Header = () => {
           )}>
             <Link to="/">{t("welcomeShell.nav.intro")}</Link>
           </Button>
-          <Button variant={"link"} className={cn(
-            isPixelPage ? "rounded-none border-2 border-transparent text-slate-900 no-underline hover:bg-amber-50" : "",
-            location.pathname.startsWith("/playground") ? (isPixelPage ? "border-slate-900 bg-amber-100" : "underline decoration-2 underline-offset-8") : "text-foreground"
-          )}>
-            <Link to="/playground">{t("welcomeShell.nav.playground")}</Link>
-          </Button>
+          {COMMUNITY_PLAYGROUND_ENABLED ? (
+            <Button variant={"link"} className={cn(
+              isPixelPage ? "rounded-none border-2 border-transparent text-slate-900 no-underline hover:bg-amber-50" : "",
+              location.pathname.startsWith("/playground") ? (isPixelPage ? "border-slate-900 bg-amber-100" : "underline decoration-2 underline-offset-8") : "text-foreground"
+            )}>
+              <Link to="/playground">{t("welcomeShell.nav.playground")}</Link>
+            </Button>
+          ) : null}
           <Button variant={"link"} className={cn(isPixelPage ? "rounded-none border-2 border-transparent text-slate-900 no-underline hover:bg-amber-50" : "text-foreground")}>
-            <Link to="https://monkeycode.docs.baizhi.cloud/" target="_blank">{t("welcomeShell.nav.docsFull")}</Link>
+            <Link to={docsLink} target="_blank">{t("welcomeShell.nav.docsFull")}</Link>
           </Button>
         </div>
         <div className="flex flex-row items-center gap-2 sm:gap-3">

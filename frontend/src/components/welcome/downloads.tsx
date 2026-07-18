@@ -6,9 +6,9 @@ import {
   IconDeviceMobile,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
+import { BRAND } from "@/config/brand";
 
-const RELEASE_URL = "https://github.com/chaitin/MonkeyCode/releases";
-const IOS_APP_STORE_URL = "https://apps.apple.com/cn/app/monkeycode%E7%BC%96%E7%A8%8B%E5%8A%A9%E6%89%8B/id6777423440";
+const RELEASE_URL = BRAND.releasesUrl;
 
 const clients = [
   {
@@ -30,7 +30,6 @@ const clients = [
     name: "iOS",
     key: "ios",
     icon: IconDeviceMobile,
-    href: IOS_APP_STORE_URL,
   },
 ];
 
@@ -55,7 +54,7 @@ const Downloads = () => {
           {clients.map((client) => (
             <a
               key={client.name}
-              href={client.href ?? RELEASE_URL}
+              href={RELEASE_URL}
               target="_blank"
               rel="noreferrer"
               className="group flex h-full flex-col justify-between rounded-2xl border border-background/20 bg-background/8 p-5 transition-all duration-200 hover:-translate-y-1 hover:border-background/40 hover:bg-background/12"

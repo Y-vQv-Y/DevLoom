@@ -10,6 +10,7 @@ import {
 } from "./member-seat";
 import TeamManagerManager from "./manager";
 import { useTranslation } from "react-i18next";
+import { ENTERPRISE_LICENSE_ENABLED } from "@/config/features";
 
 export default function TeamManagerMembers() {
   const { t } = useTranslation();
@@ -17,7 +18,7 @@ export default function TeamManagerMembers() {
   const [groups, setGroups] = useState<any[]>([]);
   const [fallbackMemberLimit, setFallbackMemberLimit] = useState(0);
   const [licenseSeatStatus, setLicenseSeatStatus] = useState<LicenseSeatStatus | null>(null);
-  const isOfflineEdition = import.meta.env.VITE_APP_EDITION === "offline";
+  const licenseEnabled = ENTERPRISE_LICENSE_ENABLED && import.meta.env.VITE_APP_EDITION === "offline";
   const memberLimit = resolveMemberLimit(fallbackMemberLimit, licenseSeatStatus);
   const usedSeats = resolveUsedSeats(members.length, licenseSeatStatus);
 
@@ -52,7 +53,7 @@ export default function TeamManagerMembers() {
 
   const refreshMembers = async () => {
     await fetchMembers();
-    if (isOfflineEdition) {
+    if (licenseEnabled) {
       await fetchLicenseStatus();
     }
   }
@@ -60,10 +61,10 @@ export default function TeamManagerMembers() {
   useEffect(() => {
     fetchMembers();
     fetchGroups();
-    if (isOfflineEdition) {
+    if (licenseEnabled) {
       fetchLicenseStatus();
     }
-  }, [isOfflineEdition]);
+  }, [licenseEnabled]);
 
   return (
     <div className="flex w-full flex-1 flex-col gap-6">

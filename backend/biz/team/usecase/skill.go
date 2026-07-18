@@ -16,11 +16,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/biz/agentresource"
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/errcode"
-	"github.com/chaitin/MonkeyCode/backend/pkg/cvt"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/agentresource"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/errcode"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/cvt"
 )
 
 // skillS3KeyPrefix:S3 上每个 skill 版本对应的 key 形如

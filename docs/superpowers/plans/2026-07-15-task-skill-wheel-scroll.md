@@ -248,7 +248,7 @@ Expected: 三个变更自动组合，静态检查和构建均以 exit code 0 完
 
 - [x] **Step 8: 启动组合版本 SaaS 预览并人工验证**
 
-Run: `TARGET=https://monkeycode-ai.com pnpm dev:online`
+Run: `TARGET=http://localhost:8888 pnpm dev:online`
 
 Expected: 黄色提示复制功能正常；技能搜索、空结果和关闭清理正常；“创建任务”和“启动 AI 任务”技能列表支持鼠标滚轮和触控板纵向滚动；任务首页行为保持正常。
 

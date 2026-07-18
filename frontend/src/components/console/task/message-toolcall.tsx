@@ -27,11 +27,11 @@ type ToolCallRenderer = {
 }
 
 const imageAnalysisCreateTaskTitles = new Set([
-  "monkeycode-ai_MonkeyCode__image_analysis_create_task",
+  "devloom_DevLoom__image_analysis_create_task",
 ])
 
 const imageAnalysisGetResultTitles = new Set([
-  "monkeycode-ai_MonkeyCode__image_analysis_get_result",
+  "devloom_DevLoom__image_analysis_get_result",
 ])
 
 const getPatchUpdatedFileLabel = (message: MessageType) => {
@@ -76,7 +76,7 @@ const toolCallRenderers: ToolCallRenderer[] = [
   {
     match: (message) => (
       message.data.kind === "other"
-      && message.data.title === "monkeycode-ai_internal__report_user_abuse"
+      && message.data.title === "devloom_internal__report_user_abuse"
     ),
     renderTitle: internalReportUserAbuseRender.renderTitle,
     renderDetail: internalReportUserAbuseRender.renderDetail,
@@ -85,7 +85,7 @@ const toolCallRenderers: ToolCallRenderer[] = [
   {
     match: (message) => (
       message.data.kind === "other"
-      && message.data.title === "mcaiBuiltin_request_preview"
+      && message.data.title === "devloomBuiltin_request_preview"
     ),
     renderTitle: (message) => {
       const port = message.data.rawInput?.port
@@ -100,7 +100,7 @@ const toolCallRenderers: ToolCallRenderer[] = [
   {
     match: (message) => (
       message.data.kind === "other"
-      && message.data.title === "mcaiBuiltin_background_terminal_list"
+      && message.data.title === "devloomBuiltin_background_terminal_list"
     ),
     renderTitle: () => taskDetailT("toolcall.backgroundList"),
     renderDetail: fallbackRender.renderDetail,
@@ -109,7 +109,7 @@ const toolCallRenderers: ToolCallRenderer[] = [
   {
     match: (message) => (
       message.data.kind === "other"
-      && message.data.title === "mcaiBuiltin_background_terminal_create"
+      && message.data.title === "devloomBuiltin_background_terminal_create"
     ),
     renderTitle: () => taskDetailT("toolcall.backgroundCreate"),
     renderDetail: fallbackRender.renderDetail,
@@ -117,7 +117,7 @@ const toolCallRenderers: ToolCallRenderer[] = [
   {
     match: (message) => (
       message.data.kind === "other"
-      && message.data.title === "mcaiBuiltin_background_terminal_output_path"
+      && message.data.title === "devloomBuiltin_background_terminal_output_path"
     ),
     renderTitle: () => taskDetailT("toolcall.backgroundOutput"),
     renderDetail: fallbackRender.renderDetail,
@@ -154,7 +154,7 @@ const toolCallRenderers: ToolCallRenderer[] = [
   {
     match: (message) => (
       message.data.kind === "other"
-      && message.data.title === "monkeycode-ai_MonkeyCode__websearch_aisearch"
+      && message.data.title === "devloom_DevLoom__websearch_aisearch"
     ),
     renderTitle: internalWebsearchRender.renderTitle,
     renderDetail: internalWebsearchRender.renderDetail,
@@ -162,7 +162,7 @@ const toolCallRenderers: ToolCallRenderer[] = [
   {
     match: (message) => (
       message.data.kind === "other"
-      && message.data.title === "monkeycode-ai_MonkeyCode__websearch_search"
+      && message.data.title === "devloom_DevLoom__websearch_search"
     ),
     renderTitle: internalWebsearchRender.renderTitle,
     renderDetail: internalWebsearchRender.renderDetail,
@@ -170,7 +170,7 @@ const toolCallRenderers: ToolCallRenderer[] = [
   {
     match: (message) => (
       message.data.kind === "other"
-      && message.data.title === "monkeycode-ai_MonkeyCode__imgsearch_search"
+      && message.data.title === "devloom_DevLoom__imgsearch_search"
     ),
     renderTitle: internalImgsearchRender.renderTitle,
     renderDetail: internalImgsearchRender.renderDetail,
@@ -178,7 +178,7 @@ const toolCallRenderers: ToolCallRenderer[] = [
   {
     match: (message) => (
       message.data.kind === "other"
-      && message.data.title === "monkeycode-ai_MonkeyCode__image_generate_text_to_image"
+      && message.data.title === "devloom_DevLoom__image_generate_text_to_image"
     ),
     renderTitle: (message) => {
       const prompt = message.data.rawInput?.prompt ?? message.data.rawInput?.query ?? message.data.rawInput?.description
@@ -192,7 +192,7 @@ const toolCallRenderers: ToolCallRenderer[] = [
   {
     match: (message) => (
       message.data.kind === "other"
-      && message.data.title === "monkeycode-ai_MonkeyCode__image_generate_query_task"
+      && message.data.title === "devloom_DevLoom__image_generate_query_task"
     ),
     renderTitle: () => taskDetailT("toolcall.queryImageProgress"),
     renderDetail: fallbackRender.renderDetail,

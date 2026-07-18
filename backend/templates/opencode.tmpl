@@ -6,9 +6,9 @@
     }
   },
   "provider": {
-    "monkeycode-ai": {
+    "devloom": {
       "npm": "{{.npm_package}}",
-      "name": "monkeycode-ai",
+      "name": "devloom",
       "options": {
         "baseURL": "{{.base_url}}"
       },
@@ -37,15 +37,15 @@
       }
     }
   },
-  "model": "monkeycode-ai/{{.model}}",
+  "model": "devloom/{{.model}}",
   "disabled_providers": ["openai", "opencode"],
-  "instructions": ["${HOME}/.codingmatrix/project-tpl/.ai-ready/rules/*.md"],
+  "instructions": ["${HOME}/.devloom/project-tpl/.ai-ready/rules/*.md"],
   "permission": {
     "doom_loop": "allow",
     "external_directory": { "*": "allow" },
     "read": { "*.env": "allow", "*.env.*": "allow" }
   },
   "skills": {
-    "paths": ["${HOME}/.codingmatrix/project-tpl/.ai-ready/skills/"]
+    "paths": ["${HOME}/.devloom/project-tpl/.ai-ready/skills/"]
   }
 }

@@ -28,7 +28,7 @@ import { formatTokens, modelDisplayName, taskDisplayName } from '@/utils/format'
 
 const ROUNDS_PER_FETCH = 1;
 const POLL_INTERVAL = 10000;
-const TASK_DRAFT_PREFIX = 'monkeycode:task-draft:';
+const TASK_DRAFT_PREFIX = 'devloom:task-draft:';
 // 指令：继续/压缩 直接发消息；重启/重置 走控制通道 restart(load_session)
 type CmdKey = 'continue' | 'skill' | 'compact' | 'restart' | 'reset';
 type Cmd = { key: CmdKey; label: string; tone: 'ac' | 'neutral' | 'amber' | 'red'; icon?: string; desc?: string };

@@ -9,7 +9,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/chaitin/MonkeyCode/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
 )
 
 type gatewayProviderStub struct {

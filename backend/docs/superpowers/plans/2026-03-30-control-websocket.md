@@ -165,11 +165,11 @@ import (
 	"github.com/GoYoko/web"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/middleware"
-	"github.com/chaitin/MonkeyCode/backend/pkg/taskflow"
-	"github.com/chaitin/MonkeyCode/backend/pkg/ws"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/middleware"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/taskflow"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/ws"
 )
 
 // Control 控制 WebSocket 接口
@@ -184,7 +184,7 @@ import (
 //	@Tags			【用户】任务管理
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAIAuth
+//	@Security		DevLoomAIAuth
 //	@Param			taskId	query		string		true	"任务 ID"
 //	@Success		200		{object}	web.Resp{}	"成功"
 //	@Failure		500		{object}	web.Resp	"服务器内部错误"

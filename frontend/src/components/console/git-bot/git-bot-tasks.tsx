@@ -13,6 +13,7 @@ import { BookOpenIcon } from "lucide-react"
 import { forwardRef, useCallback, useImperativeHandle, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
+import { BRAND } from "@/config/brand"
 
 const PAGE_SIZE = 24;
 
@@ -122,7 +123,7 @@ export const GitBotTasks = forwardRef<GitBotTasksRef>(function GitBotTasks(_, re
                 {t("consoleGitBot.actions.refresh")}
               </Button>
               <Button variant="default" asChild>
-                <a href="https://monkeycode.docs.baizhi.cloud/node/019bd94c-2fd8-7276-9382-74e3a0d4a397" target="_blank">
+                <a href={BRAND.documentationUrl} target="_blank">
                   <BookOpenIcon />
                   {t("consoleGitBot.tasks.howToUse")}
                 </a>

@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/chaitin/MonkeyCode/backend/db/gittask"
-	"github.com/chaitin/MonkeyCode/backend/db/predicate"
-	"github.com/chaitin/MonkeyCode/backend/db/task"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/gittask"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/predicate"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/task"
 	"github.com/google/uuid"
 )
 

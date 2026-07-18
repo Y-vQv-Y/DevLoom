@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/chaitin/MonkeyCode/backend/db/agentplugin"
-	"github.com/chaitin/MonkeyCode/backend/db/agentpluginrepo"
-	"github.com/chaitin/MonkeyCode/backend/ent/types"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/agentplugin"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/agentpluginrepo"
+	"github.com/Y-vQv-Y/DevLoom/backend/ent/types"
 	"github.com/google/uuid"
 )
 

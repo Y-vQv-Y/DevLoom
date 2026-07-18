@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chaitin/MonkeyCode/backend/config"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/pkg/asseturl"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/asseturl"
 	"github.com/google/uuid"
 )
 

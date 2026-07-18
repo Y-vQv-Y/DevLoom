@@ -10,22 +10,22 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/biz/agentresource"
-	"github.com/chaitin/MonkeyCode/backend/config"
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/db/image"
-	"github.com/chaitin/MonkeyCode/backend/db/teamgroup"
-	"github.com/chaitin/MonkeyCode/backend/db/teamgrouphost"
-	"github.com/chaitin/MonkeyCode/backend/db/teamgroupimage"
-	"github.com/chaitin/MonkeyCode/backend/db/teamgroupmember"
-	"github.com/chaitin/MonkeyCode/backend/db/teamimage"
-	"github.com/chaitin/MonkeyCode/backend/db/teammember"
-	"github.com/chaitin/MonkeyCode/backend/db/user"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/errcode"
-	"github.com/chaitin/MonkeyCode/backend/pkg/crypto"
-	"github.com/chaitin/MonkeyCode/backend/pkg/entx"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/agentresource"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/image"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamgroup"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamgrouphost"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamgroupimage"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamgroupmember"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamimage"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teammember"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/user"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/errcode"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/crypto"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/entx"
 )
 
 // TeamGroupUserRepo 团队分组成员数据访问层
@@ -504,7 +504,7 @@ func (r *TeamGroupUserRepo) initTeamImage(ctx context.Context, tx *db.Tx, teamID
 			SetID(uuid.New()).
 			SetUserID(userID).
 			SetName(imageName).
-			SetRemark("MonkeyCode-AI 默认开发环境").
+			SetRemark("DevLoom 默认开发环境").
 			Save(ctx)
 		if err != nil {
 			return err

@@ -85,17 +85,17 @@ function createFakeDocument() {
 
 test("全局 meta 翻译资源提供中英文默认文案", () => {
   assert.deepEqual((cn as MetaResources).meta?.default, {
-    title: "MonkeyCode 智能开发平台",
+    title: "DevLoom 智能开发平台",
     description:
-      "MonkeyCode AI 是一个智能代码生成平台，通过AI驱动的编程助手、自动化工作流和智能开发工具，帮助开发者更快速地构建应用程序。",
-    keywords: "AI代码生成, 智能编程, 开发者工具, 自动化编程, 代码助手, AI开发平台, MonkeyCode, 人工智能编程",
+      "DevLoom AI 是一个智能代码生成平台，通过AI驱动的编程助手、自动化工作流和智能开发工具，帮助开发者更快速地构建应用程序。",
+    keywords: "AI代码生成, 智能编程, 开发者工具, 自动化编程, 代码助手, AI开发平台, DevLoom, 人工智能编程",
   });
 
   assert.deepEqual((en as MetaResources).meta?.default, {
-    title: "MonkeyCode AI Platform",
+    title: "DevLoom AI Platform",
     description:
-      "MonkeyCode AI is an intelligent code generation platform that helps developers build applications faster with AI-powered coding assistants, automated workflows, and smart development tools.",
-    keywords: "AI code generation, intelligent programming, developer tools, automated programming, code assistant, AI development platform, MonkeyCode, artificial intelligence programming",
+      "DevLoom AI is an intelligent code generation platform that helps developers build applications faster with AI-powered coding assistants, automated workflows, and smart development tools.",
+    keywords: "AI code generation, intelligent programming, developer tools, automated programming, code assistant, AI development platform, DevLoom, artificial intelligence programming",
   });
 });
 
@@ -103,9 +103,9 @@ test("patchDocumentMeta 根据当前语言翻译更新全局 title 和 meta", as
   const { patchDocumentMeta } = await loadDocumentMetaModule();
   const { document, metas } = createFakeDocument();
   const translations: Record<string, string> = {
-    "meta.default.title": "MonkeyCode Intelligent Development Platform",
-    "meta.default.description": "Sign in to MonkeyCode",
-    "meta.default.keywords": "AI code generation, MonkeyCode",
+    "meta.default.title": "DevLoom Intelligent Development Platform",
+    "meta.default.description": "Sign in to DevLoom",
+    "meta.default.keywords": "AI code generation, DevLoom",
   };
 
   patchDocumentMeta((key) => translations[key] ?? key, document);

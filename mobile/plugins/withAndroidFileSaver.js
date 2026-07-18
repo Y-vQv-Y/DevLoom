@@ -152,7 +152,7 @@ function patchMainApplication(projectRoot, packageName) {
 }
 
 module.exports = function withAndroidFileSaver(config) {
-  const packageName = config.android?.package || 'com.chaitin.baizhi.monkeycode';
+  const packageName = config.android?.package || 'io.github.yvqvy.devloom';
   return withDangerousMod(config, ['android', (mod) => {
     const base = path.join(mod.modRequest.projectRoot, 'android', 'app', 'src', 'main', 'java', ...packageName.split('.'));
     writeFileIfChanged(path.join(base, 'FileSaverModule.kt'), moduleSource(packageName));

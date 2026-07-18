@@ -4,20 +4,21 @@ import Icon from "@/components/common/Icon"
 import { IconAssembly, IconBrandChrome, IconBrandPython, IconBug, IconDeviceGamepad2, IconFileText, IconHelpHexagon, IconPalette, IconPuzzle, IconShieldChevron, IconTerminal2, IconTestPipe } from "@tabler/icons-react"
 import Cap from "@cap.js/widget"
 import { HoverCardContent } from "@/components/ui/hover-card"
-import { ConstsGitPlatform, ConstsHostStatus, ConstsInterfaceType, ConstsOwnerType, ConstsProjectIssueStatus, GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionType, GithubComChaitinMonkeyCodeBackendPkgTaskflowVirtualMachineStatus as TaskflowVirtualMachineStatus, type DomainGitIdentity, type DomainHost, type DomainImage, type DomainModel, type DomainOwner, type DomainProjectTask, type DomainProviderModelListItem, type DomainSubscriptionResp, type DomainUser, type DomainVirtualMachine, type GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesCondition } from "@/api/Api"
+import { ConstsGitPlatform, ConstsHostStatus, ConstsInterfaceType, ConstsOwnerType, ConstsProjectIssueStatus, DevLoomEntTypesConditionType, GithubComYVQvYDevLoomBackendPkgTaskflowVirtualMachineStatus as TaskflowVirtualMachineStatus, type DomainGitIdentity, type DomainHost, type DomainImage, type DomainModel, type DomainOwner, type DomainProjectTask, type DomainProviderModelListItem, type DomainSubscriptionResp, type DomainUser, type DomainVirtualMachine, type DevLoomEntTypesCondition } from "@/api/Api"
 import { apiRequest } from "./requestUtils"
 import { remark } from "remark"
 import strip from "strip-markdown"
 import i18n from "@/i18n"
+import { COMMERCIAL_BILLING_ENABLED } from "@/config/features"
 
 function commonText(key: string, options?: Record<string, unknown>): string {
   return String(i18n.t(key, options))
 }
 
 export function getGithubAppInstallUrl(isGlobalRegion: boolean): string {
-  return isGlobalRegion
-    ? "https://github.com/apps/monkeycode-global/installations/new"
-    : "https://github.com/apps/monkeycode-ai/installations/new"
+  const defaultUrl = import.meta.env.VITE_GITHUB_APP_INSTALL_URL?.trim() || ""
+  const globalUrl = import.meta.env.VITE_GLOBAL_GITHUB_APP_INSTALL_URL?.trim() || ""
+  return isGlobalRegion ? globalUrl || defaultUrl : defaultUrl
 }
 
 export function getHostStatusBadge(status?: string) {
@@ -142,15 +143,15 @@ export function getModelDisplayName(modelName?: string | null): string {
   }
 
   const builtinModelName = getBuiltinModelName(modelName);
-  if (builtinModelName === 'monkeycode-basic') {
+  if (builtinModelName === 'devloom-basic') {
     return String(i18n.t("commonUtils.model.basic"));
   }
 
-  if (builtinModelName === 'monkeycode-pro') {
+  if (builtinModelName === 'devloom-pro') {
     return commonText("commonUtils.model.pro");
   }
 
-  if (builtinModelName === 'monkeycode-ultra') {
+  if (builtinModelName === 'devloom-ultra') {
     return commonText("commonUtils.model.ultra");
   }
 
@@ -158,7 +159,7 @@ export function getModelDisplayName(modelName?: string | null): string {
 }
 
 export function stripBuiltinPublicModelPackagePrefix(modelName?: string | null): string {
-  return modelName?.trim().replace(/^monkeycode-[^/]+\//, '') || '';
+  return modelName?.trim().replace(/^devloom-[^/]+\//, '') || '';
 }
 
 export function getModelDisplayNameForModel(model?: Pick<DomainModel, 'model' | 'remark'> | null): string {
@@ -170,22 +171,22 @@ export function getModelDisplayNameForModel(model?: Pick<DomainModel, 'model' | 
   return getModelDisplayName(model?.model);
 }
 
-export function getBuiltinModelName(modelName?: string | null): "monkeycode-basic" | "monkeycode-pro" | "monkeycode-ultra" | undefined {
+export function getBuiltinModelName(modelName?: string | null): "devloom-basic" | "devloom-pro" | "devloom-ultra" | undefined {
   const normalizedModelName = modelName?.trim().toLowerCase();
   if (!normalizedModelName) {
     return undefined;
   }
 
-  if (normalizedModelName.startsWith('monkeycode-basic')) {
-    return 'monkeycode-basic';
+  if (normalizedModelName.startsWith('devloom-basic')) {
+    return 'devloom-basic';
   }
 
-  if (normalizedModelName.startsWith('monkeycode-pro')) {
-    return 'monkeycode-pro';
+  if (normalizedModelName.startsWith('devloom-pro')) {
+    return 'devloom-pro';
   }
 
-  if (normalizedModelName.startsWith('monkeycode-ultra')) {
-    return 'monkeycode-ultra';
+  if (normalizedModelName.startsWith('devloom-ultra')) {
+    return 'devloom-ultra';
   }
 
   return undefined;
@@ -220,7 +221,7 @@ export const modelPricingList: readonly ModelPricingItem[] = [
   { model: "qwen3.6-plus", credits: 300, score: 751, tags: ["Long context"] },
 ]
 
-export const TASK_PROMPT_PLACEHOLDER = "Ask MonkeyCode what to do. For example: build a mini game, implement a feature, analyze data, research a topic, or draft a paper."
+export const TASK_PROMPT_PLACEHOLDER = "Ask DevLoom what to do. For example: build a mini game, implement a feature, analyze data, research a topic, or draft a paper."
 
 export function getTaskPromptPlaceholder(): string {
   return commonText("commonUtils.taskPromptPlaceholder")
@@ -566,12 +567,16 @@ export function canUseModelBySubscription(model?: DomainModel, subscription?: Do
     return false
   }
 
+  if (!COMMERCIAL_BILLING_ENABLED) {
+    return true
+  }
+
   const builtinModelName = getBuiltinModelName(model.model)
-  if (builtinModelName === "monkeycode-pro") {
+  if (builtinModelName === "devloom-pro") {
     return subscription?.plan === "pro" || subscription?.plan === "flagship" || subscription?.plan === "ultra"
   }
 
-  if (builtinModelName === "monkeycode-ultra") {
+  if (builtinModelName === "devloom-ultra") {
     return subscription?.plan === "flagship" || subscription?.plan === "ultra"
   }
 
@@ -579,7 +584,10 @@ export function canUseModelBySubscription(model?: DomainModel, subscription?: Do
 }
 
 export function hasProSubscription(subscription?: DomainSubscriptionResp | null): boolean {
-  return subscription?.plan === "pro" || subscription?.plan === "flagship" || subscription?.plan === "ultra"
+  return !COMMERCIAL_BILLING_ENABLED
+    || subscription?.plan === "pro"
+    || subscription?.plan === "flagship"
+    || subscription?.plan === "ultra"
 }
 
 export function getSubscriptionPlanLabel(plan?: string | null): string {
@@ -630,7 +638,7 @@ export function getHostBadges(host?: DomainHost): React.ReactNode {
   </>
 }
 
-export function getLastCondition(vm: DomainVirtualMachine | undefined): GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesCondition | undefined {
+export function getLastCondition(vm: DomainVirtualMachine | undefined): DevLoomEntTypesCondition | undefined {
   if (!vm) {
     return undefined
   }
@@ -648,28 +656,28 @@ export function getVmMessage(vm: DomainVirtualMachine | undefined): string {
   return lastCondition?.message || ''
 }
 
-export function getConditionTypeText(conditions: GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesCondition[] | undefined): string {
+export function getConditionTypeText(conditions: DevLoomEntTypesCondition[] | undefined): string {
   if (!conditions) {
     return commonText("commonUtils.conditionStatus.unknown")
   }
 
   const lastCondition = conditions?.[conditions.length - 1]
   switch (lastCondition?.type) {
-    case GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionType.ConditionTypeScheduled:
+    case DevLoomEntTypesConditionType.ConditionTypeScheduled:
       return commonText("commonUtils.conditionStatus.scheduled")
-    case GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionType.ConditionTypeImagePulled:
+    case DevLoomEntTypesConditionType.ConditionTypeImagePulled:
       return commonText("commonUtils.conditionStatus.imagePulled")
-    case GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionType.ConditionTypeProjectCloned:
+    case DevLoomEntTypesConditionType.ConditionTypeProjectCloned:
       return commonText("commonUtils.conditionStatus.projectCloned")
-    case GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionType.ConditionTypeImageBuilt:
+    case DevLoomEntTypesConditionType.ConditionTypeImageBuilt:
       return commonText("commonUtils.conditionStatus.imageBuilt")
-    case GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionType.ConditionTypeContainerCreated:
+    case DevLoomEntTypesConditionType.ConditionTypeContainerCreated:
       return commonText("commonUtils.conditionStatus.containerCreated")
-    case GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionType.ConditionTypeContainerStarted:
+    case DevLoomEntTypesConditionType.ConditionTypeContainerStarted:
       return commonText("commonUtils.conditionStatus.containerStarted")
-    case GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionType.ConditionTypeReady:
+    case DevLoomEntTypesConditionType.ConditionTypeReady:
       return commonText("commonUtils.conditionStatus.ready")
-    case GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionType.ConditionTypeFailed:
+    case DevLoomEntTypesConditionType.ConditionTypeFailed:
       return commonText("commonUtils.conditionStatus.failed")
     default:
       return commonText("commonUtils.conditionStatus.unknown")
@@ -819,10 +827,10 @@ export function getFileExtension(filename: string): string {
 
 export function selectPreferredTaskModel(models: DomainModel[], subscription?: DomainSubscriptionResp | null): string {
   const planPreferredModel = subscription?.plan === "pro"
-    ? "monkeycode-pro"
+    ? "devloom-pro"
     : subscription?.plan === "flagship" || subscription?.plan === "ultra"
-      ? "monkeycode-ultra"
-      : "monkeycode-basic"
+      ? "devloom-ultra"
+      : "devloom-basic"
   const planModel = models
     .filter((model) => (
       model.id

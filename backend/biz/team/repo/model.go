@@ -9,16 +9,16 @@ import (
 	"github.com/google/uuid"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/db/model"
-	"github.com/chaitin/MonkeyCode/backend/db/team"
-	"github.com/chaitin/MonkeyCode/backend/db/teamgroup"
-	"github.com/chaitin/MonkeyCode/backend/db/teamgroupmodel"
-	"github.com/chaitin/MonkeyCode/backend/db/teammodel"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/errcode"
-	"github.com/chaitin/MonkeyCode/backend/pkg/cvt"
-	"github.com/chaitin/MonkeyCode/backend/pkg/entx"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/model"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/team"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamgroup"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamgroupmodel"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teammodel"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/errcode"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/cvt"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/entx"
 )
 
 type teamModelRepo struct {

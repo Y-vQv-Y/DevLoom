@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"github.com/chaitin/MonkeyCode/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
 	// required by schema hooks.
-	_ "github.com/chaitin/MonkeyCode/backend/db/runtime"
+	_ "github.com/Y-vQv-Y/DevLoom/backend/db/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/chaitin/MonkeyCode/backend/db/migrate"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/migrate"
 )
 
 type (

@@ -13,20 +13,20 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/config"
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/db/notifychannel"
-	"github.com/chaitin/MonkeyCode/backend/db/user"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/errcode"
-	"github.com/chaitin/MonkeyCode/backend/pkg/kbqa"
-	"github.com/chaitin/MonkeyCode/backend/pkg/msgpush"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/notifychannel"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/user"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/errcode"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/kbqa"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/msgpush"
 )
 
 const (
 	// wechatMPScenePrefix 是二维码 scene 的前缀，用于网关按前缀路由到对应后端
-	wechatMPScenePrefix     = "mcai:"
+	wechatMPScenePrefix     = "devloom:"
 	wechatMPBindScenePrefix = "wechat_mp_bind:"
 	wechatMPBindSceneTTL    = 5 * time.Minute
 )
@@ -112,7 +112,7 @@ func (u *WechatMPUsecaseImpl) Unbind(ctx context.Context, userID uuid.UUID) erro
 }
 
 // HandleBindEvent 处理绑定事件（subscribe 带 scene 或 SCAN 事件）
-// scene 格式为 "mcai:{uuid}"，由 ExtractScene 从 EventKey 中提取
+// scene 格式为 "devloom:{uuid}"，由 ExtractScene 从 EventKey 中提取
 func (u *WechatMPUsecaseImpl) HandleBindEvent(ctx context.Context, scene, mpOpenID string) (string, error) {
 	if scene == "" {
 		return "", nil
@@ -232,7 +232,7 @@ func (u *WechatMPUsecaseImpl) HandleBindEvent(ctx context.Context, scene, mpOpen
 			ToUser: mpOpenID,
 			Data: map[string]msgpush.TemplateMessageData{
 				"thing2": {Value: "绑定成功"},
-				"thing5": {Value: "您已成功绑定 MonkeyCode 通知，后续将收到任务进度提醒。"},
+				"thing5": {Value: "您已成功绑定 DevLoom 通知，后续将收到任务进度提醒。"},
 				"time3":  {Value: time.Now().Format("2006-01-02 15:04:05")},
 			},
 		}
@@ -241,7 +241,7 @@ func (u *WechatMPUsecaseImpl) HandleBindEvent(ctx context.Context, scene, mpOpen
 		}
 	}
 
-	return fmt.Sprintf("已绑定 MonkeyCode 账号 “%s”，你将在这里收到任务执行通知", userName), nil
+	return fmt.Sprintf("已绑定 DevLoom 账号 “%s”，你将在这里收到任务执行通知", userName), nil
 }
 
 // HandleUnsubscribe 处理取消关注事件
@@ -352,7 +352,7 @@ func (u *WechatMPUsecaseImpl) HandleTextMessage(ctx context.Context, msgID int64
 				logger.ErrorContext(bg, "wechat mp qa: push answer via custom message failed", "error", err)
 			}
 		}()
-		return "正在为你查询 MonkeyCode 知识库，请稍候，马上回复你 🐒", nil
+		return "正在为你查询 DevLoom 知识库，请稍候，马上回复你 🐒", nil
 	}
 }
 
@@ -377,8 +377,8 @@ func truncateRunes(s string, max int) string {
 }
 
 // ExtractScene 从 EventKey 中提取 scene 值
-// subscribe 事件的 EventKey 格式: qrscene_mcai:{uuid}
-// SCAN 事件的 EventKey 格式: mcai:{uuid}
+// subscribe 事件的 EventKey 格式: qrscene_devloom:{uuid}
+// SCAN 事件的 EventKey 格式: devloom:{uuid}
 func ExtractScene(eventKey string, isSubscribe bool) string {
 	if isSubscribe {
 		return strings.TrimPrefix(eventKey, "qrscene_")

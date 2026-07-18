@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/chaitin/MonkeyCode/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
 )
 
 const Path = "/api/v1/assets"

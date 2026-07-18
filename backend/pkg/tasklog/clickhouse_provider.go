@@ -9,7 +9,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/chaitin/MonkeyCode/backend/pkg/clickhouse"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/clickhouse"
 )
 
 type ClickHouseProvider struct {

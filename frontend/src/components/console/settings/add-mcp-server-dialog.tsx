@@ -3,9 +3,9 @@ import { pinyin } from "pinyin-pro"
 import { toast } from "sonner"
 
 import type {
-  GithubComChaitinMonkeyCodeBackendDomainCreateUserMCPUpstreamReq as DomainCreateUserMCPUpstreamReq,
-  GithubComChaitinMonkeyCodeBackendDomainMCPHeader as DomainMCPHeader,
-  GithubComChaitinMonkeyCodeBackendDomainMCPUpstream as DomainMCPUpstream,
+  GithubComYVQvYDevLoomBackendDomainCreateUserMCPUpstreamReq as DomainCreateUserMCPUpstreamReq,
+  GithubComYVQvYDevLoomBackendDomainMCPHeader as DomainMCPHeader,
+  GithubComYVQvYDevLoomBackendDomainMCPUpstream as DomainMCPUpstream,
 } from "@/api/Api"
 import { Button } from "@/components/ui/button"
 import {

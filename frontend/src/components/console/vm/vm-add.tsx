@@ -268,7 +268,7 @@ export default function VmAddDialog({
                   <SelectContent>
                     <SelectItem value={"public_host"}>
                       <div className="flex items-center gap-2">
-                        <span>MonkeyCode</span>
+                        <span>DevLoom</span>
                         <Badge variant="outline">{t("consoleSettings.vms.add.platformBuiltIn")}</Badge>
                       </div>
                     </SelectItem>
@@ -302,7 +302,7 @@ export default function VmAddDialog({
             <Field className="col-span-2">
               <FieldLabel>{t("consoleSettings.vms.add.labels.repoUrl")}</FieldLabel>
               <FieldContent>
-                <Input value={repoUrl} onChange={(e) => setRepoUrl(e.target.value)} placeholder="https://github.com/chaitin/monkeycode" />
+                <Input value={repoUrl} onChange={(e) => setRepoUrl(e.target.value)} placeholder="https://github.com/Y-vQv-Y/DevLoom" />
               </FieldContent>
             </Field>
             <Field>

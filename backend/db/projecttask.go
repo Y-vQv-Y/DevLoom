@@ -9,14 +9,14 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/db/gitidentity"
-	"github.com/chaitin/MonkeyCode/backend/db/image"
-	"github.com/chaitin/MonkeyCode/backend/db/model"
-	"github.com/chaitin/MonkeyCode/backend/db/project"
-	"github.com/chaitin/MonkeyCode/backend/db/projectissue"
-	"github.com/chaitin/MonkeyCode/backend/db/projecttask"
-	"github.com/chaitin/MonkeyCode/backend/db/task"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/gitidentity"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/image"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/model"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/project"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/projectissue"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/projecttask"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/task"
 	"github.com/google/uuid"
 )
 

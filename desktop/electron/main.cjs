@@ -3,14 +3,18 @@ const fs = require("fs")
 const path = require("path")
 
 const isDev = !app.isPackaged
-const DEFAULT_PROD_URL = "https://monkeycode-ai.com"
+const DEFAULT_PROD_URL = "http://127.0.0.1:8888"
 const ERR_ABORTED = -3
-/** 桌面端启动路径（相对站点根），可用 MONKEYCODE_DESKTOP_START_PATH 覆盖 */
-const START_PATH = (process.env.MONKEYCODE_DESKTOP_START_PATH || "/console/").replace(/\/$/, "") || "/console"
+/** 桌面端启动路径（相对站点根），可用 DEVLOOM_DESKTOP_START_PATH 覆盖 */
+const START_PATH = (process.env.DEVLOOM_DESKTOP_START_PATH || "/console/").replace(/\/$/, "") || "/console"
 
 function desktopEntryUrl(base) {
   const href = (base || "").trim() || DEFAULT_PROD_URL
-  return new URL(`${START_PATH.startsWith("/") ? START_PATH : `/${START_PATH}`}`, href).href
+  const parsed = new URL(href)
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    throw new Error("DEVLOOM_DESKTOP_URL must use http:// or https://")
+  }
+  return new URL(`${START_PATH.startsWith("/") ? START_PATH : `/${START_PATH}`}`, parsed).href
 }
 
 /** 开发 / 源码运行：前端构建产物在仓库 frontend/dist；安装包内为 web-dist */
@@ -73,13 +77,18 @@ function createWindow() {
     if (!win.isDestroyed() && !win.isVisible()) win.show()
     if (isDev) return
     dialog.showErrorBox(
-      "MonkeyCode",
-      `页面加载失败（${code}）\n${desc}\n\n${url}\n\n请检查网络或代理；也可设置环境变量 MONKEYCODE_DESKTOP_URL 指向可访问的地址。`
+      "DevLoom",
+      `页面加载失败（${code}）\n${desc}\n\n${url}\n\n请检查网络或代理；也可设置环境变量 DEVLOOM_DESKTOP_URL 指向可访问的地址。`
     )
   })
 
   win.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url)
+    try {
+      const parsed = new URL(url)
+      if (parsed.protocol === "http:" || parsed.protocol === "https:") shell.openExternal(url)
+    } catch {
+      // Ignore malformed or unsupported external URLs.
+    }
     return { action: "deny" }
   })
 
@@ -87,19 +96,19 @@ function createWindow() {
     const devBase = process.env.VITE_DEV_SERVER_URL || "http://localhost:11180"
     win.loadURL(desktopEntryUrl(devBase))
     win.webContents.openDevTools({ mode: "detach" })
-  } else if (process.env.MONKEYCODE_LOAD_LOCAL_DIST === "1") {
+  } else if (process.env.DEVLOOM_LOAD_LOCAL_DIST === "1") {
     const indexHtml = localDistIndexHtml()
     if (!fs.existsSync(indexHtml)) {
       dialog.showErrorBox(
-        "MonkeyCode",
-        "未找到本地前端构建。请先于仓库根执行：cd desktop && pnpm electron:build:dist（或先 pnpm electron:sync-web 再打安装包），或不要使用 MONKEYCODE_LOAD_LOCAL_DIST。"
+        "DevLoom",
+        "未找到本地前端构建。请先于仓库根执行：cd desktop && pnpm electron:build:dist（或先 pnpm electron:sync-web 再打安装包），或不要使用 DEVLOOM_LOAD_LOCAL_DIST。"
       )
       app.quit()
       return
     }
     win.loadFile(indexHtml)
   } else {
-    const base = process.env.MONKEYCODE_DESKTOP_URL || DEFAULT_PROD_URL
+    const base = process.env.DEVLOOM_DESKTOP_URL || DEFAULT_PROD_URL
     win.loadURL(desktopEntryUrl(base))
   }
 }

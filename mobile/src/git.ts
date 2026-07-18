@@ -40,11 +40,9 @@ export function gitPlatformLabel(platform?: string): string {
 export const GITLAB_DEFAULT_BASE = 'https://gitlab.com';
 
 /**
- * GitHub App 安装地址：生产环境用 monkeycode-ai，其它环境用开发 App（对齐 Web getGithubAppInstallUrl）。
+ * GitHub App 安装地址：生产环境用 devloom，其它环境用开发 App（对齐 Web getGithubAppInstallUrl）。
  * 安装完成后 GitHub 会回跳后端 setup 回调，再重定向回站点，WebView 据此判定完成。
  */
 export function githubAppInstallUrl(): string {
-  return getBaseUrl() === 'https://monkeycode-ai.com'
-    ? 'https://github.com/apps/monkeycode-ai/installations/new'
-    : 'https://github.com/apps/mcai-dev-nb/installations/new';
+  return 'https://github.com/Y-vQv-Y/DevLoom/issues';
 }

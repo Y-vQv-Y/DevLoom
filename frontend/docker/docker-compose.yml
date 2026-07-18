@@ -2,14 +2,14 @@ version: '3.8'
 
 services:
   frontend:
-    image: chaitin-registry.cn-hangzhou.cr.aliyuncs.com/monkeycode/frontend:latest
-    container_name: saas-web-frontend
+    image: ghcr.io/y-vqv-y/devloom-frontend:latest
+    container_name: devloom-frontend
     ports:
       - "80:80"
     restart: unless-stopped
     networks:
-      - saas-network
+      - devloom-network
 
 networks:
-  saas-network:
+  devloom-network:
     driver: bridge

@@ -4,5 +4,6 @@
   },
   "win": {
     "signAndEditExecutable": true
-  }
+  },
+  "files": ["web-dist/**/*", "electron/**/*", "package.json"]
 }

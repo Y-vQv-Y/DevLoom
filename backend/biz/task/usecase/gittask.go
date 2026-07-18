@@ -11,13 +11,13 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/config"
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/pkg/git/giturl"
-	"github.com/chaitin/MonkeyCode/backend/pkg/lifecycle"
-	"github.com/chaitin/MonkeyCode/backend/pkg/taskflow"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/git/giturl"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/lifecycle"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/taskflow"
 )
 
 // GitTaskUsecase GitTask 业务逻辑实现
@@ -46,8 +46,8 @@ func NewGitTaskUsecase(i *do.Injector) (domain.GitTaskUsecase, error) {
 
 // Create implements domain.GitTaskUsecase.
 func (g *GitTaskUsecase) Create(ctx context.Context, req domain.CreateGitTaskReq) (*domain.GitTask, error) {
-	if strings.Contains(req.Body, "> 我是 [MonkeyCode AI 编程助手]") {
-		g.logger.With("comment", req.Subject.ID).Info("ignore comment from MonkeyCode AI 编程助手")
+	if strings.Contains(req.Body, "> 我是 [DevLoom AI 编程助手]") {
+		g.logger.With("comment", req.Subject.ID).Info("ignore comment from DevLoom AI 编程助手")
 		return nil, nil
 	}
 
@@ -68,8 +68,8 @@ func (g *GitTaskUsecase) Create(ctx context.Context, req domain.CreateGitTaskReq
 			Git: taskflow.Git{
 				// Codeup 仓库 URL 必须带 .git 后缀才能 clone，做一次兜底归一化
 				URL:      giturl.NormalizeCloneURL(req.Repo.URL),
-				Username: "MonkeyCode-AI",
-				Email:    "monkeycode-ai@chaitin.com",
+				Username: "DevLoom",
+				Email:    "devloom@localhost",
 				Branch:   branch,
 				Token:    req.Git.Token,
 			},
@@ -110,7 +110,7 @@ func (g *GitTaskUsecase) Create(ctx context.Context, req domain.CreateGitTaskReq
 			ID:          t.ID,
 			VMID:        vm.ID,
 			Text:        req.Prompt,
-			CodingAgent: taskflow.CodingAgentMCAIReview,
+			CodingAgent: taskflow.CodingAgentDEVLOOMReview,
 			LLM: taskflow.LLM{
 				ApiKey:  m.APIKey,
 				BaseURL: m.BaseURL,

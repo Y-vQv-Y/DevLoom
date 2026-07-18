@@ -44,6 +44,7 @@ import { useCommonData } from "../data-provider"
 import { Spinner } from "@/components/ui/spinner"
 import { useTranslation } from "react-i18next"
 import { useAppRuntime } from "@/components/app-runtime-provider"
+import { GIT_IDENTITY_OAUTH_ENABLED } from "@/config/features"
 
 export default function Identities() {
   const { t } = useTranslation()
@@ -72,7 +73,7 @@ export default function Identities() {
   const hasGitLabIdentity = identities.some(
     (identity) => identity.platform === ConstsGitPlatform.GitPlatformGitLab
   )
-  const showPlatformConnectCards = !IS_OFFLINE_EDITION
+  const showPlatformConnectCards = GIT_IDENTITY_OAUTH_ENABLED && !IS_OFFLINE_EDITION
   const hasPlatformConnectCards =
     showPlatformConnectCards &&
     (!hasGitHubIdentity || !hasGiteeIdentity || !hasGiteaIdentity || !hasGitLabIdentity)
@@ -147,6 +148,11 @@ export default function Identities() {
   }
 
   const handleRebind = (identity: DomainGitIdentity) => {
+    if (!GIT_IDENTITY_OAUTH_ENABLED) {
+      handleEdit(identity)
+      return
+    }
+
     switch (identity.platform) {
       case ConstsGitPlatform.GitPlatformGithub:
         handleGithubBind()
@@ -378,7 +384,7 @@ export default function Identities() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {identity.is_installation_app === true && (
+              {GIT_IDENTITY_OAUTH_ENABLED && identity.is_installation_app === true && (
                 <DropdownMenuItem onClick={() => handleRebind(identity)}>
                   <IconRefresh />
                   {t("consoleSettings.identities.actions.rebind")}

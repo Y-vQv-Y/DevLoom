@@ -14,8 +14,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/chaitin/MonkeyCode/backend/biz/mcphub/repo"
-	"github.com/chaitin/MonkeyCode/backend/biz/mcphub/runtime/gateway"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/mcphub/repo"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/mcphub/runtime/gateway"
 )
 
 type HTTPClient struct {

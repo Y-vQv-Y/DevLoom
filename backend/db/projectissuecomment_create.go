@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/chaitin/MonkeyCode/backend/db/projectissue"
-	"github.com/chaitin/MonkeyCode/backend/db/projectissuecomment"
-	"github.com/chaitin/MonkeyCode/backend/db/user"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/projectissue"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/projectissuecomment"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/user"
 	"github.com/google/uuid"
 )
 

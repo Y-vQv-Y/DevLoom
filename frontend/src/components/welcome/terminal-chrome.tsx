@@ -1,22 +1,20 @@
 import { useAppRuntime } from "@/components/app-runtime-provider";
 import { cn } from "@/lib/utils";
-import { IconArrowRight, IconBrandDiscord, IconMenu2, IconPointFilled } from "@tabler/icons-react";
+import { IconArrowRight, IconMenu2, IconMessages, IconPointFilled } from "@tabler/icons-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { BRAND } from "@/config/brand";
 
-const DOCS_LINK = "https://monkeycode.docs.baizhi.cloud/";
-const GITHUB_LINK = "https://github.com/chaitin/MonkeyCode/";
-const FORUM_LINK = "https://bbs.baizhi.cloud/";
-const SHOWCASE_LINK = "https://showcase.monkeycode-ai.online/";
+const DOCS_LINK = BRAND.documentationUrl;
+const GITHUB_LINK = BRAND.repositoryUrl;
+const FORUM_LINK = BRAND.forumUrl;
+const SHOWCASE_LINK = BRAND.announcementsUrl;
 const SELF_HOSTING_PAGE_PATH = "/self-hosting";
-const CHAITIN_LINK = "https://www.chaitin.cn/";
-const BAIZHI_LINK = "https://www.baizhi.cloud/";
-const CYBERSERVAL_LINK = "https://www.cyberserval.com/";
-const SAFELINE_WAF_LINK = "https://cyberserval.tech/home";
-const DISCORD_INVITE_LINK = "https://discord.gg/2pPmuyr4pP";
+const COMMUNITY_LINK = BRAND.communityUrl;
 
 const resourceLinks = [
+  { titleKey: "welcomeShell.footer.website", href: BRAND.websiteUrl },
   { titleKey: "welcomeShell.footer.productDocs", href: DOCS_LINK },
   { titleKey: "welcomeShell.footer.forum", href: FORUM_LINK },
   { titleKey: "welcomeShell.nav.openSourceRepo", href: GITHUB_LINK },
@@ -36,9 +34,9 @@ const communityCards = [
 function LogoWordmark({ href }: { href: string }) {
   return (
     <a href={href} className="inline-flex items-center gap-3">
-      <img src="/logo-dark.png" alt="MonkeyCode" className="size-10" />
+      <img src="/logo-dark.png" alt="DevLoom" className="size-10" />
       <span className="text-[17px] font-semibold tracking-[-0.02em] text-white">
-        Monkey<span className="text-[var(--a-accent)]">Code</span>
+        Dev<span className="text-[var(--a-accent)]">Loom</span>
       </span>
     </a>
   );
@@ -228,17 +226,13 @@ export function TerminalFooter() {
   const { t } = useTranslation();
   const { serverConfig } = useAppRuntime();
   const isGlobalRegion = serverConfig?.region === "global";
-  const copyrightKey = isGlobalRegion ? "welcomeShell.footer.globalCopyright" : "welcomeShell.footer.copyright";
-  const aboutLinks = isGlobalRegion ? [
-      { titleKey: "welcomeShell.footer.cyberserval", href: CYBERSERVAL_LINK },
-      { titleKey: "welcomeShell.footer.safelineWaf", href: SAFELINE_WAF_LINK },
-      ...legalAboutLinks,
-    ]
-    : [
-      { titleKey: "welcomeShell.footer.chaitin", href: CHAITIN_LINK },
-      { titleKey: "welcomeShell.footer.baizhi", href: BAIZHI_LINK },
-      ...legalAboutLinks,
-    ];
+  const copyrightKey = "welcomeShell.footer.copyright";
+  const aboutLinks = [
+    { titleKey: "welcomeShell.footer.company", href: BRAND.companyUrl },
+    { titleKey: "welcomeShell.footer.repository", href: BRAND.repositoryUrl },
+    { titleKey: "welcomeShell.footer.consultation", href: BRAND.consultationUrl },
+    ...legalAboutLinks,
+  ];
 
   return (
     <footer id="community" className="relative z-10 mt-10 border-t border-[var(--a-line)] px-5 pb-8 pt-14 sm:px-8">
@@ -269,18 +263,18 @@ export function TerminalFooter() {
             <div className="mb-4 text-[11px] font-semibold tracking-[0.08em] text-[var(--a-fg)]"># {t("welcomeShell.footer.community")}</div>
             {isGlobalRegion ? (
               <a
-                href={DISCORD_INVITE_LINK}
+                href={COMMUNITY_LINK}
                 target="_blank"
                 rel="noreferrer"
                 className="group flex min-h-[104px] items-center gap-4 rounded-[4px] border border-[var(--a-line-2)] bg-[var(--a-panel)] p-4 transition-colors hover:border-[rgba(124,242,156,0.35)] hover:bg-[#162019]"
               >
                 <span className="flex size-12 shrink-0 items-center justify-center rounded-[4px] border border-[var(--a-line-2)] bg-[rgba(124,242,156,0.08)] text-[var(--a-accent)]">
-                  <IconBrandDiscord className="size-6" />
+                  <IconMessages className="size-6" />
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-sm font-medium text-[var(--a-fg)]">{t("welcomeShell.community.discord")}</span>
+                  <span className="block text-sm font-medium text-[var(--a-fg)]">{t("welcomeShell.community.channel")}</span>
                   <span className="mt-1 block text-xs leading-5 text-[var(--a-fg-dim)] group-hover:text-[var(--a-fg)]">
-                    {t("welcomeShell.community.discordDescription")}
+                    {t("welcomeShell.community.channelDescription")}
                   </span>
                 </span>
               </a>
@@ -299,11 +293,9 @@ export function TerminalFooter() {
 
         <div className="mt-10 flex flex-col gap-3 border-t border-dashed border-[var(--a-line-2)] pt-5 text-[11px] tracking-[0.06em] text-[var(--a-fg-mute)] sm:flex-row sm:items-center sm:justify-between">
           <span>{t(copyrightKey)}</span>
-          {!isGlobalRegion ? (
-            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer" className="transition-colors hover:text-[var(--a-fg)]">
-              {t("welcomeShell.footer.icp")}
-            </a>
-          ) : null}
+          <a href={BRAND.announcementsUrl} target="_blank" rel="noreferrer" className="transition-colors hover:text-[var(--a-fg)]">
+            {t("welcomeShell.footer.releases")}
+          </a>
         </div>
       </div>
     </footer>

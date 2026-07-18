@@ -27,7 +27,7 @@ if ((r.status ?? 1) !== 0) process.exit(r.status ?? 1)
 if (useDefaultDir) {
   const pkg = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8"))
   const ver = pkg.version || "0.0.0"
-  const zipName = `MonkeyCode-${ver}-win-x64.zip`
+  const zipName = `DevLoom-${ver}-win-x64.zip`
   const releaseDir = path.join(root, "release")
   const z = spawnSync("zip", ["-rq", zipName, "win-unpacked"], {
     stdio: "inherit",

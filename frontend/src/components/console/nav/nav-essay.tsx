@@ -3,13 +3,14 @@ import * as React from "react"
 
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { useTranslation } from "react-i18next"
+import { BRAND } from "@/config/brand"
 import {
   markPointsActivityOpened,
   POINTS_ACTIVITY_STORAGE_KEYS,
   shouldHidePointsActivity,
 } from "./points-activity-visibility"
 
-const ESSAY_ACTIVITY_URL = "https://monkeycode.docs.baizhi.cloud/node/019d8bcf-5bcc-7b38-afcf-6b9d180a0096"
+const ESSAY_ACTIVITY_URL = BRAND.announcementsUrl
 
 export default function NavEssay() {
   const { t } = useTranslation()

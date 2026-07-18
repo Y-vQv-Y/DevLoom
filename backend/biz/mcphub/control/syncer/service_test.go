@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/chaitin/MonkeyCode/backend/biz/mcphub/repo"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/mcphub/repo"
 )
 
 func TestSyncMarksUpstreamHealthy(t *testing.T) {

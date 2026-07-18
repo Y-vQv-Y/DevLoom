@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/chaitin/MonkeyCode/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
 )
 
 func TestTeamExtensionPackageHandlerReadPackageFileUsesConfiguredLimit(t *testing.T) {

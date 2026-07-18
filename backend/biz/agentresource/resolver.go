@@ -11,7 +11,7 @@ import (
 )
 
 // defaultPresignTTL is the lifetime baked into skill / plugin presigned GET
-// URLs we hand off to the codingmatrix agent. 24h is the ceiling on task
+// URLs we hand off to the devloom agent. 24h is the ceiling on task
 // VM lifetime, so any URL minted at task-create time stays usable for the
 // entire task run.
 const defaultPresignTTL = 24 * time.Hour
@@ -24,7 +24,7 @@ type ObjectStore interface {
 	GetObject(ctx context.Context, key string) (io.ReadCloser, error)
 	// PresignGet returns a presigned GET URL for the given full object key.
 	// Used by SkillRefs / PluginRefs so the dispatch path can hand the URL
-	// down to the codingmatrix agent (which fetches + unzips in-VM)
+	// down to the devloom agent (which fetches + unzips in-VM)
 	// instead of round-tripping the zip through the gRPC PushTasks call.
 	PresignGet(ctx context.Context, key string, expires time.Duration) (string, error)
 	// PutFile writes a zip artifact under {prefix}/{basename(filename)}. Used
@@ -172,7 +172,7 @@ func (r *Resolver) Plugins(ctx context.Context, userSelectedIDs []uuid.UUID) ([]
 // SkillRefs is the presigned-URL alternative to Skills. The repo query and
 // {user-selected ∪ force-delivery} union logic are identical; only the
 // per-skill payload differs: instead of downloading + unzipping in-process,
-// the resolver presigns the S3 key so the codingmatrix agent fetches the
+// the resolver presigns the S3 key so the devloom agent fetches the
 // zip itself inside the task VM.
 //
 // Per-skill presign failures are warn-logged and skipped to preserve the
@@ -209,7 +209,7 @@ func (r *Resolver) SkillRefs(ctx context.Context, userSelectedIDs []uuid.UUID) (
 }
 
 // PluginRefs mirrors SkillRefs for plugins and additionally carries the
-// plugin entry filename — the mcai-backend task dispatcher needs that to
+// plugin entry filename — the devloom-backend task dispatcher needs that to
 // patch the opencode.json `plugin` array with the right file:// URL.
 func (r *Resolver) PluginRefs(ctx context.Context, userSelectedIDs []uuid.UUID) ([]PluginRef, error) {
 	plugins, err := r.repo.ListActivePlugins(ctx, userSelectedIDs)

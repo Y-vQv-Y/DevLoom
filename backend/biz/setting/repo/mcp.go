@@ -9,18 +9,18 @@ import (
 	"github.com/google/uuid"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/config"
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/db/mcptool"
-	"github.com/chaitin/MonkeyCode/backend/db/mcpupstream"
-	"github.com/chaitin/MonkeyCode/backend/db/mcpusertoolsetting"
-	"github.com/chaitin/MonkeyCode/backend/db/predicate"
-	"github.com/chaitin/MonkeyCode/backend/db/teamgroupmcpupstream"
-	"github.com/chaitin/MonkeyCode/backend/db/teamgroupmember"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/errcode"
-	"github.com/chaitin/MonkeyCode/backend/pkg/cvt"
-	"github.com/chaitin/MonkeyCode/backend/pkg/entx"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/mcptool"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/mcpupstream"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/mcpusertoolsetting"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/predicate"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamgroupmcpupstream"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamgroupmember"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/errcode"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/cvt"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/entx"
 )
 
 type mcpRepo struct {
@@ -69,10 +69,10 @@ func (r *mcpRepo) ListUserUpstreams(ctx context.Context, uid uuid.UUID, _ domain
 	platform := &domain.MCPUpstream{
 		ID: uuid.Max,
 		User: &domain.User{
-			Name: "monkeycode-ai",
+			Name: "devloom",
 		},
-		Name:    "monkeycode-ai",
-		Slug:    "monkeycode-ai",
+		Name:    "devloom",
+		Slug:    "devloom",
 		Scope:   mcpupstream.ScopePlatform,
 		Type:    "",
 		URL:     fmt.Sprintf("%s/mcp", strings.TrimSuffix(r.cfg.Server.BaseURL, "/")),

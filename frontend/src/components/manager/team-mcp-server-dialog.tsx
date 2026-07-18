@@ -4,11 +4,11 @@ import { pinyin } from "pinyin-pro"
 import { toast } from "sonner"
 
 import type {
-  GithubComChaitinMonkeyCodeBackendDomainCreateTeamMCPUpstreamReq as DomainCreateTeamMCPUpstreamReq,
-  GithubComChaitinMonkeyCodeBackendDomainMCPHeader as DomainMCPHeader,
+  GithubComYVQvYDevLoomBackendDomainCreateTeamMCPUpstreamReq as DomainCreateTeamMCPUpstreamReq,
+  GithubComYVQvYDevLoomBackendDomainMCPHeader as DomainMCPHeader,
   DomainTeamGroup,
-  GithubComChaitinMonkeyCodeBackendDomainTeamMCPUpstream as DomainTeamMCPUpstream,
-  GithubComChaitinMonkeyCodeBackendDomainUpdateTeamMCPUpstreamReq as DomainUpdateTeamMCPUpstreamReq,
+  GithubComYVQvYDevLoomBackendDomainTeamMCPUpstream as DomainTeamMCPUpstream,
+  GithubComYVQvYDevLoomBackendDomainUpdateTeamMCPUpstreamReq as DomainUpdateTeamMCPUpstreamReq,
 } from "@/api/Api"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"

@@ -3,7 +3,7 @@ package file
 import (
 	"github.com/samber/do"
 
-	v1 "github.com/chaitin/MonkeyCode/backend/biz/file/handler/v1"
+	v1 "github.com/Y-vQv-Y/DevLoom/backend/biz/file/handler/v1"
 )
 
 // ProvideFile 注册 file 模块的服务工厂

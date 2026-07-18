@@ -17,14 +17,14 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/biz/host/repo"
-	"github.com/chaitin/MonkeyCode/backend/config"
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/db/enttest"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/pkg/delayqueue"
-	"github.com/chaitin/MonkeyCode/backend/pkg/taskflow"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/host/repo"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/enttest"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/delayqueue"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/taskflow"
 )
 
 func TestGetInstallCommandStoresTokenForTwoHours(t *testing.T) {
@@ -40,7 +40,7 @@ func TestGetInstallCommandStoresTokenForTwoHours(t *testing.T) {
 			Server: struct {
 				Addr    string `mapstructure:"addr"`
 				BaseURL string `mapstructure:"base_url"`
-			}{BaseURL: "http://monkeycode.local"},
+			}{BaseURL: "http://devloom.local"},
 		},
 		redis: rdb,
 	}
@@ -59,7 +59,7 @@ func TestGetInstallCommandStoresTokenForTwoHours(t *testing.T) {
 	}
 }
 
-func TestInstallScriptDefaultsToOnlineInstaller(t *testing.T) {
+func TestInstallScriptUsesSelfHostedOnlineInstaller(t *testing.T) {
 	t.Parallel()
 
 	mr := miniredis.RunT(t)
@@ -72,6 +72,10 @@ func TestInstallScriptDefaultsToOnlineInstaller(t *testing.T) {
 	}
 	u := &HostUsecase{
 		cfg: &config.Config{
+			Server: struct {
+				Addr    string `mapstructure:"addr"`
+				BaseURL string `mapstructure:"base_url"`
+			}{BaseURL: "https://devloom.example.com"},
 			TaskFlow: config.TaskFlow{GrpcURL: "121.41.208.82:50443"},
 		},
 		redis: rdb,
@@ -81,7 +85,7 @@ func TestInstallScriptDefaultsToOnlineInstaller(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(script, "release.baizhi.cloud/monkeycode/runner/$ARCH/installer") {
+	if !strings.Contains(script, "https://devloom.example.com/installer/{{.arch}}/installer") || !strings.Contains(script, "URL=${URL//\\{\\{.arch\\}\\}/$ARCH}") {
 		t.Fatalf("script missing online installer: %s", script)
 	}
 	if !strings.Contains(script, "--env GRPC_URL=121.41.208.82:50443") {
@@ -109,7 +113,7 @@ func TestInstallScriptUsesOfflineBundle(t *testing.T) {
 			Server: struct {
 				Addr    string `mapstructure:"addr"`
 				BaseURL string `mapstructure:"base_url"`
-			}{BaseURL: "http://monkeycode.local"},
+			}{BaseURL: "http://devloom.local"},
 			TaskFlow: config.TaskFlow{GrpcURL: "121.41.208.82:50443"},
 			StaticFiles: config.StaticFilesConfig{
 				RoutePrefix: "/static",
@@ -129,25 +133,25 @@ func TestInstallScriptUsesOfflineBundle(t *testing.T) {
 	if !strings.Contains(script, "GRPC_URL=\"121.41.208.82:50443\"") {
 		t.Fatalf("script missing grpc url: %s", script)
 	}
-	if !strings.Contains(script, "INSTALLER_URL=\"http://monkeycode.local/static/installer/{{.arch}}/installer\"") {
+	if !strings.Contains(script, "INSTALLER_URL=\"http://devloom.local/static/installer/{{.arch}}/installer\"") {
 		t.Fatalf("script missing installer url: %s", script)
 	}
-	if !strings.Contains(script, "BASE_URL=\"http://monkeycode.local\"") || !strings.Contains(script, "MCAI_BASE_URL=\"$BASE_URL\"") {
+	if !strings.Contains(script, "BASE_URL=\"http://devloom.local\"") || !strings.Contains(script, "DEVLOOM_BASE_URL=\"$BASE_URL\"") {
 		t.Fatalf("script missing base url: %s", script)
 	}
-	if !strings.Contains(script, "HOST_BUNDLE_PATH=\"/static/installer/{{.arch}}/host.tgz\"") || !strings.Contains(script, "HOST_BUNDLE_PATH=${HOST_BUNDLE_PATH//\\{\\{.arch\\}\\}/$ARCH}") || !strings.Contains(script, "MCAI_HOST_BUNDLE_PATH=\"$HOST_BUNDLE_PATH\"") {
+	if !strings.Contains(script, "HOST_BUNDLE_PATH=\"/static/installer/{{.arch}}/host.tgz\"") || !strings.Contains(script, "HOST_BUNDLE_PATH=${HOST_BUNDLE_PATH//\\{\\{.arch\\}\\}/$ARCH}") || !strings.Contains(script, "DEVLOOM_HOST_BUNDLE_PATH=\"$HOST_BUNDLE_PATH\"") {
 		t.Fatalf("script missing host bundle path: %s", script)
 	}
-	if !strings.Contains(script, "DOCKER_BUNDLE_PATH=\"/static/installer/{{.arch}}/docker.tgz\"") || !strings.Contains(script, "DOCKER_BUNDLE_PATH=${DOCKER_BUNDLE_PATH//\\{\\{.arch\\}\\}/$ARCH}") || !strings.Contains(script, "MCAI_DOCKER_BUNDLE_PATH=\"$DOCKER_BUNDLE_PATH\"") {
+	if !strings.Contains(script, "DOCKER_BUNDLE_PATH=\"/static/installer/{{.arch}}/docker.tgz\"") || !strings.Contains(script, "DOCKER_BUNDLE_PATH=${DOCKER_BUNDLE_PATH//\\{\\{.arch\\}\\}/$ARCH}") || !strings.Contains(script, "DEVLOOM_DOCKER_BUNDLE_PATH=\"$DOCKER_BUNDLE_PATH\"") {
 		t.Fatalf("script missing docker bundle path: %s", script)
 	}
-	if !strings.Contains(script, "TOKEN=\"install-token\"") || !strings.Contains(script, "MCAI_HOST_TOKEN=\"$TOKEN\"") {
+	if !strings.Contains(script, "TOKEN=\"install-token\"") || !strings.Contains(script, "DEVLOOM_HOST_TOKEN=\"$TOKEN\"") {
 		t.Fatalf("script missing host token: %s", script)
 	}
 	if strings.Contains(script, "docker load") || strings.Contains(script, "docker compose") {
 		t.Fatalf("bootstrap script should not install host directly: %s", script)
 	}
-	if strings.Contains(script, "release.baizhi.cloud") {
+	if strings.Contains(script, "release.example.com") {
 		t.Fatalf("script should not download public installer: %s", script)
 	}
 	assertInstallScriptChecksAVX(t, script)
@@ -179,7 +183,7 @@ func TestInstallScriptIncludesExtensionImagesManifestPath(t *testing.T) {
 			Server: struct {
 				Addr    string `mapstructure:"addr"`
 				BaseURL string `mapstructure:"base_url"`
-			}{BaseURL: "http://monkeycode.local"},
+			}{BaseURL: "http://devloom.local"},
 			TaskFlow: config.TaskFlow{GrpcURL: "127.0.0.1:50443"},
 			StaticFiles: config.StaticFilesConfig{
 				RoutePrefix: "/static",
@@ -203,7 +207,7 @@ func TestInstallScriptIncludesExtensionImagesManifestPath(t *testing.T) {
 	if !strings.Contains(script, "EXTENSION_IMAGES_MANIFEST_PATH=${EXTENSION_IMAGES_MANIFEST_PATH//\\{\\{.arch\\}\\}/$ARCH}") {
 		t.Fatalf("script missing extension manifest arch replacement:\n%s", script)
 	}
-	if !strings.Contains(script, "MCAI_EXTENSION_IMAGES_MANIFEST_PATH=\"$EXTENSION_IMAGES_MANIFEST_PATH\"") {
+	if !strings.Contains(script, "DEVLOOM_EXTENSION_IMAGES_MANIFEST_PATH=\"$EXTENSION_IMAGES_MANIFEST_PATH\"") {
 		t.Fatalf("script missing installer extension manifest env:\n%s", script)
 	}
 }

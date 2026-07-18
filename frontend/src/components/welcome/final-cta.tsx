@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { IconArrowRight, IconBook2, IconStack2 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { BRAND } from "@/config/brand";
 
 const FinalCTA = () => {
   const { t } = useTranslation();
@@ -27,7 +28,7 @@ const FinalCTA = () => {
               </Link>
             </Button>
             <Button size="lg" variant="secondary" className="pixel-button h-12 border-slate-950 px-6 bg-white text-slate-900 hover:bg-slate-50" asChild>
-              <a href="https://monkeycode.docs.baizhi.cloud/" target="_blank" rel="noreferrer">
+              <a href={BRAND.documentationUrl} target="_blank" rel="noreferrer">
                 <IconBook2 className="size-4" />
                 {t("welcomeHome.finalCta.actions.docs")}
               </a>

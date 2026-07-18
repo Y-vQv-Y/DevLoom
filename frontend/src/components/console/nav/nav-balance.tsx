@@ -33,6 +33,7 @@ import { IS_OFFLINE_EDITION } from "@/utils/edition";
 import { useTranslation } from "react-i18next";
 import { useAppRuntime } from "@/components/app-runtime-provider";
 import { resetMatomoUser } from "@/lib/matomo";
+import { COMMERCIAL_BILLING_ENABLED } from "@/config/features";
 
 interface NavBalanceProps {
   variant?: "sidebar" | "header";
@@ -278,12 +279,16 @@ export default function NavBalance({
 
   const initializeDialog = useCallback((section: WalletSectionId = "account") => {
     if (section === "plan") {
-      setShowSubscriptionPlanDialog(true)
+      if (COMMERCIAL_BILLING_ENABLED) {
+        setShowSubscriptionPlanDialog(true)
+      }
       return
     }
 
-    reloadWallet();
-    reloadSubscription();
+    if (COMMERCIAL_BILLING_ENABLED) {
+      reloadWallet();
+      reloadSubscription();
+    }
   }, [reloadSubscription, reloadWallet])
 
   const openDialog = useCallback((section: WalletSectionId = "account") => {
@@ -345,9 +350,13 @@ export default function NavBalance({
       </Avatar>
       <div className="grid min-w-0 flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
         <span className="truncate font-medium">{user?.name || t("navBalance.common.unknownUser")}</span>
-        {!IS_OFFLINE_EDITION && <span className="truncate text-xs">{triggerPlanLabel}</span>}
+        <span className="truncate text-xs">
+          {COMMERCIAL_BILLING_ENABLED && !IS_OFFLINE_EDITION
+            ? triggerPlanLabel
+            : t("navBalance.account.openSourceEdition")}
+        </span>
       </div>
-      {!IS_OFFLINE_EDITION && (
+      {COMMERCIAL_BILLING_ENABLED && !IS_OFFLINE_EDITION && (
         <div className="shrink-0 rounded-md bg-brand-muted px-2 py-1 text-xs font-medium text-brand tabular-nums group-data-[collapsible=icon]:hidden">
           {formatPoints(remainingPoints)}
         </div>
@@ -409,7 +418,7 @@ export default function NavBalance({
       </section>
 
       <section className="divide-y divide-border/60 border-y border-border/60">
-        {!IS_OFFLINE_EDITION && (
+        {COMMERCIAL_BILLING_ENABLED && !IS_OFFLINE_EDITION && (
           <>
             <div className="flex min-h-12 items-center justify-between gap-4 py-2">
               <div className="min-w-0">
@@ -582,7 +591,9 @@ export default function NavBalance({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <SubscriptionPlanDialog open={showSubscriptionPlanDialog} onOpenChange={setShowSubscriptionPlanDialog} />
+      {COMMERCIAL_BILLING_ENABLED && (
+        <SubscriptionPlanDialog open={showSubscriptionPlanDialog} onOpenChange={setShowSubscriptionPlanDialog} />
+      )}
       <Dialog open={showChangeNameDialog} onOpenChange={setShowChangeNameDialog}>
         <DialogContent>
           <DialogHeader>

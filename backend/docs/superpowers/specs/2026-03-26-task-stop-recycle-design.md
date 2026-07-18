@@ -35,7 +35,7 @@ VMStateSucceeded: {VMStateRecycled},
   1. 从 DB 查询 VM 完整信息（HostID、EnvironmentID 等），用于后续操作和降级入队
   2. 调用 `taskflow.VirtualMachiner().Delete()` 删除 VM
   3. 清理 4 个 delay queue 条目（sleep/notify/recycle/expire）
-  4. 清理 task 相关 Redis 键：`task:create_req:{taskID}`、`mcai:task:{taskID}:last_input`
+  4. 清理 task 相关 Redis 键：`task:create_req:{taskID}`、`devloom:task:{taskID}:last_input`
   5. DB 标记 `is_recycled = true`
   6. 清理 lifecycle Redis 键 `lifecycle:{vmID}`（最后执行，确保 is_recycled 已持久化）
 - 失败降级：步骤 2 失败时，将 VM 信息（含 HostID、EnvID）投入 `vmRecycleQueue`（runAt=now，payload 为 `*domain.VmIdleInfo`），由已有 `vmRecycleConsumer` 接管重试（最多 5 次，间隔 5s）。步骤 3-6 为清理操作，失败仅记录日志不阻塞。

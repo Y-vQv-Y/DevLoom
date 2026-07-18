@@ -11,6 +11,7 @@ import {
 import { useCommonData } from "@/components/console/data-provider"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "react-i18next"
+import { COMMERCIAL_BILLING_ENABLED } from "@/config/features"
 
 const OPEN_WALLET_DIALOG_EVENT = "open-wallet-dialog"
 
@@ -50,7 +51,9 @@ export default function NavUser({ className }: { className?: string }) {
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-medium">{user?.name || unknownUser}</span>
-            <span className="truncate text-xs">{planLabel}</span>
+            <span className="truncate text-xs">
+              {COMMERCIAL_BILLING_ENABLED ? planLabel : t("navBalance.account.openSourceEdition")}
+            </span>
           </div>
         </SidebarMenuButton>
       </SidebarMenuItem>

@@ -11,10 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/chaitin/MonkeyCode/backend/db/gitbot"
-	"github.com/chaitin/MonkeyCode/backend/db/gitbotuser"
-	"github.com/chaitin/MonkeyCode/backend/db/predicate"
-	"github.com/chaitin/MonkeyCode/backend/db/user"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/gitbot"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/gitbotuser"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/predicate"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/user"
 	"github.com/google/uuid"
 )
 

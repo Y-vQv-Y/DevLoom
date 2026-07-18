@@ -9,8 +9,9 @@ import { obtainCaptchaToken } from '@/api/captcha';
 import type { InvitationItem, Subscription, Wallet } from '@/api/types';
 import { useAuth } from '@/auth/AuthContext';
 import { Icons } from '@/components/Icons';
-import { BigTitle, Card, GlassTop, MonkeyLogo, Pill, Row, Toast } from '@/components/ui';
+import { BigTitle, Card, DevLoomLogo, GlassTop, Pill, Row, Toast } from '@/components/ui';
 import { ACCENTS, ACCENT_KEYS, spacing, useTheme, useThemePrefs, type Theme, type ThemeMode } from '@/theme';
+import { APPLE_AUTH_ENABLED, COMMERCIAL_BILLING_ENABLED } from '@/features';
 
 
 const THEME_OPTIONS: { k: ThemeMode; label: string }[] = [
@@ -55,11 +56,11 @@ function Appearance({ t }: { t: Theme }) {
   );
 }
 
-// 产品相关入口（开源、AI 编程助手 MonkeyCode）
+// 产品相关入口（开源、AI 编程助手 DevLoom）
 const ABOUT_LINKS: { icon: string; label: string; sub: string; url: string }[] = [
-  { icon: 'globe', label: '官方网站', sub: 'monkeycode-ai.com', url: 'https://monkeycode-ai.com' },
-  { icon: 'file', label: '帮助文档', sub: 'monkeycode.docs.baizhi.cloud', url: 'https://monkeycode.docs.baizhi.cloud/' },
-  { icon: 'github', label: 'GitHub 开源仓库', sub: 'chaitin/MonkeyCode', url: 'https://github.com/chaitin/MonkeyCode' },
+  { icon: 'globe', label: '项目主页', sub: 'github.com/Y-vQv-Y/DevLoom', url: 'https://github.com/Y-vQv-Y/DevLoom' },
+  { icon: 'file', label: '帮助文档', sub: 'DevLoom README', url: 'https://github.com/Y-vQv-Y/DevLoom#readme' },
+  { icon: 'github', label: 'GitHub 开源仓库', sub: 'Y-vQv-Y/DevLoom', url: 'https://github.com/Y-vQv-Y/DevLoom' },
 ];
 
 function About({ t }: { t: Theme }) {
@@ -109,11 +110,11 @@ function About({ t }: { t: Theme }) {
       <Text style={{ fontSize: 12, fontWeight: '700', color: t.tx3, letterSpacing: 0.5, marginBottom: 13 }}>关于</Text>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         <View style={[{ width: 46, height: 46, borderRadius: 13, alignItems: 'center', justifyContent: 'center', backgroundColor: t.dark ? t.bg3 : '#fff' }, t.shCard]}>
-          <MonkeyLogo size={36} />
+          <DevLoomLogo size={36} />
         </View>
         <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={{ fontSize: 16, fontWeight: '800', color: t.tx }}>MonkeyCode</Text>
-          <Text style={{ fontSize: 12.5, color: t.tx3, marginTop: 2 }}>开源 AI 编程助手 · 长亭科技</Text>
+          <Text style={{ fontSize: 16, fontWeight: '800', color: t.tx }}>DevLoom</Text>
+          <Text style={{ fontSize: 12.5, color: t.tx3, marginTop: 2 }}>开源 AI 编程助手 · DevLoom</Text>
         </View>
       </View>
       <View style={{ marginTop: 14, borderTopWidth: StyleSheet.hairlineWidth, borderColor: t.line }}>
@@ -315,7 +316,7 @@ export default function ProfileScreen() {
   const [busy, setBusy] = useState(false);
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [loadingWallet, setLoadingWallet] = useState(true);
+  const [loadingWallet, setLoadingWallet] = useState(COMMERCIAL_BILLING_ENABLED);
   const [invitees, setInvitees] = useState<InvitationItem[]>([]);
   const [inviteCount, setInviteCount] = useState(0);
   const [toast, setToast] = useState<string | null>(null);
@@ -330,6 +331,10 @@ export default function ProfileScreen() {
   useFocusEffect(
     useCallback(() => {
       let active = true;
+      if (!COMMERCIAL_BILLING_ENABLED) {
+        refreshUser().catch(() => undefined);
+        return () => { active = false; };
+      }
       Promise.allSettled([refreshUser(), getWallet(), getSubscription(), listInvitations(), getCheckinStatus()]).then(([, w, s, inv, c]) => {
         if (!active) return;
         if (w.status === 'fulfilled') setWallet(w.value);
@@ -466,7 +471,7 @@ export default function ProfileScreen() {
             <View style={[{ width: 60, height: 60, borderRadius: 18, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', backgroundColor: avatarUrl && !avatarBroken ? t.ac : t.dark ? t.bg3 : '#fff' }, t.shCard]}>
               {avatarUrl && !avatarBroken
                 ? <Image source={{ uri: avatarUrl }} onError={() => setAvatarBroken(true)} style={{ width: 60, height: 60, borderRadius: 18 }} />
-                : <MonkeyLogo size={52} />}
+                : <DevLoomLogo size={52} />}
             </View>
             <View style={{ flex: 1, minWidth: 0 }}>
               <Text numberOfLines={1} style={{ fontSize: 18, fontWeight: '800', color: t.tx }}>{name}</Text>
@@ -490,6 +495,7 @@ export default function ProfileScreen() {
             </View>
           </Card>
 
+          {COMMERCIAL_BILLING_ENABLED ? <>
           {/* 积分：余额 + 每日签到 + 邀请 */}
           <Card style={{ padding: 16 }}>
             {/* 第一行：余额 + 签到（主行动） */}
@@ -530,6 +536,7 @@ export default function ProfileScreen() {
             <Text style={{ paddingTop: 8, paddingBottom: 2, fontSize: 12, fontWeight: '700', color: t.tx3, letterSpacing: 0.5 }}>今日额度</Text>
             <QuotaBar name="免费模型" total={dailyTokenLimit} remaining={dailyTokenRemaining} t={t} />
           </Card>
+          </> : null}
 
           {/* 代码仓库与模型管理入口 */}
           <Card style={{ paddingTop: 14, paddingBottom: 2 }}>
@@ -551,13 +558,13 @@ export default function ProfileScreen() {
           </Pressable>
           {/* 注销账号：Apple 登录的配套能力（审核要求支持建号必须支持删号），
               只对 Apple 登录的会话显示；其余账号体系不在 App 内删号，后端同样拦截 */}
-          {appleSession ? (
+          {APPLE_AUTH_ENABLED && appleSession ? (
             <Pressable onPress={onDeleteAccount} disabled={busy} style={({ pressed }) => [{ alignItems: 'center', paddingVertical: 10 }, pressed && { opacity: 0.6 }]}>
               <Text style={{ color: t.tx3, fontSize: 13 }}>注销账号</Text>
             </Pressable>
           ) : null}
 
-          <Text style={{ textAlign: 'center', color: t.tx3, fontSize: 12, marginTop: 4 }}>Building with MonkeyCode</Text>
+          <Text style={{ textAlign: 'center', color: t.tx3, fontSize: 12, marginTop: 4 }}>Building with DevLoom</Text>
         </View>
       </ScrollView>
 

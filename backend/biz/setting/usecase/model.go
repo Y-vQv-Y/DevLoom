@@ -15,13 +15,13 @@ import (
 	"github.com/google/uuid"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/config"
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/pkg/cvt"
-	"github.com/chaitin/MonkeyCode/backend/pkg/llm"
-	"github.com/chaitin/MonkeyCode/backend/pkg/request"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/cvt"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/llm"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/request"
 )
 
 type modelUsecase struct {
@@ -202,7 +202,7 @@ func (u *modelUsecase) GetProviderModelList(ctx context.Context, req *domain.Get
 		consts.ModelProviderMoonshot,
 		consts.ModelProviderDeepSeek,
 		consts.ModelProviderSiliconFlow,
-		consts.ModelProviderBaiZhiCloud,
+		consts.ModelProviderCompatible,
 		consts.ModelProviderBaiLian,
 		consts.ModelProviderGoogle:
 		m, err := url.Parse(req.BaseURL)
@@ -384,7 +384,7 @@ func (u *modelUsecase) getModelsWithProxyRetry(
 
 func (u *modelUsecase) getQuery(req *domain.GetProviderModelListReq) request.Query {
 	q := make(request.Query, 0)
-	if req.Provider != consts.ModelProviderBaiZhiCloud && req.Provider != consts.ModelProviderSiliconFlow {
+	if req.Provider != consts.ModelProviderCompatible && req.Provider != consts.ModelProviderSiliconFlow {
 		return q
 	}
 	q["type"] = "text"

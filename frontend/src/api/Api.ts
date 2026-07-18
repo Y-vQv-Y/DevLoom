@@ -44,7 +44,7 @@ export enum ConstsModelProvider {
   ModelProviderDeepSeek = "DeepSeek",
   ModelProviderMoonshot = "Moonshot",
   ModelProviderAzureOpenAI = "AzureOpenAI",
-  ModelProviderBaiZhiCloud = "BaiZhiCloud",
+  ModelProviderCompatible = "Compatible",
   ModelProviderHunyuan = "Hunyuan",
   ModelProviderBaiLian = "BaiLian",
   ModelProviderVolcengine = "Volcengine",
@@ -196,7 +196,6 @@ export enum ConstsTransactionKind {
 }
 
 export enum ConstsUserPlatform {
-  UserPlatformBaizhi = "baizhi",
   UserPlatformApple = "apple",
   UserPlatformGithub = "github",
   UserPlatformGitLab = "gitlab",
@@ -712,7 +711,7 @@ export interface DomainLicenseMachineCodeResp {
   generated_at?: string;
   /** 客户部署实例 ID */
   installation_id?: string;
-  /** 产品标识，首版固定为 monkeycode-enterprise */
+  /** 外部企业扩展产品标识 */
   product?: DomainLicenseProduct;
   /** 当前私有化产品版本 */
   product_version?: string;
@@ -721,7 +720,7 @@ export interface DomainLicenseMachineCodeResp {
 }
 
 export enum DomainLicenseProduct {
-  LicenseProductMonkeyCodeEnterprise = "monkeycode-enterprise",
+  LicenseProductExternalEnterprise = "external-enterprise",
 }
 
 export enum DomainLicenseState {
@@ -1769,7 +1768,7 @@ export interface DomainVMResource {
 }
 
 export interface DomainVirtualMachine {
-  conditions?: GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesCondition[];
+  conditions?: DevLoomEntTypesCondition[];
   cores?: number;
   created_at?: number;
   environment_id?: string;
@@ -1784,7 +1783,7 @@ export interface DomainVirtualMachine {
   owner?: DomainUser;
   ports?: DomainVMPort[];
   repo?: DomainRepositoryItem;
-  status?: GithubComChaitinMonkeyCodeBackendPkgTaskflowVirtualMachineStatus;
+  status?: GithubComYVQvYDevLoomBackendPkgTaskflowVirtualMachineStatus;
   version?: string;
 }
 
@@ -1798,7 +1797,7 @@ export interface DomainWallet {
   id?: string;
 }
 
-export interface GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesCondition {
+export interface DevLoomEntTypesCondition {
   /** Timestamp when condition last changed (Unix ms) */
   last_transition_time?: number;
   /** Human-readable message */
@@ -1808,19 +1807,19 @@ export interface GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesCondition {
   /** Machine-readable reason code (CamelCase) */
   reason?: string;
   /** Condition status<br> - 0: unknown 1: in progress 2: completed 3: failed */
-  status?: GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionStatus;
+  status?: DevLoomEntTypesConditionStatus;
   /** Condition<br> - Scheduled: Task has been scheduled<br>- ImagePulled: Base image has been pulled<br>- ProjectCloned: Project repository has been cloned<br> - ImageBuilt: Agent image has been built<br> - ContainerCreated: Container has been created<br>- ContainerStarted: Container has been started<br>- Ready: Environment is ready<br>- Failed: Environment creation failed */
-  type?: GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionType;
+  type?: DevLoomEntTypesConditionType;
 }
 
-export enum GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionStatus {
+export enum DevLoomEntTypesConditionStatus {
   ConditionStatusCONDITIONSTATUSUNKNOWN = 0,
   ConditionStatusCONDITIONSTATUSINPROGRESS = 1,
   ConditionStatusCONDITIONSTATUSTRUE = 2,
   ConditionStatusCONDITIONSTATUSFALSE = 3,
 }
 
-export enum GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionType {
+export enum DevLoomEntTypesConditionType {
   ConditionTypeScheduled = "Scheduled",
   ConditionTypeImagePulled = "ImagePulled",
   ConditionTypeProjectCloned = "ProjectCloned",
@@ -1831,7 +1830,7 @@ export enum GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionType {
   ConditionTypeFailed = "Failed",
 }
 
-export interface GitInChaitinNetGoDevWebResp {
+export interface DevLoomWebResponse {
   code?: number;
   data?: any;
   message?: string;
@@ -1843,26 +1842,26 @@ export interface GithubComGoYokoWebResp {
   message?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDbCursor {
+export interface GithubComYVQvYDevLoomBackendDbCursor {
   /** 游标 */
   cursor?: string;
   /** 是否有下一页 */
   has_next_page?: boolean;
 }
 
-export enum GithubComChaitinMonkeyCodeBackendDbMcptoolScope {
+export enum GithubComYVQvYDevLoomBackendDbMcptoolScope {
   ScopeUser = "user",
   ScopePlatform = "platform",
   ScopeTeam = "team",
 }
 
-export enum GithubComChaitinMonkeyCodeBackendDbMcpupstreamScope {
+export enum GithubComYVQvYDevLoomBackendDbMcpupstreamScope {
   ScopeUser = "user",
   ScopePlatform = "platform",
   ScopeTeam = "team",
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainAddTeamSkillReq {
+export interface GithubComYVQvYDevLoomBackendDomainAddTeamSkillReq {
   /** SKILL.md 原文 */
   content: string;
   description: string;
@@ -1879,36 +1878,36 @@ export interface GithubComChaitinMonkeyCodeBackendDomainAddTeamSkillReq {
   tags?: string[];
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainBindQRCodeResp {
+export interface GithubComYVQvYDevLoomBackendDomainBindQRCodeResp {
   expire_seconds?: number;
   qrcode_url?: string;
   ticket?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainCreateTeamMCPUpstreamReq {
+export interface GithubComYVQvYDevLoomBackendDomainCreateTeamMCPUpstreamReq {
   description?: string;
   enabled?: boolean;
   group_ids?: string[];
-  headers?: GithubComChaitinMonkeyCodeBackendDomainMCPHeader[];
+  headers?: GithubComYVQvYDevLoomBackendDomainMCPHeader[];
   name: string;
   slug: string;
   url: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainCreateUserMCPUpstreamReq {
+export interface GithubComYVQvYDevLoomBackendDomainCreateUserMCPUpstreamReq {
   description?: string;
   enabled?: boolean;
-  headers?: GithubComChaitinMonkeyCodeBackendDomainMCPHeader[];
+  headers?: GithubComYVQvYDevLoomBackendDomainMCPHeader[];
   name?: string;
   slug?: string;
   url?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainIDReqGithubComGoogleUuidUUID {
+export interface GithubComYVQvYDevLoomBackendDomainIDReqGithubComGoogleUuidUUID {
   id: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainImportTeamExtensionPackageResp {
+export interface GithubComYVQvYDevLoomBackendDomainImportTeamExtensionPackageResp {
   created_images?: number;
   created_rules?: number;
   created_skills?: number;
@@ -1919,24 +1918,24 @@ export interface GithubComChaitinMonkeyCodeBackendDomainImportTeamExtensionPacka
   version?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainListTeamMCPUpstreamsResp {
-  items?: GithubComChaitinMonkeyCodeBackendDomainTeamMCPUpstream[];
+export interface GithubComYVQvYDevLoomBackendDomainListTeamMCPUpstreamsResp {
+  items?: GithubComYVQvYDevLoomBackendDomainTeamMCPUpstream[];
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainListTeamSkillsResp {
-  skills?: GithubComChaitinMonkeyCodeBackendDomainTeamSkill[];
+export interface GithubComYVQvYDevLoomBackendDomainListTeamSkillsResp {
+  skills?: GithubComYVQvYDevLoomBackendDomainTeamSkill[];
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainListUserMCPUpstreamsResp {
-  items?: GithubComChaitinMonkeyCodeBackendDomainMCPUpstream[];
+export interface GithubComYVQvYDevLoomBackendDomainListUserMCPUpstreamsResp {
+  items?: GithubComYVQvYDevLoomBackendDomainMCPUpstream[];
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainMCPHeader {
+export interface GithubComYVQvYDevLoomBackendDomainMCPHeader {
   name?: string;
   value?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainMCPTool {
+export interface GithubComYVQvYDevLoomBackendDomainMCPTool {
   created_at?: number;
   description?: string;
   enabled?: boolean;
@@ -1945,43 +1944,43 @@ export interface GithubComChaitinMonkeyCodeBackendDomainMCPTool {
   name?: string;
   namespaced_name?: string;
   price?: number;
-  scope?: GithubComChaitinMonkeyCodeBackendDbMcptoolScope;
+  scope?: GithubComYVQvYDevLoomBackendDbMcptoolScope;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainMCPUpstream {
+export interface GithubComYVQvYDevLoomBackendDomainMCPUpstream {
   created_at?: number;
   description?: string;
   enabled?: boolean;
-  headers?: GithubComChaitinMonkeyCodeBackendDomainMCPHeader[];
+  headers?: GithubComYVQvYDevLoomBackendDomainMCPHeader[];
   health_checked_at?: number;
   health_status?: string;
   id?: string;
   last_synced_at?: number;
   name?: string;
-  scope?: GithubComChaitinMonkeyCodeBackendDbMcpupstreamScope;
+  scope?: GithubComYVQvYDevLoomBackendDbMcpupstreamScope;
   slug?: string;
   sync_status?: string;
-  tools?: GithubComChaitinMonkeyCodeBackendDomainMCPTool[];
+  tools?: GithubComYVQvYDevLoomBackendDomainMCPTool[];
   type?: string;
   url?: string;
   user?: DomainUser;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainOAuthLoginResp {
+export interface GithubComYVQvYDevLoomBackendDomainOAuthLoginResp {
   auth_url?: string;
 }
 
-export enum GithubComChaitinMonkeyCodeBackendDomainProductEdition {
+export enum GithubComYVQvYDevLoomBackendDomainProductEdition {
   ProductEditionSaaS = "saas",
   ProductEditionPrivate = "private",
 }
 
-export enum GithubComChaitinMonkeyCodeBackendDomainProductRegion {
+export enum GithubComYVQvYDevLoomBackendDomainProductRegion {
   ProductRegionCN = "cn",
   ProductRegionGlobal = "global",
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainSaveTeamOIDCConfigReq {
+export interface GithubComYVQvYDevLoomBackendDomainSaveTeamOIDCConfigReq {
   allow_password_login?: boolean;
   auto_create_member?: boolean;
   client_id: string;
@@ -1993,7 +1992,7 @@ export interface GithubComChaitinMonkeyCodeBackendDomainSaveTeamOIDCConfigReq {
   scopes?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainServerConfig {
+export interface GithubComYVQvYDevLoomBackendDomainServerConfig {
   /**
    * CurrentVersion 当前服务版本。
    * @example "v1.2.3"
@@ -2016,12 +2015,12 @@ export interface GithubComChaitinMonkeyCodeBackendDomainServerConfig {
   region?: "cn" | "global";
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainSkillGroupRef {
+export interface GithubComYVQvYDevLoomBackendDomainSkillGroupRef {
   id?: string;
   name?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainSpeechStreamError {
+export interface GithubComYVQvYDevLoomBackendDomainSpeechStreamError {
   /**
    * 错误码;远端 ASR 错误码 (如豆包 45000001),本地校验错误为 0
    * @example 45000001
@@ -2044,9 +2043,9 @@ export interface GithubComChaitinMonkeyCodeBackendDomainSpeechStreamError {
   request_id?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainSpeechStreamEvent {
+export interface GithubComYVQvYDevLoomBackendDomainSpeechStreamEvent {
   /** 错误详情;仅 error 事件携带 */
-  error?: GithubComChaitinMonkeyCodeBackendDomainSpeechStreamError;
+  error?: GithubComYVQvYDevLoomBackendDomainSpeechStreamError;
   /**
    * 句子序号,从 1 开始;partial / final 携带,其余事件省略
    * @example 1
@@ -2074,7 +2073,7 @@ export interface GithubComChaitinMonkeyCodeBackendDomainSpeechStreamEvent {
   type?: "ready" | "partial" | "final" | "done" | "error";
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainSpeechStreamStartReq {
+export interface GithubComYVQvYDevLoomBackendDomainSpeechStreamStartReq {
   /**
    * 是否启用语义顺滑(过滤"嗯/啊"等口头禅、语义重复词),默认 false
    * @example false
@@ -2093,7 +2092,7 @@ export interface GithubComChaitinMonkeyCodeBackendDomainSpeechStreamStartReq {
   type: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTaskChunkEntry {
+export interface GithubComYVQvYDevLoomBackendDomainTaskChunkEntry {
   data?: number[];
   event?: string;
   kind?: string;
@@ -2103,14 +2102,14 @@ export interface GithubComChaitinMonkeyCodeBackendDomainTaskChunkEntry {
   timestamp?: number;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTaskRoundsResp {
-  chunks?: GithubComChaitinMonkeyCodeBackendDomainTaskChunkEntry[];
+export interface GithubComYVQvYDevLoomBackendDomainTaskRoundsResp {
+  chunks?: GithubComYVQvYDevLoomBackendDomainTaskChunkEntry[];
   has_more?: boolean;
   /** 下一页游标 */
   next_cursor?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTaskUserInputItem {
+export interface GithubComYVQvYDevLoomBackendDomainTaskUserInputItem {
   /** 用户输入文本，超过 500 字符截断 */
   content?: string;
   /** 与前端 message.id 对齐：user-input-{timestamp} */
@@ -2123,13 +2122,13 @@ export interface GithubComChaitinMonkeyCodeBackendDomainTaskUserInputItem {
   truncated?: boolean;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTaskUserInputsResp {
+export interface GithubComYVQvYDevLoomBackendDomainTaskUserInputsResp {
   has_more?: boolean;
-  items?: GithubComChaitinMonkeyCodeBackendDomainTaskUserInputItem[];
+  items?: GithubComYVQvYDevLoomBackendDomainTaskUserInputItem[];
   next_cursor?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamConversationItem {
+export interface GithubComYVQvYDevLoomBackendDomainTeamConversationItem {
   attachment_count?: number;
   content?: string;
   created_at?: number;
@@ -2141,19 +2140,19 @@ export interface GithubComChaitinMonkeyCodeBackendDomainTeamConversationItem {
   task_title?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamConversationListResp {
-  conversations?: GithubComChaitinMonkeyCodeBackendDomainTeamConversationItem[];
-  page?: GithubComChaitinMonkeyCodeBackendDbCursor;
+export interface GithubComYVQvYDevLoomBackendDomainTeamConversationListResp {
+  conversations?: GithubComYVQvYDevLoomBackendDomainTeamConversationItem[];
+  page?: GithubComYVQvYDevLoomBackendDbCursor;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamConversationStats {
+export interface GithubComYVQvYDevLoomBackendDomainTeamConversationStats {
   count_7d?: number;
   count_today?: number;
-  daily_created?: GithubComChaitinMonkeyCodeBackendDomainTeamDashboardTrendPoint[];
+  daily_created?: GithubComYVQvYDevLoomBackendDomainTeamDashboardTrendPoint[];
   total?: number;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamDashboardConsumptionInsight {
+export interface GithubComYVQvYDevLoomBackendDomainTeamDashboardConsumptionInsight {
   id?: string;
   llm_requests?: number;
   name?: string;
@@ -2162,13 +2161,13 @@ export interface GithubComChaitinMonkeyCodeBackendDomainTeamDashboardConsumption
   type?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamDashboardInsights {
-  active_members?: GithubComChaitinMonkeyCodeBackendDomainTeamDashboardMemberInsight[];
-  high_consumption?: GithubComChaitinMonkeyCodeBackendDomainTeamDashboardConsumptionInsight[];
-  long_running_tasks?: GithubComChaitinMonkeyCodeBackendDomainTeamDashboardTaskInsight[];
+export interface GithubComYVQvYDevLoomBackendDomainTeamDashboardInsights {
+  active_members?: GithubComYVQvYDevLoomBackendDomainTeamDashboardMemberInsight[];
+  high_consumption?: GithubComYVQvYDevLoomBackendDomainTeamDashboardConsumptionInsight[];
+  long_running_tasks?: GithubComYVQvYDevLoomBackendDomainTeamDashboardTaskInsight[];
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamDashboardMemberInsight {
+export interface GithubComYVQvYDevLoomBackendDomainTeamDashboardMemberInsight {
   email?: string;
   group_name?: string;
   last_active_at?: number;
@@ -2177,7 +2176,7 @@ export interface GithubComChaitinMonkeyCodeBackendDomainTeamDashboardMemberInsig
   user_id?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamDashboardMetrics {
+export interface GithubComYVQvYDevLoomBackendDomainTeamDashboardMetrics {
   active_members?: number;
   active_rate?: number;
   average_duration?: number;
@@ -2193,19 +2192,19 @@ export interface GithubComChaitinMonkeyCodeBackendDomainTeamDashboardMetrics {
   total_tokens?: number;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamDashboardResp {
-  conversation_stats?: GithubComChaitinMonkeyCodeBackendDomainTeamConversationStats;
+export interface GithubComYVQvYDevLoomBackendDomainTeamDashboardResp {
+  conversation_stats?: GithubComYVQvYDevLoomBackendDomainTeamConversationStats;
   end_at?: number;
-  insights?: GithubComChaitinMonkeyCodeBackendDomainTeamDashboardInsights;
-  metrics?: GithubComChaitinMonkeyCodeBackendDomainTeamDashboardMetrics;
-  project_stats?: GithubComChaitinMonkeyCodeBackendDomainTeamProjectStats;
+  insights?: GithubComYVQvYDevLoomBackendDomainTeamDashboardInsights;
+  metrics?: GithubComYVQvYDevLoomBackendDomainTeamDashboardMetrics;
+  project_stats?: GithubComYVQvYDevLoomBackendDomainTeamProjectStats;
   range?: string;
   start_at?: number;
-  task_stats?: GithubComChaitinMonkeyCodeBackendDomainTeamTaskStats;
-  trends?: GithubComChaitinMonkeyCodeBackendDomainTeamDashboardTrends;
+  task_stats?: GithubComYVQvYDevLoomBackendDomainTeamTaskStats;
+  trends?: GithubComYVQvYDevLoomBackendDomainTeamDashboardTrends;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamDashboardTaskInsight {
+export interface GithubComYVQvYDevLoomBackendDomainTeamDashboardTaskInsight {
   created_at?: number;
   creator?: string;
   duration?: number;
@@ -2215,39 +2214,39 @@ export interface GithubComChaitinMonkeyCodeBackendDomainTeamDashboardTaskInsight
   title?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamDashboardTrendPoint {
+export interface GithubComYVQvYDevLoomBackendDomainTeamDashboardTrendPoint {
   date?: string;
   value?: number;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamDashboardTrends {
-  active_members?: GithubComChaitinMonkeyCodeBackendDomainTeamDashboardTrendPoint[];
-  task_counts?: GithubComChaitinMonkeyCodeBackendDomainTeamDashboardTrendPoint[];
-  token_usage?: GithubComChaitinMonkeyCodeBackendDomainTeamDashboardTrendPoint[];
+export interface GithubComYVQvYDevLoomBackendDomainTeamDashboardTrends {
+  active_members?: GithubComYVQvYDevLoomBackendDomainTeamDashboardTrendPoint[];
+  task_counts?: GithubComYVQvYDevLoomBackendDomainTeamDashboardTrendPoint[];
+  token_usage?: GithubComYVQvYDevLoomBackendDomainTeamDashboardTrendPoint[];
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamMCPUpstream {
+export interface GithubComYVQvYDevLoomBackendDomainTeamMCPUpstream {
   created_at?: number;
   description?: string;
   enabled?: boolean;
-  groups?: GithubComChaitinMonkeyCodeBackendDomainSkillGroupRef[];
-  headers?: GithubComChaitinMonkeyCodeBackendDomainMCPHeader[];
+  groups?: GithubComYVQvYDevLoomBackendDomainSkillGroupRef[];
+  headers?: GithubComYVQvYDevLoomBackendDomainMCPHeader[];
   health_checked_at?: number;
   health_status?: string;
   id?: string;
   last_synced_at?: number;
   name?: string;
-  scope?: GithubComChaitinMonkeyCodeBackendDbMcpupstreamScope;
+  scope?: GithubComYVQvYDevLoomBackendDbMcpupstreamScope;
   slug?: string;
   sync_status?: string;
   team_id?: string;
-  tools?: GithubComChaitinMonkeyCodeBackendDomainMCPTool[];
+  tools?: GithubComYVQvYDevLoomBackendDomainMCPTool[];
   type?: string;
   url?: string;
   user?: DomainUser;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamOIDCConfig {
+export interface GithubComYVQvYDevLoomBackendDomainTeamOIDCConfig {
   allow_password_login?: boolean;
   auto_create_member?: boolean;
   client_id?: string;
@@ -2263,24 +2262,24 @@ export interface GithubComChaitinMonkeyCodeBackendDomainTeamOIDCConfig {
   team_id?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamOIDCConfigResp {
-  config?: GithubComChaitinMonkeyCodeBackendDomainTeamOIDCConfig;
+export interface GithubComYVQvYDevLoomBackendDomainTeamOIDCConfigResp {
+  config?: GithubComYVQvYDevLoomBackendDomainTeamOIDCConfig;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamOIDCPublicConfigResp {
+export interface GithubComYVQvYDevLoomBackendDomainTeamOIDCPublicConfigResp {
   display_name?: string;
   enabled?: boolean;
   login_url?: string;
   team_id?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamOIDCTestResp {
+export interface GithubComYVQvYDevLoomBackendDomainTeamOIDCTestResp {
   issuer?: string;
   message?: string;
   success?: boolean;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamProjectItem {
+export interface GithubComYVQvYDevLoomBackendDomainTeamProjectItem {
   branch?: string;
   created_at?: number;
   creator?: DomainUser;
@@ -2292,19 +2291,19 @@ export interface GithubComChaitinMonkeyCodeBackendDomainTeamProjectItem {
   updated_at?: number;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamProjectListResp {
-  page?: GithubComChaitinMonkeyCodeBackendDbCursor;
-  projects?: GithubComChaitinMonkeyCodeBackendDomainTeamProjectItem[];
+export interface GithubComYVQvYDevLoomBackendDomainTeamProjectListResp {
+  page?: GithubComYVQvYDevLoomBackendDbCursor;
+  projects?: GithubComYVQvYDevLoomBackendDomainTeamProjectItem[];
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamProjectStats {
+export interface GithubComYVQvYDevLoomBackendDomainTeamProjectStats {
   active_7d?: number;
   active_today?: number;
-  daily_created?: GithubComChaitinMonkeyCodeBackendDomainTeamDashboardTrendPoint[];
+  daily_created?: GithubComYVQvYDevLoomBackendDomainTeamDashboardTrendPoint[];
   total?: number;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamSkill {
+export interface GithubComYVQvYDevLoomBackendDomainTeamSkill {
   active_version?: string;
   categories?: string[];
   /** SKILL.md 文本,从 active version 当时入库时记录 */
@@ -2312,7 +2311,7 @@ export interface GithubComChaitinMonkeyCodeBackendDomainTeamSkill {
   created_at?: number;
   description?: string;
   enabled?: boolean;
-  groups?: GithubComChaitinMonkeyCodeBackendDomainSkillGroupRef[];
+  groups?: GithubComYVQvYDevLoomBackendDomainSkillGroupRef[];
   id?: string;
   is_force_delivery?: boolean;
   name?: string;
@@ -2324,7 +2323,7 @@ export interface GithubComChaitinMonkeyCodeBackendDomainTeamSkill {
   updated_at?: number;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamTaskItem {
+export interface GithubComYVQvYDevLoomBackendDomainTeamTaskItem {
   content?: string;
   created_at?: number;
   creator?: DomainUser;
@@ -2337,19 +2336,19 @@ export interface GithubComChaitinMonkeyCodeBackendDomainTeamTaskItem {
   title?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamTaskListResp {
-  page?: GithubComChaitinMonkeyCodeBackendDbCursor;
-  tasks?: GithubComChaitinMonkeyCodeBackendDomainTeamTaskItem[];
+export interface GithubComYVQvYDevLoomBackendDomainTeamTaskListResp {
+  page?: GithubComYVQvYDevLoomBackendDbCursor;
+  tasks?: GithubComYVQvYDevLoomBackendDomainTeamTaskItem[];
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamTaskStats {
+export interface GithubComYVQvYDevLoomBackendDomainTeamTaskStats {
   active_7d?: number;
   active_today?: number;
-  daily_created?: GithubComChaitinMonkeyCodeBackendDomainTeamDashboardTrendPoint[];
+  daily_created?: GithubComYVQvYDevLoomBackendDomainTeamDashboardTrendPoint[];
   total?: number;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainTeamTaskVMIdlePolicy {
+export interface GithubComYVQvYDevLoomBackendDomainTeamTaskVMIdlePolicy {
   effective_recycle_seconds?: number;
   effective_sleep_seconds?: number;
   recycle_enabled?: boolean;
@@ -2362,21 +2361,21 @@ export interface GithubComChaitinMonkeyCodeBackendDomainTeamTaskVMIdlePolicy {
   team_id?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainUpdateTaskReq {
+export interface GithubComYVQvYDevLoomBackendDomainUpdateTaskReq {
   title?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainUpdateTeamMCPUpstreamReq {
+export interface GithubComYVQvYDevLoomBackendDomainUpdateTeamMCPUpstreamReq {
   description?: string;
   enabled?: boolean;
   group_ids?: string[];
-  headers?: GithubComChaitinMonkeyCodeBackendDomainMCPHeader[];
+  headers?: GithubComYVQvYDevLoomBackendDomainMCPHeader[];
   name?: string;
   slug?: string;
   url?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainUpdateTeamSkillReq {
+export interface GithubComYVQvYDevLoomBackendDomainUpdateTeamSkillReq {
   content?: string;
   description?: string;
   group_ids?: string[];
@@ -2389,7 +2388,7 @@ export interface GithubComChaitinMonkeyCodeBackendDomainUpdateTeamSkillReq {
   tags?: string[];
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainUpdateTeamTaskVMIdlePolicyReq {
+export interface GithubComYVQvYDevLoomBackendDomainUpdateTeamTaskVMIdlePolicyReq {
   recycle_enabled?: boolean;
   recycle_seconds?: number;
   sleep_enabled?: boolean;
@@ -2397,40 +2396,40 @@ export interface GithubComChaitinMonkeyCodeBackendDomainUpdateTeamTaskVMIdlePoli
   task_concurrency_limit?: number;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainUpdateUserMCPToolSettingReq {
+export interface GithubComYVQvYDevLoomBackendDomainUpdateUserMCPToolSettingReq {
   enabled?: boolean;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendDomainUpdateUserMCPUpstreamReq {
+export interface GithubComYVQvYDevLoomBackendDomainUpdateUserMCPUpstreamReq {
   description?: string;
   enabled?: boolean;
-  headers?: GithubComChaitinMonkeyCodeBackendDomainMCPHeader[];
+  headers?: GithubComYVQvYDevLoomBackendDomainMCPHeader[];
   name?: string;
   slug?: string;
   url?: string;
 }
 
-export interface GithubComChaitinMonkeyCodeBackendPkgTaskflowFile {
+export interface GithubComYVQvYDevLoomBackendPkgTaskflowFile {
   accessed_at?: number;
   created_at?: number;
-  kind?: GithubComChaitinMonkeyCodeBackendPkgTaskflowFileKind;
+  kind?: GithubComYVQvYDevLoomBackendPkgTaskflowFileKind;
   name?: string;
   size?: number;
-  symlink_kind?: GithubComChaitinMonkeyCodeBackendPkgTaskflowFileKind;
+  symlink_kind?: GithubComYVQvYDevLoomBackendPkgTaskflowFileKind;
   symlink_target?: string;
   unix_mode?: number;
   updated_at?: number;
   user?: string;
 }
 
-export enum GithubComChaitinMonkeyCodeBackendPkgTaskflowFileKind {
+export enum GithubComYVQvYDevLoomBackendPkgTaskflowFileKind {
   FileKindUnknown = "unknown",
   FileKindFile = "file",
   FileKindDir = "dir",
   FileKindSymlink = "symlink",
 }
 
-export enum GithubComChaitinMonkeyCodeBackendPkgTaskflowVirtualMachineStatus {
+export enum GithubComYVQvYDevLoomBackendPkgTaskflowVirtualMachineStatus {
   VirtualMachineStatusUnknown = "unknown",
   VirtualMachineStatusPending = "pending",
   VirtualMachineStatusOnline = "online",
@@ -2675,11 +2674,11 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title MonkeyCode AI
+ * @title DevLoom AI
  * @version 1.0
  * @contact
  *
- * MonkeyCode AI
+ * DevLoom AI
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   api = {
@@ -2717,10 +2716,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1CnbAuthorizeUrlList: (params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainOAuthURLResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/cnb/authorize_url`,
         method: "GET",
@@ -2741,10 +2740,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1GiteaAuthorizeUrlList: (params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainOAuthURLResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/gitea/authorize_url`,
         method: "GET",
@@ -2765,10 +2764,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1GiteaSitesList: (params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainSitesResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/gitea/sites`,
         method: "GET",
@@ -2789,10 +2788,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1GiteeAuthorizeUrlList: (params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainOAuthURLResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/gitee/authorize_url`,
         method: "GET",
@@ -2819,10 +2818,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainOAuthURLResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/gitlab/authorize_url`,
         method: "GET",
@@ -2844,10 +2843,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1GitlabSitesList: (params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainSitesResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/gitlab/sites`,
         method: "GET",
@@ -2858,7 +2857,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 私有化部署直接上传 license.lic 文件。SaaS 环境仅用于生成 Swagger 文档，实际业务由 MonkeyCodePro 实现。
+     * @description 私有化部署直接上传 license.lic 文件。实际业务需要外部企业扩展实现。
      *
      * @tags 【License】License
      * @name V1LicenseImportCreate
@@ -2877,10 +2876,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainImportLicenseResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/license/import`,
         method: "POST",
@@ -2892,7 +2891,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 私有化部署导出 machine-code.json。SaaS 环境仅用于生成 Swagger 文档，实际业务由 MonkeyCodePro 实现。
+     * @description 私有化部署导出 machine-code.json。实际业务需要外部企业扩展实现。
      *
      * @tags 【License】License
      * @name V1LicenseMachineCodeList
@@ -2902,10 +2901,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1LicenseMachineCodeList: (params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainLicenseMachineCodeResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/license/machine-code`,
         method: "GET",
@@ -2916,7 +2915,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 私有化部署查看当前 license 状态。SaaS 环境仅用于生成 Swagger 文档，实际业务由 MonkeyCodePro 实现。
+     * @description 私有化部署查看当前 license 状态。实际业务需要外部企业扩展实现。
      *
      * @tags 【License】License
      * @name V1LicenseStatusList
@@ -2926,10 +2925,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1LicenseStatusList: (params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainLicenseStatusResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/license/status`,
         method: "GET",
@@ -2950,10 +2949,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     oauthBindUsers: (params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainOAuthURLResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/oauth/bind`,
         method: "GET",
@@ -2963,7 +2962,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 获取当前登录用户绑定的百知云平台用户信息，包括百知云账号和对应的MonkeyCode账号详情
+     * @description 获取当前登录用户绑定的外部平台账号信息
      *
      * @tags 【用户】OAuth
      * @name OauthGetBoundUsers
@@ -2973,10 +2972,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     oauthGetBoundUsers: (params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainUser;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/oauth/bind-users`,
         method: "GET",
@@ -3101,7 +3100,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<GitInChaitinNetGoDevWebResp, GitInChaitinNetGoDevWebResp>({
+      this.request<DevLoomWebResponse, DevLoomWebResponse>({
         path: `/api/v1/oauth/unbind`,
         method: "DELETE",
         query: query,
@@ -3132,10 +3131,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainListPlaygroundPostResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/playground-posts`,
         method: "GET",
@@ -3155,10 +3154,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1PlaygroundPostsDetail: (id: string, params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainPlaygroundPost;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/playground-posts/${id}`,
         method: "GET",
@@ -3236,7 +3235,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1PublicStatsList: (params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainStats;
         },
         any
@@ -3259,7 +3258,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1ServerConfigList: (params: RequestParams = {}) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainServerConfig;
+          data?: GithubComYVQvYDevLoomBackendDomainServerConfig;
         },
         GithubComGoYokoWebResp
       >({
@@ -3375,7 +3374,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamConversationListResp;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamConversationListResp;
         },
         any
       >({
@@ -3406,7 +3405,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamDashboardResp;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamDashboardResp;
         },
         GithubComGoYokoWebResp
       >({
@@ -3440,7 +3439,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainImportTeamExtensionPackageResp;
+          data?: GithubComYVQvYDevLoomBackendDomainImportTeamExtensionPackageResp;
         },
         GithubComGoYokoWebResp
       >({
@@ -3798,7 +3797,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1TeamsMcpUpstreamsList: (params: RequestParams = {}) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainListTeamMCPUpstreamsResp;
+          data?: GithubComYVQvYDevLoomBackendDomainListTeamMCPUpstreamsResp;
         },
         any
       >({
@@ -3820,12 +3819,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1TeamsMcpUpstreamsCreate: (
-      req: GithubComChaitinMonkeyCodeBackendDomainCreateTeamMCPUpstreamReq,
+      req: GithubComYVQvYDevLoomBackendDomainCreateTeamMCPUpstreamReq,
       params: RequestParams = {},
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamMCPUpstream;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamMCPUpstream;
         },
         any
       >({
@@ -3849,12 +3848,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1TeamsMcpUpstreamsUpdate: (
       upstreamId: string,
-      req: GithubComChaitinMonkeyCodeBackendDomainUpdateTeamMCPUpstreamReq,
+      req: GithubComYVQvYDevLoomBackendDomainUpdateTeamMCPUpstreamReq,
       params: RequestParams = {},
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamMCPUpstream;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamMCPUpstream;
         },
         any
       >({
@@ -4194,10 +4193,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1TeamsOauthSitesList: (params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainListTeamOAuthSitesResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/teams/oauth-sites`,
         method: "GET",
@@ -4218,10 +4217,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1TeamsOauthSitesCreate: (req: DomainAddTeamOAuthSiteReq, params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainTeamOAuthSite;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/teams/oauth-sites`,
         method: "POST",
@@ -4243,10 +4242,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1TeamsOauthSitesUpdate: (siteId: string, req: DomainUpdateTeamOAuthSiteReq, params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainTeamOAuthSite;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/teams/oauth-sites/${siteId}`,
         method: "PUT",
@@ -4267,7 +4266,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1TeamsOauthSitesDelete: (siteId: string, params: RequestParams = {}) =>
-      this.request<GitInChaitinNetGoDevWebResp, GitInChaitinNetGoDevWebResp>({
+      this.request<DevLoomWebResponse, DevLoomWebResponse>({
         path: `/api/v1/teams/oauth-sites/${siteId}`,
         method: "DELETE",
         secure: true,
@@ -4288,7 +4287,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1TeamsOidcList: (params: RequestParams = {}) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamOIDCConfigResp;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamOIDCConfigResp;
         },
         any
       >({
@@ -4310,12 +4309,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1TeamsOidcUpdate: (
-      req: GithubComChaitinMonkeyCodeBackendDomainSaveTeamOIDCConfigReq,
+      req: GithubComYVQvYDevLoomBackendDomainSaveTeamOIDCConfigReq,
       params: RequestParams = {},
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamOIDCConfigResp;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamOIDCConfigResp;
         },
         any
       >({
@@ -4338,12 +4337,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1TeamsOidcTestCreate: (
-      req: GithubComChaitinMonkeyCodeBackendDomainSaveTeamOIDCConfigReq,
+      req: GithubComYVQvYDevLoomBackendDomainSaveTeamOIDCConfigReq,
       params: RequestParams = {},
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamOIDCTestResp;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamOIDCTestResp;
         },
         any
       >({
@@ -4376,7 +4375,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamProjectListResp;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamProjectListResp;
         },
         any
       >({
@@ -4401,7 +4400,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1TeamsSkillsList: (params: RequestParams = {}) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainListTeamSkillsResp;
+          data?: GithubComYVQvYDevLoomBackendDomainListTeamSkillsResp;
         },
         GithubComGoYokoWebResp
       >({
@@ -4422,10 +4421,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/v1/teams/skills
      * @secure
      */
-    v1TeamsSkillsCreate: (req: GithubComChaitinMonkeyCodeBackendDomainAddTeamSkillReq, params: RequestParams = {}) =>
+    v1TeamsSkillsCreate: (req: GithubComYVQvYDevLoomBackendDomainAddTeamSkillReq, params: RequestParams = {}) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamSkill;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamSkill;
         },
         GithubComGoYokoWebResp
       >({
@@ -4471,7 +4470,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamSkill;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamSkill;
         },
         GithubComGoYokoWebResp
       >({
@@ -4495,12 +4494,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1TeamsSkillsUpdate: (
       skillId: string,
-      req: GithubComChaitinMonkeyCodeBackendDomainUpdateTeamSkillReq,
+      req: GithubComYVQvYDevLoomBackendDomainUpdateTeamSkillReq,
       params: RequestParams = {},
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamSkill;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamSkill;
         },
         GithubComGoYokoWebResp
       >({
@@ -4544,7 +4543,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1TeamsTaskVmIdlePolicyList: (params: RequestParams = {}) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamTaskVMIdlePolicy;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamTaskVMIdlePolicy;
         },
         any
       >({
@@ -4566,12 +4565,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1TeamsTaskVmIdlePolicyUpdate: (
-      req: GithubComChaitinMonkeyCodeBackendDomainUpdateTeamTaskVMIdlePolicyReq,
+      req: GithubComYVQvYDevLoomBackendDomainUpdateTeamTaskVMIdlePolicyReq,
       params: RequestParams = {},
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamTaskVMIdlePolicy;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamTaskVMIdlePolicy;
         },
         any
       >({
@@ -4604,7 +4603,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamTaskListResp;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamTaskListResp;
         },
         any
       >({
@@ -4874,10 +4873,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: string;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/uploader`,
         method: "POST",
@@ -4899,10 +4898,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1UploaderPresignCreate: (request: DomainPresignReq, params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainPresignResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/uploader/presign`,
         method: "POST",
@@ -4956,7 +4955,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1UsersAccountDelete: (params: RequestParams = {}) =>
-      this.request<GitInChaitinNetGoDevWebResp, any>({
+      this.request<DevLoomWebResponse, any>({
         path: `/api/v1/users/account`,
         method: "DELETE",
         secure: true,
@@ -4975,7 +4974,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1UsersAppleLoginCreate: (req: DomainAppleLoginReq, params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainUser;
         },
         any
@@ -4989,16 +4988,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 处理百智云登录回调，验证 token 并建立会话
+     * @description 处理外部身份服务登录回调，验证 token 并建立会话
      *
      * @tags 【用户】认证
-     * @name V1UsersBaizhiCallbackList
-     * @summary 百智云登录回调
-     * @request GET:/api/v1/users/baizhi/callback
+     * @name V1UsersLegacyCloudCallbackList
+     * @summary 外部身份服务登录回调
+     * @request GET:/api/v1/users/legacy-cloud/callback
      */
-    v1UsersBaizhiCallbackList: (
+    v1UsersLegacyCloudCallbackList: (
       query: {
-        /** 百智云返回的授权码 */
+        /** 外部身份服务返回的授权码 */
         code: string;
         /** 用户原本想访问的页面 */
         state?: string;
@@ -5006,7 +5005,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<any, string>({
-        path: `/api/v1/users/baizhi/callback`,
+        path: `/api/v1/users/legacy-cloud/callback`,
         method: "GET",
         query: query,
         type: ContentType.Json,
@@ -5204,7 +5203,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendPkgTaskflowFile[];
+          data?: GithubComYVQvYDevLoomBackendPkgTaskflowFile[];
         },
         any
       >({
@@ -6074,7 +6073,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainInvitationListResp;
         },
         any
@@ -6087,11 +6086,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 重定向到百智云OAuth授权页面进行登录认证
+     * @description 重定向到外部身份服务OAuth授权页面进行登录认证
      *
      * @tags 【用户】认证
      * @name V1UsersLoginList
-     * @summary 百智云OAuth登录
+     * @summary 外部身份服务OAuth登录
      * @request GET:/api/v1/users/login
      */
     v1UsersLoginList: (
@@ -6139,7 +6138,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1UsersMcpToolsUpdate: (
       id: string,
-      req: GithubComChaitinMonkeyCodeBackendDomainUpdateUserMCPToolSettingReq,
+      req: GithubComYVQvYDevLoomBackendDomainUpdateUserMCPToolSettingReq,
       params: RequestParams = {},
     ) =>
       this.request<GithubComGoYokoWebResp, GithubComGoYokoWebResp>({
@@ -6172,7 +6171,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainListUserMCPUpstreamsResp;
+          data?: GithubComYVQvYDevLoomBackendDomainListUserMCPUpstreamsResp;
         },
         GithubComGoYokoWebResp
       >({
@@ -6195,12 +6194,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1UsersMcpUpstreamsCreate: (
-      req: GithubComChaitinMonkeyCodeBackendDomainCreateUserMCPUpstreamReq,
+      req: GithubComYVQvYDevLoomBackendDomainCreateUserMCPUpstreamReq,
       params: RequestParams = {},
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainMCPUpstream;
+          data?: GithubComYVQvYDevLoomBackendDomainMCPUpstream;
         },
         GithubComGoYokoWebResp
       >({
@@ -6224,7 +6223,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1UsersMcpUpstreamsUpdate: (
       id: string,
-      req: GithubComChaitinMonkeyCodeBackendDomainUpdateUserMCPUpstreamReq,
+      req: GithubComYVQvYDevLoomBackendDomainUpdateUserMCPUpstreamReq,
       params: RequestParams = {},
     ) =>
       this.request<GithubComGoYokoWebResp, GithubComGoYokoWebResp>({
@@ -6368,10 +6367,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1UsersModelsAvailableList: (params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainAvailableModelResp[];
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/users/models/available`,
         method: "GET",
@@ -6426,7 +6425,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
           | "DeepSeek"
           | "Moonshot"
           | "AzureOpenAI"
-          | "BaiZhiCloud"
+          | "Compatible"
           | "Hunyuan"
           | "BaiLian"
           | "Volcengine"
@@ -6665,7 +6664,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainOAuthLoginResp;
+          data?: GithubComYVQvYDevLoomBackendDomainOAuthLoginResp;
         },
         GithubComGoYokoWebResp
       >({
@@ -6678,7 +6677,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 处理身份源回调并创建 MonkeyCode 登录会话
+     * @description 处理身份源回调并创建 DevLoom 登录会话
      *
      * @tags 【用户】企业团队成员认证
      * @name V1UsersOidcCallbackList
@@ -6713,7 +6712,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1UsersOidcDefaultTeamList: (params: RequestParams = {}) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamOIDCPublicConfigResp;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamOIDCPublicConfigResp;
         },
         any
       >({
@@ -6758,7 +6757,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1UsersOidcTeamsDetail: (teamId: string, params: RequestParams = {}) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTeamOIDCPublicConfigResp;
+          data?: GithubComYVQvYDevLoomBackendDomainTeamOIDCPublicConfigResp;
         },
         any
       >({
@@ -6866,7 +6865,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 百智云支付回调，验证签名后充值积分
+     * @description 外部身份服务支付回调，验证签名后充值积分
      *
      * @tags 【用户】钱包
      * @name V1UsersPayNotifyList
@@ -6874,7 +6873,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/v1/users/pay/notify
      */
     v1UsersPayNotifyList: (params: RequestParams = {}) =>
-      this.request<GitInChaitinNetGoDevWebResp, any>({
+      this.request<DevLoomWebResponse, any>({
         path: `/api/v1/users/pay/notify`,
         method: "GET",
         type: ContentType.Json,
@@ -6893,10 +6892,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1UsersPlaygroundNormalPostsCreate: (request: DomainSharePostReq, params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainSharePostResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/users/playground-normal-posts`,
         method: "POST",
@@ -6926,10 +6925,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainListUserPlaygroundPostResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/users/playground-posts`,
         method: "GET",
@@ -6951,10 +6950,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1UsersPlaygroundTaskPostsCreate: (taskId: string, request: DomainShareTaskReq, params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainShareTaskResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/users/playground-task-posts/${taskId}`,
         method: "POST",
@@ -7102,10 +7101,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1UsersProjectsAutoReviewCreate: (id: string, params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainProject;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/users/projects/${id}/auto-review`,
         method: "POST",
@@ -7125,7 +7124,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1UsersProjectsAutoReviewDelete: (id: string, params: RequestParams = {}) =>
-      this.request<GitInChaitinNetGoDevWebResp, GitInChaitinNetGoDevWebResp>({
+      this.request<DevLoomWebResponse, DevLoomWebResponse>({
         path: `/api/v1/users/projects/${id}/auto-review`,
         method: "DELETE",
         secure: true,
@@ -7520,7 +7519,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1UsersSubscriptionCreate: (req: DomainSubscribeReq, params: RequestParams = {}) =>
-      this.request<GitInChaitinNetGoDevWebResp, GitInChaitinNetGoDevWebResp>({
+      this.request<DevLoomWebResponse, DevLoomWebResponse>({
         path: `/api/v1/users/subscription`,
         method: "POST",
         body: req,
@@ -7540,7 +7539,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1UsersSubscriptionAutoRenewUpdate: (req: DomainAutoRenewReq, params: RequestParams = {}) =>
-      this.request<GitInChaitinNetGoDevWebResp, GitInChaitinNetGoDevWebResp>({
+      this.request<DevLoomWebResponse, DevLoomWebResponse>({
         path: `/api/v1/users/subscription/auto-renew`,
         method: "PUT",
         body: req,
@@ -7560,7 +7559,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1UsersSubscriptionCreditConsumptionUpdate: (req: DomainCreditConsumptionReq, params: RequestParams = {}) =>
-      this.request<GitInChaitinNetGoDevWebResp, GitInChaitinNetGoDevWebResp>({
+      this.request<DevLoomWebResponse, DevLoomWebResponse>({
         path: `/api/v1/users/subscription/credit-consumption`,
         method: "PUT",
         body: req,
@@ -7713,7 +7712,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTaskRoundsResp;
+          data?: GithubComYVQvYDevLoomBackendDomainTaskRoundsResp;
         },
         GithubComGoYokoWebResp
       >({
@@ -7753,10 +7752,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1UsersTasksSpeechToTextStreamList: (
-      start: GithubComChaitinMonkeyCodeBackendDomainSpeechStreamStartReq,
+      start: GithubComYVQvYDevLoomBackendDomainSpeechStreamStartReq,
       params: RequestParams = {},
     ) =>
-      this.request<any, GithubComChaitinMonkeyCodeBackendDomainSpeechStreamEvent | GithubComGoYokoWebResp>({
+      this.request<any, GithubComYVQvYDevLoomBackendDomainSpeechStreamEvent | GithubComGoYokoWebResp>({
         path: `/api/v1/users/tasks/speech-to-text-stream`,
         method: "GET",
         body: start,
@@ -7775,7 +7774,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1UsersTasksStopUpdate: (
-      id: GithubComChaitinMonkeyCodeBackendDomainIDReqGithubComGoogleUuidUUID,
+      id: GithubComYVQvYDevLoomBackendDomainIDReqGithubComGoogleUuidUUID,
       params: RequestParams = {},
     ) =>
       this.request<GithubComGoYokoWebResp, any>({
@@ -7838,7 +7837,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainTaskUserInputsResp;
+          data?: GithubComYVQvYDevLoomBackendDomainTaskUserInputsResp;
         },
         GithubComGoYokoWebResp
       >({
@@ -7886,7 +7885,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1UsersTasksUpdate: (
       id: string,
-      param: GithubComChaitinMonkeyCodeBackendDomainUpdateTaskReq,
+      param: GithubComYVQvYDevLoomBackendDomainUpdateTaskReq,
       params: RequestParams = {},
     ) =>
       this.request<GithubComGoYokoWebResp, GithubComGoYokoWebResp>({
@@ -7929,10 +7928,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1UsersWalletList: (params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainWallet;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/users/wallet`,
         method: "GET",
@@ -7953,10 +7952,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1UsersWalletCheckinList: (params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainCheckInResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/users/wallet/checkin`,
         method: "GET",
@@ -7976,10 +7975,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1UsersWalletCheckinCreate: (req: DomainCheckInReq, params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainCheckInResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/users/wallet/checkin`,
         method: "POST",
@@ -8000,7 +7999,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1UsersWalletExchangeCreate: (req: DomainExchangeReq, params: RequestParams = {}) =>
-      this.request<GitInChaitinNetGoDevWebResp, GitInChaitinNetGoDevWebResp>({
+      this.request<DevLoomWebResponse, DevLoomWebResponse>({
         path: `/api/v1/users/wallet/exchange`,
         method: "POST",
         body: req,
@@ -8021,10 +8020,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     v1UsersWalletRechargeCreate: (req: DomainRechargeReq, params: RequestParams = {}) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainRechargeResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/users/wallet/recharge`,
         method: "POST",
@@ -8062,10 +8061,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<
-        GitInChaitinNetGoDevWebResp & {
+        DevLoomWebResponse & {
           data?: DomainListTransactionResp;
         },
-        GitInChaitinNetGoDevWebResp
+        DevLoomWebResponse
       >({
         path: `/api/v1/users/wallet/transaction`,
         method: "GET",
@@ -8107,7 +8106,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1UsersWechatMpBindQrcodeCreate: (params: RequestParams = {}) =>
       this.request<
         GithubComGoYokoWebResp & {
-          data?: GithubComChaitinMonkeyCodeBackendDomainBindQRCodeResp;
+          data?: GithubComYVQvYDevLoomBackendDomainBindQRCodeResp;
         },
         GithubComGoYokoWebResp
       >({

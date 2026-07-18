@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia } from "@/components/ui/empty"
 import { IconCheck, IconLoader, IconX } from "@tabler/icons-react"
-import { ConstsTaskStatus, GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionType, type DomainProjectTask } from "@/api/Api"
+import { ConstsTaskStatus, DevLoomEntTypesConditionType, type DomainProjectTask } from "@/api/Api"
 import { getConditionTypeText, getLastCondition } from "@/utils/common"
 import { useTranslation } from "react-i18next"
 
@@ -12,7 +12,7 @@ interface TaskPreparingProps {
 export function useShouldShowPreparing(task: DomainProjectTask | null) {
   return useMemo(() => {
     const lastCondition = getLastCondition(task?.virtualmachine)
-    if (lastCondition?.type === GitInChaitinNetAiMonkeycodeMonkeycodeAiEntTypesConditionType.ConditionTypeFailed) {
+    if (lastCondition?.type === DevLoomEntTypesConditionType.ConditionTypeFailed) {
       return true
     }
     return task?.status === ConstsTaskStatus.TaskStatusPending

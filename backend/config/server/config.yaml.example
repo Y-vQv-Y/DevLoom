@@ -5,7 +5,7 @@ server:
   base_url: "http://localhost:8888"
 
 database:
-  master: "postgres://monkeycode:monkeycode@localhost:5432/monkeycode?sslmode=disable"
+  master: "postgres://devloom:devloom@localhost:5432/devloom?sslmode=disable"
   slave: ""
   max_open_conns: 100
   max_idle_conns: 50
@@ -79,11 +79,11 @@ wechat:
     # 单后端部署保持 false，否则用户会收到两次"绑定成功"。
     mirror_mode: false
 
-    # 文本消息自动问答（接 baizhi 知识库 chat/completions）
+    # 文本消息自动问答（接任意 OpenAI 兼容知识库 chat/completions）
     qa:
       # 总开关。false（或 base_url/api_key 缺失）时，文本消息只回固定文案，不调用知识库
       enabled: false
-      # 知识库域名，形如 https://monkeycode.docs.baizhi.cloud
+      # 知识库服务地址，例如 https://kb.example.com
       base_url: ""
       # 知识库 share token。建议用环境变量注入，不要明文写进仓库
       api_key: ""

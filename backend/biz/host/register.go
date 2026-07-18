@@ -3,9 +3,9 @@ package host
 import (
 	"github.com/samber/do"
 
-	v1 "github.com/chaitin/MonkeyCode/backend/biz/host/handler/v1"
-	"github.com/chaitin/MonkeyCode/backend/biz/host/repo"
-	"github.com/chaitin/MonkeyCode/backend/biz/host/usecase"
+	v1 "github.com/Y-vQv-Y/DevLoom/backend/biz/host/handler/v1"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/host/repo"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/host/usecase"
 )
 
 // ProvideHost 注册 host 模块的服务工厂

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react"
+import { BRAND } from "@/config/brand"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -39,8 +40,8 @@ interface AddModelProps {
   onRefresh?: () => void
 }
 
-const DEFAULT_BASE_URL = "https://model-square.app.baizhi.cloud/v1"
-const DEFAULT_PROVIDER = "BaiZhiCloud"
+const DEFAULT_BASE_URL = "https://api.openai.com/v1"
+const DEFAULT_PROVIDER = "OpenAI"
 
 export default function AddModel({
   open,
@@ -337,7 +338,7 @@ export default function AddModel({
                 asChild
                 className="h-auto p-0 text-foreground"
               >
-                <a href="https://monkeycode.docs.baizhi.cloud/" target="_blank">
+                <a href={BRAND.documentationUrl} target="_blank">
                   <CircleQuestionMark />
                   {t("managerModels.actions.howToGet")}
                 </a>

@@ -1,9 +1,9 @@
 {
-  "name": "monkeycode-ai",
+  "name": "devloom",
   "private": true,
   "version": "260323.0.5",
-  "description": "MonkeyCode Web 前端",
-  "author": "MonkeyCode",
+  "description": "DevLoom Web 前端",
+  "author": "DevLoom",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +13,7 @@
     "build:online": "tsc -b && vite build --mode online",
     "build:offline": "tsc -b && vite build --mode offline",
     "lint": "eslint .",
+    "test": "node --test --experimental-strip-types test/*.test.ts test/*.test.mjs",
     "preview": "vite preview",
     "api": "sta --path ${SWAGGER} --output src/api"
   },

@@ -10,11 +10,11 @@ import (
 	"github.com/GoYoko/web"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/biz"
-	"github.com/chaitin/MonkeyCode/backend/config"
-	"github.com/chaitin/MonkeyCode/backend/pkg"
-	"github.com/chaitin/MonkeyCode/backend/pkg/service"
-	"github.com/chaitin/MonkeyCode/backend/pkg/store"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/service"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/store"
 )
 
 func main() {
@@ -72,7 +72,7 @@ type server struct {
 	addr string
 }
 
-func (s *server) Name() string { return "MonkeyCode Service" }
+func (s *server) Name() string { return "DevLoom Service" }
 func (s *server) Start() error { return s.w.Run(s.addr) }
 func (s *server) Stop() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

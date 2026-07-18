@@ -4,7 +4,7 @@
 
 **Goal:** 将现有 TTL 过期机制替换为基于空闲检测的自动休眠（10 分钟）和回收（7 天）策略。
 
-**Architecture:** taskflow 监控 TaskStream 活动并通过 EventReport HTTP 回调上报 MonkeyCode；MonkeyCode 使用三个 Redis DelayQueue（sleep/notify/recycle）管理空闲计时器，用户活跃时刷新所有队列的 score。
+**Architecture:** taskflow 监控 TaskStream 活动并通过 EventReport HTTP 回调上报 DevLoom；DevLoom 使用三个 Redis DelayQueue（sleep/notify/recycle）管理空闲计时器，用户活跃时刷新所有队列的 score。
 
 **Tech Stack:** Go, Redis DelayQueue (ZSet), gRPC, HTTP callbacks
 
@@ -14,7 +14,7 @@
 
 ## 文件结构
 
-### MonkeyCode (`/Users/yoko/chaitin/ai/MonkeyCode/backend`)
+### DevLoom (`backend`)
 
 | 操作 | 文件 | 职责 |
 |------|------|------|
@@ -26,7 +26,7 @@
 | 修改 | `biz/host/register.go` | 更新路由注册 |
 | 修改 | `pkg/taskflow/types.go:47-69` | 新增 sleeping 状态 |
 
-### taskflow (`/Users/yoko/chaitin/ai/taskflow`)
+### taskflow (`taskflow`)
 
 | 操作 | 文件 | 职责 |
 |------|------|------|
@@ -36,7 +36,7 @@
 
 ---
 
-## Task 1: 定义数据结构与接口（MonkeyCode）
+## Task 1: 定义数据结构与接口（DevLoom）
 
 **Files:**
 - Modify: `domain/host.go`
@@ -81,7 +81,7 @@ git commit -m "feat(idle): define VmIdleInfo struct and sleeping status"
 
 ---
 
-## Task 2: 创建空闲队列基础设施（MonkeyCode）
+## Task 2: 创建空闲队列基础设施（DevLoom）
 
 **Files:**
 - Create: `pkg/delayqueue/vmidlequeue.go`
@@ -99,7 +99,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 
-	"github.com/chaitin/MonkeyCode/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
 )
 
 // VMSleepQueue 10 分钟空闲休眠队列
@@ -119,7 +119,7 @@ type VMRecycleQueue struct {
 
 func NewVMSleepQueue(rdb *redis.Client, logger *slog.Logger) *VMSleepQueue {
 	return &VMSleepQueue{NewRedisDelayQueue[*domain.VmIdleInfo](rdb, logger,
-		WithPrefix[*domain.VmIdleInfo]("mcai:vmsleep"),
+		WithPrefix[*domain.VmIdleInfo]("devloom:vmsleep"),
 		WithPollInterval[*domain.VmIdleInfo](5*time.Second),
 		WithRequeueDelay[*domain.VmIdleInfo](1*time.Minute),
 	)}
@@ -127,7 +127,7 @@ func NewVMSleepQueue(rdb *redis.Client, logger *slog.Logger) *VMSleepQueue {
 
 func NewVMNotifyQueue(rdb *redis.Client, logger *slog.Logger) *VMNotifyQueue {
 	return &VMNotifyQueue{NewRedisDelayQueue[*domain.VmIdleInfo](rdb, logger,
-		WithPrefix[*domain.VmIdleInfo]("mcai:vmnotify"),
+		WithPrefix[*domain.VmIdleInfo]("devloom:vmnotify"),
 		WithPollInterval[*domain.VmIdleInfo](30*time.Second),
 		WithRequeueDelay[*domain.VmIdleInfo](1*time.Minute),
 		WithJobTTL[*domain.VmIdleInfo](8*24*time.Hour),
@@ -136,7 +136,7 @@ func NewVMNotifyQueue(rdb *redis.Client, logger *slog.Logger) *VMNotifyQueue {
 
 func NewVMRecycleQueue(rdb *redis.Client, logger *slog.Logger) *VMRecycleQueue {
 	return &VMRecycleQueue{NewRedisDelayQueue[*domain.VmIdleInfo](rdb, logger,
-		WithPrefix[*domain.VmIdleInfo]("mcai:vmrecycle"),
+		WithPrefix[*domain.VmIdleInfo]("devloom:vmrecycle"),
 		WithPollInterval[*domain.VmIdleInfo](30*time.Second),
 		WithRequeueDelay[*domain.VmIdleInfo](1*time.Minute),
 		WithJobTTL[*domain.VmIdleInfo](8*24*time.Hour),
@@ -155,7 +155,7 @@ git commit -m "feat(idle): add idle queue factory functions"
 
 ---
 
-## Task 3: 实现 RefreshIdleTimers 和三个消费者（MonkeyCode）
+## Task 3: 实现 RefreshIdleTimers 和三个消费者（DevLoom）
 
 **Files:**
 - Modify: `biz/host/usecase/host.go`
@@ -398,7 +398,7 @@ git commit -m "feat(idle): report VM activity on TaskStream messages"
 
 ---
 
-## Task 6: MonkeyCode 接收 VMActivity 回调
+## Task 6: DevLoom 接收 VMActivity 回调
 
 **Files:**
 - Modify: `biz/host/handler/v1/internal.go`
@@ -464,7 +464,7 @@ git commit -m "feat(idle): add VMActivity callback endpoint"
 
 ---
 
-## Task 7: VM Handler 中调用 RefreshIdleTimers（MonkeyCode）
+## Task 7: VM Handler 中调用 RefreshIdleTimers（DevLoom）
 
 **Files:**
 - Modify: `biz/host/handler/v1/host.go`
@@ -504,7 +504,7 @@ git commit -m "feat(idle): refresh idle timers on VM interactions"
 
 ---
 
-## Task 8: CreateVM/DeleteVM 对接空闲队列（MonkeyCode）
+## Task 8: CreateVM/DeleteVM 对接空闲队列（DevLoom）
 
 **Files:**
 - Modify: `biz/host/usecase/host.go`
@@ -544,7 +544,7 @@ git commit -m "feat(idle): wire idle queues into CreateVM/DeleteVM"
 
 ---
 
-## Task 9: 移除旧 TTL 机制（MonkeyCode）
+## Task 9: 移除旧 TTL 机制（DevLoom）
 
 **Files:**
 - Modify: `biz/host/usecase/host.go`
@@ -585,7 +585,7 @@ git commit -m "refactor(idle): remove legacy TTL expiration mechanism"
 
 ---
 
-## Task 10: DI 注册更新（MonkeyCode）
+## Task 10: DI 注册更新（DevLoom）
 
 **Files:**
 - Modify: `pkg/register.go:101-106`

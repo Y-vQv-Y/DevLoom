@@ -1,6 +1,6 @@
 import { MAX_TASK_CONTENT_LENGTH } from "@/components/console/task/task-content-limit"
 
-// Open Design "export to MonkeyCode" handoff: od-web puts the development
+// Open Design "export to DevLoom" handoff: od-web puts the development
 // prompt into the URL fragment as `#od-task=<base64url(utf8)>`. Fragments are
 // never sent to the server, so the presigned OSS link inside the prompt stays
 // out of access logs. The tasks page decodes it and pre-fills the task input.

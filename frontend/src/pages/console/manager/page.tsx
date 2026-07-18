@@ -93,7 +93,7 @@ export default function ManagerConsolePage() {
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
                   <BreadcrumbLink href="#">
-                    MonkeyCode AI
+                    DevLoom AI
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 {breadcrumbSegments.map((segment, index) => {

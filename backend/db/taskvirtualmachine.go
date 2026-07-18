@@ -9,9 +9,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/chaitin/MonkeyCode/backend/db/task"
-	"github.com/chaitin/MonkeyCode/backend/db/taskvirtualmachine"
-	"github.com/chaitin/MonkeyCode/backend/db/virtualmachine"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/task"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/taskvirtualmachine"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/virtualmachine"
 	"github.com/google/uuid"
 )
 

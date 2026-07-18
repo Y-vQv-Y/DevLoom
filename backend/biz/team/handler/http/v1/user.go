@@ -8,12 +8,12 @@ import (
 	"github.com/google/uuid"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/config"
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/errcode"
-	"github.com/chaitin/MonkeyCode/backend/middleware"
-	"github.com/chaitin/MonkeyCode/backend/pkg/captcha"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/errcode"
+	"github.com/Y-vQv-Y/DevLoom/backend/middleware"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/captcha"
 )
 
 // TeamGroupUserHandler 团队分组用户处理器
@@ -108,7 +108,7 @@ func (h *TeamGroupUserHandler) Login(c *web.Context, req domain.TeamLoginReq) er
 	}
 
 	// 创建 session（内部生成 cookie 并设置到 response）
-	_, err = h.authMiddleware.Session.Save(c, consts.MonkeyCodeAITeamSession, user.ID, user)
+	_, err = h.authMiddleware.Session.Save(c, consts.DevLoomAITeamSession, user.ID, user)
 	if err != nil {
 		h.logger.ErrorContext(ctx, "save session failed", "error", err)
 		return errcode.ErrInternalServer
@@ -124,7 +124,7 @@ func (h *TeamGroupUserHandler) Login(c *web.Context, req domain.TeamLoginReq) er
 //	@Tags			【Team 管理员】认证
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Success		200	{object}	web.Resp{}	"成功"
 //	@Failure		401	{object}	web.Resp	"未授权"
 //	@Failure		500	{object}	web.Resp	"服务器内部错误"
@@ -137,7 +137,7 @@ func (h *TeamGroupUserHandler) Logout(c *web.Context) error {
 		return errcode.ErrUnauthorized
 	}
 
-	err := h.authMiddleware.Session.Del(c, consts.MonkeyCodeAITeamSession, user.User.ID)
+	err := h.authMiddleware.Session.Del(c, consts.DevLoomAITeamSession, user.User.ID)
 	if err != nil {
 		h.logger.ErrorContext(ctx, "delete session failed", "error", err)
 	}
@@ -152,7 +152,7 @@ func (h *TeamGroupUserHandler) Logout(c *web.Context) error {
 //	@Tags			【Team 管理员】认证
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Success		200	{object}	web.Resp{data=domain.TeamUser}	"成功"
 //	@Failure		401	{object}	web.Resp						"未授权"
 //	@Failure		500	{object}	web.Resp						"服务器内部错误"
@@ -172,7 +172,7 @@ func (h *TeamGroupUserHandler) Status(c *web.Context) error {
 //	@Tags			【Team 管理员】认证
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Param			req	body		domain.ChangePasswordReq	true	"修改密码请求"
 //	@Success		200	{object}	web.Resp{}					"成功"
 //	@Router			/api/v1/teams/users/passwords/change [put]
@@ -200,7 +200,7 @@ func (h *TeamGroupUserHandler) ChangePassword(c *web.Context, req domain.ChangeP
 //	@Tags			【Team 管理员】分组成员管理
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Param			req	body		domain.AddTeamUserReq					true	"请求参数"
 //	@Success		200	{object}	web.Resp{data=domain.AddTeamUserResp}	"成功"
 //	@Failure		401	{object}	web.Resp								"未授权"
@@ -222,7 +222,7 @@ func (h *TeamGroupUserHandler) AddUser(c *web.Context, req domain.AddTeamUserReq
 //	@Tags			【Team 管理员】分组成员管理
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Param			req	body		domain.AddTeamUserReq								true	"请求参数"
 //	@Success		200	{object}	web.Resp{data=domain.AddTeamUserWithPasswordResp}	"成功"
 //	@Failure		401	{object}	web.Resp											"未授权"
@@ -244,7 +244,7 @@ func (h *TeamGroupUserHandler) AddUserWithPassword(c *web.Context, req domain.Ad
 //	@Tags			【Team 管理员】分组成员管理
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Param			req	body		domain.AddTeamAdminReq					true	"请求参数"
 //	@Success		200	{object}	web.Resp{data=domain.AddTeamAdminResp}	"成功"
 //	@Failure		401	{object}	web.Resp								"未授权"
@@ -266,7 +266,7 @@ func (h *TeamGroupUserHandler) AddAdmin(c *web.Context, req domain.AddTeamAdminR
 //	@Tags			【Team 管理员】分组成员管理
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Param			user_id	path		string									true	"用户ID"
 //	@Success		200		{object}	web.Resp{data=domain.TeamUserPassword}	"成功"
 //	@Failure		401		{object}	web.Resp								"未授权"
@@ -288,7 +288,7 @@ func (h *TeamGroupUserHandler) ResetPassword(c *web.Context, req domain.ResetPas
 //	@Tags			【Team 管理员】分组成员管理
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Param			role	query		string									false	"团队成员角色筛选（可选值：admin, user）"
 //	@Success		200		{object}	web.Resp{data=domain.MemberListResp}	"成功"
 //	@Failure		401		{object}	web.Resp								"未授权"
@@ -310,7 +310,7 @@ func (h *TeamGroupUserHandler) MemberList(c *web.Context, req domain.MemberListR
 //	@Tags			【Team 管理员】分组成员管理
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Param			user_id	path		string										true	"用户ID"
 //	@Param			req		body		domain.UpdateTeamUserReq					true	"请求参数"
 //	@Success		200		{object}	web.Resp{data=domain.UpdateTeamUserResp}	"成功"
@@ -324,7 +324,7 @@ func (h *TeamGroupUserHandler) UpdateUser(c *web.Context, req domain.UpdateTeamU
 	}
 	// 如果设置了禁用用户，删除该用户相关联的 cookie
 	if req.IsBlocked != nil && *req.IsBlocked {
-		err := h.authMiddleware.Session.Trunc(c.Request().Context(), consts.MonkeyCodeAITeamSession, resp.User.ID)
+		err := h.authMiddleware.Session.Trunc(c.Request().Context(), consts.DevLoomAITeamSession, resp.User.ID)
 		if err != nil {
 			return err
 		}
@@ -339,7 +339,7 @@ func (h *TeamGroupUserHandler) UpdateUser(c *web.Context, req domain.UpdateTeamU
 //	@Tags			【Team 管理员】分组成员管理
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Param			user_id	path		string		true	"用户ID"
 //	@Success		200		{object}	web.Resp{}	"成功"
 //	@Failure		401		{object}	web.Resp	"未授权"
@@ -351,7 +351,7 @@ func (h *TeamGroupUserHandler) DeleteUser(c *web.Context, req domain.DeleteTeamU
 		return err
 	}
 	if h.authMiddleware != nil && h.authMiddleware.Session != nil {
-		if err := h.authMiddleware.Session.Trunc(c.Request().Context(), consts.MonkeyCodeAITeamSession, req.UserID); err != nil {
+		if err := h.authMiddleware.Session.Trunc(c.Request().Context(), consts.DevLoomAITeamSession, req.UserID); err != nil {
 			return err
 		}
 	}
@@ -365,7 +365,7 @@ func (h *TeamGroupUserHandler) DeleteUser(c *web.Context, req domain.DeleteTeamU
 //	@Tags			【Team 管理员】分组成员管理
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Success		200	{object}	web.Resp{data=domain.ListTeamGroupsResp}	"成功"
 //	@Failure		401	{object}	web.Resp									"未授权"
 //	@Failure		500	{object}	web.Resp									"服务器内部错误"
@@ -386,7 +386,7 @@ func (h *TeamGroupUserHandler) List(c *web.Context) error {
 //	@Tags			【Team 管理员】分组成员管理
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Param			req	body		domain.AddTeamGroupReq			true	"请求参数"
 //	@Success		200	{object}	web.Resp{data=domain.TeamGroup}	"成功"
 //	@Failure		401	{object}	web.Resp						"未授权"
@@ -408,7 +408,7 @@ func (h *TeamGroupUserHandler) Add(c *web.Context, req domain.AddTeamGroupReq) e
 //	@Tags			【Team 管理员】分组成员管理
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Param			group_id	path		string							true	"团队组ID"
 //	@Param			req			body		domain.UpdateTeamGroupReq		true	"请求参数"
 //	@Success		200			{object}	web.Resp{data=domain.TeamGroup}	"成功"
@@ -430,7 +430,7 @@ func (h *TeamGroupUserHandler) Update(c *web.Context, req domain.UpdateTeamGroup
 //	@Tags			【Team 管理员】分组成员管理
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Param			group_id	path		string		true	"团队组ID"
 //	@Success		200			{object}	web.Resp{}	"成功"
 //	@Failure		401			{object}	web.Resp	"未授权"
@@ -451,7 +451,7 @@ func (h *TeamGroupUserHandler) Delete(c *web.Context, req domain.DeleteTeamGroup
 //	@Tags			【Team 管理员】分组成员管理
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Param			group_id	path		string											true	"团队组ID"
 //	@Success		200			{object}	web.Resp{data=domain.ListTeamGroupUsersResp}	"成功"
 //	@Failure		401			{object}	web.Resp										"未授权"
@@ -472,7 +472,7 @@ func (h *TeamGroupUserHandler) ListGroupUsers(c *web.Context, req domain.ListTea
 //	@Tags			【Team 管理员】分组成员管理
 //	@Accept			json
 //	@Produce		json
-//	@Security		MonkeyCodeAITeamAuth
+//	@Security		DevLoomAITeamAuth
 //	@Param			group_id	path		string										true	"团队组ID"
 //	@Param			req			body		domain.AddTeamGroupUsersReq					true	"请求参数"
 //	@Success		200			{object}	web.Resp{data=domain.AddTeamGroupUsersResp}	"成功"

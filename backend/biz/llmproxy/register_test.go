@@ -8,7 +8,7 @@ import (
 	"github.com/GoYoko/web"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
 )
 
 func TestNewHandlerRegistersProxyRoutes(t *testing.T) {

@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/chaitin/MonkeyCode/backend/db/predicate"
-	"github.com/chaitin/MonkeyCode/backend/db/taskusagestat"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/predicate"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/taskusagestat"
 )
 
 // TaskUsageStatDelete is the builder for deleting a TaskUsageStat entity.

@@ -1,25 +1,24 @@
 {
   "expo": {
-    "name": "MonkeyCode",
-    "slug": "monkeycode",
+    "name": "DevLoom",
+    "slug": "devloom",
     "version": "260608",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "monkeycode",
+    "scheme": "devloom",
     "userInterfaceStyle": "automatic",
     "runtimeVersion": {
       "policy": "fingerprint"
     },
     "updates": {
-      "url": "https://monkeycode-ai.com/mobile/app/manifest",
-      "enabled": true,
+      "enabled": false,
       "checkAutomatically": "ON_LOAD",
       "fallbackToCacheTimeout": 0
     },
     "ios": {
       "supportsTablet": true,
       "usesAppleSignIn": true,
-      "bundleIdentifier": "com.chaitin.baizhi.monkeycode",
+      "bundleIdentifier": "io.github.yvqvy.devloom",
       "buildNumber": "1",
       "icon": {
         "light": "./assets/icon.png",
@@ -29,14 +28,13 @@
         "ITSAppUsesNonExemptEncryption": false,
         "NSMicrophoneUsageDescription": "用于语音输入，将你的语音实时转写为文字",
         "NSAppTransportSecurity": {
-          "NSAllowsArbitraryLoads": true,
+          "NSAllowsArbitraryLoads": false,
           "NSAllowsLocalNetworking": true
         }
-      },
-      "appleTeamId": "8Z56KX83T3"
+      }
     },
     "android": {
-      "package": "com.chaitin.baizhi.monkeycode",
+      "package": "io.github.yvqvy.devloom",
       "versionCode": 1,
       "permissions": [
         "RECORD_AUDIO"
@@ -83,7 +81,6 @@
           "isAccessMediaLocationEnabled": false
         }
       ],
-      "./plugins/withDouyinLogin",
       "./plugins/withAndroidFileSaver",
       [
         "expo-build-properties",
@@ -97,9 +94,6 @@
     "experiments": {
       "typedRoutes": true
     },
-    "extra": {
-      "updatesServer": "https://release.monkeycode-ai.com/public/mobile",
-      "douyinClientKey": "awxdjorbktpeiqaj"
-    }
+    "extra": {}
   }
 }

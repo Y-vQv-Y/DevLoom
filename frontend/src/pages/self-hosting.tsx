@@ -6,17 +6,19 @@ import { IconArrowRight, IconCheck, IconChevronDown } from "@tabler/icons-react"
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { BRAND } from "@/config/brand";
+import { COMMERCIAL_BILLING_ENABLED } from "@/config/features";
 
-const SELF_HOSTING_DOC_LINK = "https://monkeycode.docs.baizhi.cloud/node/019eb0f3-9424-7c93-9489-4e584f989527";
-const GITHUB_LINK = "https://github.com/chaitin/MonkeyCode/";
-const CONSULT_LINK = "https://baizhi.cloud/consult";
-const ONLINE_INSTALL_COMMAND = `bash -c "$(curl -fsSL 'https://monkeycode-ai.com/online/install')"`;
-const OFFLINE_INSTALL_COMMAND = `curl -fL -o monkeycode-offline-linux-amd64.tgz \\
-  https://monkeycode-release.oss-cn-hangzhou.aliyuncs.com/public/offline-package/monkeycode-offline-linux-amd64.tgz
+const SELF_HOSTING_DOC_LINK = BRAND.documentationUrl;
+const GITHUB_LINK = BRAND.repositoryUrl;
+const CONSULT_LINK = BRAND.consultationUrl;
+const ONLINE_INSTALL_COMMAND = `git clone ${BRAND.repositoryUrl}.git
+cd DevLoom`;
+const OFFLINE_INSTALL_COMMAND = `curl -fL -o devloom-source.tar.gz \\
+  ${BRAND.releasesUrl}/latest/download/devloom-source.tar.gz
 
-tar -zxvf monkeycode-offline-linux-amd64.tgz
-cd monkeycode-offline-linux-amd64/
-sh install.sh`;
+tar -zxvf devloom-source.tar.gz
+cd DevLoom`;
 
 const themeVars = {
   "--a-bg": "#0a0d0a",
@@ -201,9 +203,11 @@ export default function SelfHostingPage() {
                 <IconArrowRight className="size-4" />
                 <span>{t("selfHostingPage.actions.docs")}</span>
               </PageAction>
-              <PageAction href={CONSULT_LINK}>
-                <span>{t("selfHostingPage.actions.contact")}</span>
-              </PageAction>
+              {COMMERCIAL_BILLING_ENABLED ? (
+                <PageAction href={CONSULT_LINK}>
+                  <span>{t("selfHostingPage.actions.contact")}</span>
+                </PageAction>
+              ) : null}
               <PageAction href={GITHUB_LINK}>
                 <Icon name="GitHub-Uncolor" className="size-4 fill-current" />
                 <span>{t("selfHostingPage.actions.github")}</span>

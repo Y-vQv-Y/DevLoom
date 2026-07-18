@@ -15,7 +15,7 @@ export default function UserAgreementPage() {
       eyebrow={page.eyebrow}
       title={page.title}
       subtitle={page.subtitle}
-      lastUpdated="2026-03-24"
+      lastUpdated="2026-07-18"
       tags={page.tags}
       sections={sections}
     />

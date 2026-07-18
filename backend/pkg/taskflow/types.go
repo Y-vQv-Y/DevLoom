@@ -559,7 +559,7 @@ type CodingAgent int
 const (
 	CodingAgentCodex CodingAgent = iota + 1
 	CodingAgentClaude
-	CodingAgentMCAIReview
+	CodingAgentDEVLOOMReview
 	CodingAgentOpenCode
 )
 
@@ -603,7 +603,7 @@ type McpServerConfig struct {
 	Env     map[string]string `json:"env,omitempty"`
 }
 
-// AgentResourceAssetRef mirrors codingmatrix proto
+// AgentResourceAssetRef mirrors devloom proto
 // agent.AgentResources_AssetRef. Skills + plugins share the same shape.
 type AgentResourceAssetRef struct {
 	Name          string `json:"name,omitempty"`
@@ -612,7 +612,7 @@ type AgentResourceAssetRef struct {
 	EntryFilename string `json:"entry_filename,omitempty"`
 }
 
-// AgentResources mirrors codingmatrix proto agent.AgentResources. Skills /
+// AgentResources mirrors devloom proto agent.AgentResources. Skills /
 // Plugins are pointer slices so a nil AgentResources or nil sub-slice
 // serializes as JSON null / "absent" — matching the proto wire behaviour.
 // Rules and opencode.json travel on the legacy ConfigFile inline channel,
@@ -635,7 +635,7 @@ type CreateTaskReq struct {
 	McpConfigs     []McpServerConfig `json:"mcp_configs,omitzero"`
 	Env            map[string]string `json:"env,omitempty"`
 	LogStore       string            `json:"log_store,omitempty"`
-	AgentResources *AgentResources   `json:"agent_resources,omitempty"` // skill/plugin presigned URLs + rule content forwarded to codingmatrix agent
+	AgentResources *AgentResources   `json:"agent_resources,omitempty"` // skill/plugin presigned URLs + rule content forwarded to devloom agent
 }
 
 // ==================== VirtualMachine 查询类型 ====================

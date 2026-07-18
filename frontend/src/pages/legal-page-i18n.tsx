@@ -2,6 +2,7 @@ import type { TFunction } from "i18next";
 import type { ReactNode } from "react";
 
 import type { LegalSection } from "@/components/welcome/legal-terminal-page";
+import { BRAND } from "@/config/brand";
 
 export type LegalPageCopy = {
   eyebrow: string;
@@ -18,28 +19,16 @@ export function withContactFooter(
   return sections.map((section) => (section.id === "contact" ? { ...section, footer } : section));
 }
 
-export function renderOfficialChannels(t: TFunction, keyPrefix: string, isGlobalRegion: boolean) {
-  const channels = isGlobalRegion ? {
-    primaryHref: "https://www.cyberserval.com/",
-    primaryKey: "cyberserval",
-    secondaryHref: "https://cyberserval.tech",
-    secondaryKey: "safelineWaf",
-  } : {
-    primaryHref: "https://www.chaitin.cn/",
-    primaryKey: "chaitin",
-    secondaryHref: "https://www.baizhi.cloud/",
-    secondaryKey: "baizhi",
-  };
-
+export function renderOfficialChannels(t: TFunction, keyPrefix: string, _isGlobalRegion: boolean) {
   return (
     <>
       {t(`${keyPrefix}.prefix`)}
-      <a className="text-[var(--a-accent)] hover:underline" href={channels.primaryHref} target="_blank" rel="noreferrer">
-        {t(`${keyPrefix}.${channels.primaryKey}`)}
+      <a className="text-[var(--a-accent)] hover:underline" href={BRAND.repositoryUrl} target="_blank" rel="noreferrer">
+        {t(`${keyPrefix}.repository`)}
       </a>
       {t(`${keyPrefix}.or`)}
-      <a className="text-[var(--a-accent)] hover:underline" href={channels.secondaryHref} target="_blank" rel="noreferrer">
-        {t(`${keyPrefix}.${channels.secondaryKey}`)}
+      <a className="text-[var(--a-accent)] hover:underline" href={BRAND.supportUrl} target="_blank" rel="noreferrer">
+        {t(`${keyPrefix}.support`)}
       </a>
       {t(`${keyPrefix}.suffix`)}
     </>

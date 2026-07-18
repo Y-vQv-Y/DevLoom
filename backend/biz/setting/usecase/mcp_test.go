@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/chaitin/MonkeyCode/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
 )
 
 func TestUnconfiguredUserMCPSyncClientReturnsError(t *testing.T) {

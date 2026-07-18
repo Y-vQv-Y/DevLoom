@@ -30,7 +30,7 @@ check_avx_support() {
         return
     fi
     if [[ ! -r /proc/cpuinfo ]] || ! grep -qiE '(^|[[:space:]])avx([[:space:]]|$)' /proc/cpuinfo; then
-        echo -e "${RED}Current CPU does not support AVX instructions. MonkeyCode Runner cannot be installed on this host.${NC}"
+        echo -e "${RED}Current CPU does not support AVX instructions. DevLoom Runner cannot be installed on this host.${NC}"
         exit 1
     fi
 }
@@ -59,10 +59,11 @@ fi
 check_avx_support
 
 echo -e "${GREEN}Architecture: $ARCH${NC}"
-URL="https://release.baizhi.cloud/monkeycode/runner/$ARCH/installer"
-FILE_NAME="/tmp/monkeycode-runner-installer"
+URL="{{.installer_url}}"
+FILE_NAME="/tmp/devloom-runner-installer"
+URL=${URL//\{\{.arch\}\}/$ARCH}
 
-echo -e "${GREEN}Starting MonkeyCode Runner Installer${NC}"
+echo -e "${GREEN}Starting DevLoom Runner Installer${NC}"
 echo -e "${YELLOW}Downloading installer...${NC}"
 
 # 下载安装程序

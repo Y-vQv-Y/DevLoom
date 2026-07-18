@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/chaitin/MonkeyCode/backend/db/predicate"
-	"github.com/chaitin/MonkeyCode/backend/db/teamgroupmember"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/predicate"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamgroupmember"
 )
 
 // TeamGroupMemberDelete is the builder for deleting a TeamGroupMember entity.

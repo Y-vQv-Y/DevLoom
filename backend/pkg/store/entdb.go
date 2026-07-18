@@ -13,10 +13,10 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
 
-	"github.com/chaitin/MonkeyCode/backend/config"
-	"github.com/chaitin/MonkeyCode/backend/db"
-	_ "github.com/chaitin/MonkeyCode/backend/db/runtime"
-	"github.com/chaitin/MonkeyCode/backend/pkg/entx"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	_ "github.com/Y-vQv-Y/DevLoom/backend/db/runtime"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/entx"
 )
 
 func NewEntDBV2(cfg *config.Config, logger *slog.Logger) (*db.Client, error) {

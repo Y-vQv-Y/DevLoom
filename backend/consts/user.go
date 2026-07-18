@@ -3,7 +3,6 @@ package consts
 type UserPlatform string
 
 const (
-	UserPlatformBaizhi UserPlatform = "baizhi" // 百智云平台
 	UserPlatformGoogle UserPlatform = "google"
 	UserPlatformGithub UserPlatform = "github"
 	UserPlatformGitLab UserPlatform = "gitlab"
@@ -26,13 +25,13 @@ const (
 	UserRoleIndividual UserRole = "individual" // 个人用户
 	UserRoleEnterprise UserRole = "enterprise" // 企业用户
 	UserRoleSubAccount UserRole = "subaccount" // 企业子账户
-	UserRoleAdmin      UserRole = "admin"      // MonkeyCode-AI 管理员账号，用来配置公共资源. 如公共宿主机等
+	UserRoleAdmin      UserRole = "admin"      // DevLoom 管理员账号，用来配置公共资源. 如公共宿主机等
 )
 
 type RedisKey string
 
 const (
-	UserActiveKey RedisKey = "monkeycode_ai:user:active"
+	UserActiveKey RedisKey = "devloom:user:active"
 )
 
 type DefaultConfigType string

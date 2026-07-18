@@ -3,9 +3,9 @@ package user
 import (
 	"github.com/samber/do"
 
-	v1 "github.com/chaitin/MonkeyCode/backend/biz/user/handler/v1"
-	"github.com/chaitin/MonkeyCode/backend/biz/user/repo"
-	"github.com/chaitin/MonkeyCode/backend/biz/user/usecase"
+	v1 "github.com/Y-vQv-Y/DevLoom/backend/biz/user/handler/v1"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/user/repo"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/user/usecase"
 )
 
 // ProvideUser 注册 user 模块的服务工厂

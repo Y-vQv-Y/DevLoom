@@ -42,8 +42,8 @@ type AccountPlanCard = {
   id: PersonalAccountPlanId
   name: string
   desc: string
-  monthlyAmount: number
-  yearlyAmount: number
+  monthlyAmount: number | null
+  yearlyAmount: number | null
 }
 
 const monthlyPeriodCounts = Array.from({ length: 12 }, (_, index) => index + 1)
@@ -194,9 +194,10 @@ export default function SubscriptionPlanDialog({ open, onOpenChange }: Subscript
   const selectedSubscriptionPlan = selectedAccountPlan.id === "basic" ? null : selectedAccountPlan.id
   const isSelectedCurrentPlan = selectedAccountPlan.id === "basic" ? !hasAdvancedPlan : selectedAccountPlan.id === "pro" ? isProPlan : selectedAccountPlan.id === "ultra" ? isFlagshipPlan : false
   const isSelectedPlanLoading = selectedAccountPlan.id === "pro" ? isProLoading : selectedAccountPlan.id === "ultra" ? isFlagshipLoading : false
-  const canSubscribeSelectedPlan = selectedSubscriptionPlan === "pro" ? !isFlagshipPlan : selectedSubscriptionPlan === "ultra"
   const selectedPeriodAmount = selectedBillingPeriod === "monthly" ? selectedAccountPlan.monthlyAmount : selectedAccountPlan.yearlyAmount
-  const selectedOrderTotal = selectedPeriodAmount * selectedPeriodCount
+  const isSelectedPriceConfigured = selectedPeriodAmount !== null
+  const canSubscribeSelectedPlan = isSelectedPriceConfigured && (selectedSubscriptionPlan === "pro" ? !isFlagshipPlan : selectedSubscriptionPlan === "ultra")
+  const selectedOrderTotal = selectedPeriodAmount === null ? null : selectedPeriodAmount * selectedPeriodCount
   const selectedOrderTotalLabel = formatRegionCurrency(selectedOrderTotal, pricingRegion)
   const selectedPeriodUnit = selectedBillingPeriod === "monthly" ? ConstsSubscriptionPeriodUnit.PeriodMonth : ConstsSubscriptionPeriodUnit.PeriodYear
   const subscriptionPeriodCounts = selectedBillingPeriod === "monthly" ? monthlyPeriodCounts : yearlyPeriodCounts

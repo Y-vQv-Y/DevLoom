@@ -1,9 +1,9 @@
 PLATFORM=linux/amd64
 TAG=$(shell git rev-parse --short HEAD)
-OUTPUT=type=docker,dest=$(HOME)/tmp/mcai_server.tar
+OUTPUT=type=docker,dest=$(HOME)/tmp/devloom_server.tar
 GOCACHE=/root/.cache/go-build
 GOMODCACHE?=/go/pkg/mod
-REGISTRY=chaitin-registry.cn-hangzhou.cr.aliyuncs.com/monkeycode
+REGISTRY=ghcr.io/Y-vQv-Y/devloom
 # make server PLATFORM= TAG= OUTPUT_SERVER= GOCACHE=
 image:
 	docker buildx build \
@@ -40,7 +40,7 @@ generate:
 check-generate:
 	@echo "Checking if generated code is up to date..."
 	@go generate ./ent
-	@git diff --quiet dbv2/ || (echo "Error: Generated code out of sync with schema. Run 'make generate' and commit the changes." && exit 1)
+	@git diff --quiet -- db/ || (echo "Error: Generated code out of sync with schema. Run 'make generate' and commit the changes." && exit 1)
 	@echo "Generated code is up to date."
 
 migrate_sql:

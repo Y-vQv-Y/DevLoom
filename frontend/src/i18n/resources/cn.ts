@@ -1,10 +1,10 @@
 const cn = {
   meta: {
     default: {
-      title: "MonkeyCode 智能开发平台",
+      title: "DevLoom 智能开发平台",
       description:
-        "MonkeyCode AI 是一个智能代码生成平台，通过AI驱动的编程助手、自动化工作流和智能开发工具，帮助开发者更快速地构建应用程序。",
-      keywords: "AI代码生成, 智能编程, 开发者工具, 自动化编程, 代码助手, AI开发平台, MonkeyCode, 人工智能编程",
+        "DevLoom AI 是一个智能代码生成平台，通过AI驱动的编程助手、自动化工作流和智能开发工具，帮助开发者更快速地构建应用程序。",
+      keywords: "AI代码生成, 智能编程, 开发者工具, 自动化编程, 代码助手, AI开发平台, DevLoom, 人工智能编程",
     },
   },
   common: {
@@ -78,7 +78,7 @@ const cn = {
       pro: "专业模型",
       ultra: "旗舰模型",
     },
-    taskPromptPlaceholder: "你想让 MonkeyCode 做什么？例如：开发一个小游戏、实现一个新功能、做数据分析、做技术调研、写毕业论文等等。。。",
+    taskPromptPlaceholder: "你想让 DevLoom 做什么？例如：开发一个小游戏、实现一个新功能、做数据分析、做技术调研、写毕业论文等等。。。",
     time: {
       seconds: "{{count}} 秒",
       minutes: "{{count}} 分钟",
@@ -147,14 +147,14 @@ const cn = {
     },
   },
   login: {
-    title: "MonkeyCode 智能开发平台",
+    title: "DevLoom 智能开发平台",
     tabs: {
       user: "普通用户",
       manager: "团队管理员",
     },
     choices: {
       title: "选择登录方式",
-      baizhi: "百智云登录 - 推荐",
+      devloom: "DevLoom 登录",
       oidc: "企业登录",
       google: "Google 登录",
       github: "GitHub 登录",
@@ -505,7 +505,7 @@ const cn = {
       label: "自动 Review",
       enabled: "启用",
       disabled: "禁用",
-      description: "开启后会自动配置对应仓库的 Webhook，当提交新的 Pull Request 或 Merge Request 时，MonkeyCode 会自动启动 Review 任务。",
+      description: "开启后会自动配置对应仓库的 Webhook，当提交新的 Pull Request 或 Merge Request 时，DevLoom 会自动启动 Review 任务。",
       toast: {
         enabled: "已开启自动 Review",
         disabled: "已关闭自动 Review",
@@ -537,7 +537,7 @@ const cn = {
       image: "系统镜像",
       selectImage: "选择系统镜像",
       content: "任务内容",
-      contentPlaceholder: "你想让 MonkeyCode 做什么？例如：开发一个小游戏、实现一个新功能、做数据分析、做技术调研、写毕业论文等等。。。",
+      contentPlaceholder: "你想让 DevLoom 做什么？例如：开发一个小游戏、实现一个新功能、做数据分析、做技术调研、写毕业论文等等。。。",
       contentTooLong: "已超出 {{over}} 字，最多 {{max}} 字，无法发送。",
       start: "开始对话",
       toast: {
@@ -1375,8 +1375,8 @@ const cn = {
       refreshPage: "刷新页面",
     },
     sidebar: {
-      brandSubtitle: "长亭百智云",
-      globalBrandSubtitle: "CyberServal",
+      brandSubtitle: "DevLoom 开源平台",
+      globalBrandSubtitle: "DevLoom 开源平台",
       consultPurchase: "咨询采购",
       currentVersion: "当前版本",
       unknownVersion: "未知版本",
@@ -1442,7 +1442,7 @@ const cn = {
       feedback: {
         button: "提个建议",
         title: "提个建议",
-        description: "到 MonkeyCode 的 GitHub 提 Issue，并留下你的 UID。\nIssue 被采纳后你将获得 3 万积分的奖励。",
+        description: "到 DevLoom 的 GitHub 提 Issue，并留下你的 UID。\nIssue 被采纳后你将获得 3 万积分的奖励。",
         templateLabel: "反馈模板",
         templateCopy: "复制模板",
         template: "反馈标题：\n\n反馈内容：\n\n期望效果：\n\n我的 UID：{{uid}}",
@@ -1612,9 +1612,10 @@ const cn = {
     },
     account: {
       title: "我的账户",
-      description: "查看账户资料、积分余额、套餐与使用记录",
+      description: "查看和维护账户资料与安全设置",
       tooltipAccount: "账户",
       tooltipBalance: "账户与余额",
+      openSourceEdition: "开源版",
     },
     plan: {
       currentPlan: "当前套餐",
@@ -1728,6 +1729,7 @@ const cn = {
       balanceTitle: "积分余额",
       recharge: "充值",
       balanceLabel: "当前积分",
+      billingNotConfigured: "部署方尚未配置充值套餐",
       dailyCheckin: "每日签到",
       checkinDoneDescription: "你今天已经完成签到，明天再来领取积分。",
       checkinAvailableDescription: "每天签到可领取 100 积分。",
@@ -1797,10 +1799,11 @@ const cn = {
       cancel: "取消",
       creditsLabel: "{{points}} 积分",
       discounts: {
-        none: "无折扣",
-        sixSeven: "6.7 折",
-        five: "5 折",
-        four: "4 折",
+        none: "部署方配置",
+        sixSeven: "部署方配置",
+        five: "部署方配置",
+        four: "部署方配置",
+        configured: "部署方配置",
       },
     },
   },
@@ -1915,28 +1918,28 @@ const cn = {
       console: "进入控制台",
     },
     footer: {
-      brandTitle: "MonkeyCode 智能开发平台",
-      brandDescription: "MonkeyCode 不是 AI 编程工具，是对传统研发模式的变革，是全新的 AI 编程体验，让你的研发团队效率 Max。",
-      description: "免费使用，无需安装，内置云端开发环境，并支持业内最全的顶尖大模型。无论是开发项目、做调研、写文档，还是分析数据、处理任务，打开浏览器就能随时开始，让 AI 持续帮你推进工作。",
+      brandTitle: "DevLoom AI 开发工作台",
+      brandDescription: "DevLoom 用于连接代码仓库、模型服务、开发主机和团队任务，并支持按部署需求进行扩展。",
+      description: "功能可用性、模型范围、资源额度和费用由部署方配置。使用当前实例前，请先查看部署说明与管理员公告。",
       resources: "资源",
       about: "关于我们",
       community: "技术交流群",
+      website: "官方网站",
       productDocs: "产品文档",
       forum: "技术论坛",
-      chaitin: "长亭科技",
-      baizhi: "长亭百智云",
-      cyberserval: "CyberServal",
-      safelineWaf: "SafeLine WAF",
-      copyright: "© 2026 MonkeyCode · 版权所有：北京长亭科技有限公司 · 本应用由 MonkeyCode 开发",
-      globalCopyright: "© 2026 MonkeyCode · 版权所有：CyberServal Co., Limited · 本应用由 MonkeyCode 开发",
-      icp: "京ICP备2024055124号-12",
+      company: "项目维护者",
+      repository: "DevLoom GitHub 仓库",
+      consultation: "咨询与合作",
+      support: "问题与支持",
+      releases: "版本公告",
+      copyright: "© 2026 DevLoom contributors · AGPL-3.0",
     },
     community: {
       wechat: "企业微信群",
       feishu: "飞书群",
       dingtalk: "钉钉群",
-      discord: "Discord 社区",
-      discordDescription: "加入 MonkeyCode Discord 社区，获取产品动态和技术支持。",
+      channel: "DevLoom 开发者社区",
+      channelDescription: "进入社区入口，获取产品动态、交流使用经验并提交建议。",
       wechatAlt: "企业微信群二维码",
       feishuAlt: "飞书群二维码",
       dingtalkAlt: "钉钉群二维码",
@@ -1952,74 +1955,74 @@ const cn = {
   },
   welcomeHome: {
     banner: {
-      headlinePrefix: "MonkeyCode 是",
-      headlineMain: "在线 AI 编程平台",
-      description: "支持不限额度免费使用，不需要连接本地开发机，也不需要先折腾复杂环境。你可以直接在平台里创建任务，让 AI 编码，在云端开发环境中使用终端、文件管理和预览，再把结果接回 Git 协作流程。",
+      headlinePrefix: "DevLoom 是",
+      headlineMain: "可自托管的 AI 开发工作台",
+      description: "在一个工作台中组织 AI 任务、代码仓库、终端、文件和 Git 协作。模型、开发主机、存储及访问权限由部署管理员配置。",
       actions: {
-        start: "免费立即开始",
+        start: "进入工作台",
         repo: "查看开源仓库",
       },
       stats: {
         free: {
-          value: "不限额",
-          label: "免费使用",
+          value: "可配置",
+          label: "模型与资源策略",
         },
         cloud: {
-          value: "云端",
-          label: "自带开发环境",
+          value: "自托管",
+          label: "部署与数据边界",
         },
         openSource: {
           value: "开源",
-          label: "支持私有化方向",
+          label: "AGPL-3.0",
         },
       },
       badges: {
-        free: "不限额度免费使用",
-        noLocalMachine: "无需连接本地开发机",
+        free: "额度与费用由部署方配置",
+        noLocalMachine: "支持远程开发主机",
       },
-      mockAlt: "MonkeyCode 任务执行界面",
-      mockInput: "输入需求就能开始，支持不限额度免费使用，不需要先在自己电脑上准备环境、装工具或连接本地工程机。",
-      mockOutput: "AI 编码、终端操作、文件修改和 Git 协作都回到同一个在线工作台，而不是散落在多个工具之间。",
+      mockAlt: "DevLoom 任务执行界面",
+      mockInput: "描述任务目标并选择仓库、模型和开发环境；实际可选项取决于当前实例配置。",
+      mockOutput: "任务结果、终端操作和文件变更集中展示，提交前仍应由开发者检查代码、测试和安全影响。",
     },
     sdd: {
-      title: "三个关键词，概括 MonkeyCode 最值得宣传的点",
-      description: "首页不需要堆太多概念。把“它是什么”“为什么容易开始”“为什么值得信任”讲清楚，转化会比空泛口号更有效。",
+      title: "三个核心能力",
+      description: "DevLoom 以任务编排、远程开发环境和开源自托管为核心，具体能力取决于部署配置。",
       modules: {
         online: {
-          title: "在线 AI 编程平台",
-          description: "MonkeyCode 的核心不是一个聊天框，也不是本地插件，而是一个支持不限额度免费使用、可以直接创建任务并持续推进的在线 AI 编程入口。",
+          title: "任务化 AI 开发",
+          description: "围绕仓库和任务组织对话、工具调用、文件修改与执行记录，便于回看和协作。",
         },
         cloud: {
-          title: "云开发环境直接可用",
-          description: "任务在平台提供的开发环境中运行，终端、文件和预览能力都已经准备好，用户不需要依赖自己的本地开发机。",
+          title: "远程开发环境",
+          description: "管理员接入开发主机和镜像后，任务可使用终端、文件管理和端口预览等能力。",
         },
         open: {
-          title: "开源透明，可走私有化方向",
-          description: "既可以在线快速开始，也保留开源仓库和离线部署方向。对开发者来说，这比单纯宣传模型能力更容易建立信任。",
+          title: "开源与自托管",
+          description: "源码按 AGPL-3.0 提供，可审查并部署到自有基础设施；运维和合规责任由部署方承担。",
         },
       },
     },
     highlights: {
-      title: "先把上手门槛降下来，再让 AI 真正参与编程",
-      description: "对开发者来说，很多 AI 工具真正卡住的不是不会生成代码，而是开始前还要先买额度、准备环境、接本地机器、切换一堆工具。MonkeyCode 把这些前置成本尽量收进平台里。",
+      title: "把 AI 任务接入现有研发流程",
+      description: "DevLoom 负责连接任务、仓库、模型和运行环境，但不会替代代码审查、测试、安全评估或发布审批。",
       items: {
         free: {
-          title: "不限额度免费使用，先上手再判断",
-          description: "这是首页最该被看见的卖点之一。用户可以先用真实任务验证 MonkeyCode 是否适合自己，而不是一开始就被额度和试用门槛卡住。",
+          title: "资源策略由部署方定义",
+          description: "模型额度、并发数、存储和计费不由开源仓库统一承诺，请以当前实例配置为准。",
         },
         cloud: {
-          title: "自带云开发环境，打开就能干活",
-          description: "终端、文件管理、端口预览和任务执行都在平台里，用户不需要先把本地环境、模型配置和运行链路拼起来。",
+          title: "集中管理开发环境",
+          description: "配置开发主机后，可在工作台中使用终端、文件、端口预览和任务执行能力。",
         },
         noLocal: {
-          title: "不连接本地开发机，也能在线完成开发",
-          description: "MonkeyCode 更像一个随时可用的在线开发入口。无论是临时验证、远程协作还是快速演示，都不用先占用自己的本地机器。",
+          title: "支持远程任务执行",
+          description: "任务可以在部署方管理的开发主机上运行；网络访问、权限和资源隔离需由管理员正确配置。",
         },
       },
     },
     gitBot: {
       title: "不只是在网页上在线写代码，还能接回真实协作",
-      description: "MonkeyCode 的价值不只是“在线生成代码”，还包括 Git Review、开源透明度、远程协作和私有化路径。这些才是开发者会长期关心的部分。",
+      description: "DevLoom 的价值不只是“在线生成代码”，还包括 Git Review、开源透明度、远程协作和私有化路径。这些才是开发者会长期关心的部分。",
       streamHint: "让 AI 回到真实 PR 协作流",
       mockPrTitle: "feat: 新增用户登录态自动刷新机制",
       mockPrSummary: "xiaomakuaipao wants to merge 3 commits into main from feat/auto-refresh",
@@ -2031,7 +2034,7 @@ const cn = {
         blankScreen: "修复 token 过期后页面白屏的问题",
         tests: "添加相关单元测试用例",
       },
-      typewriterText: "@monkeycode-ai 你好，请帮我 review 这个 PR",
+      typewriterText: "@devloom 你好，请帮我 review 这个 PR",
       proofs: {
         repo: {
           title: "开源仓库可见",
@@ -2047,10 +2050,10 @@ const cn = {
         },
         private: {
           title: "可走私有化部署方向",
-          description: "如果团队更看重数据边界和内网部署，MonkeyCode 也保留了离线版与私有化落地路径。",
+          description: "如果团队更看重数据边界和内网部署，DevLoom 也保留了离线版与私有化落地路径。",
         },
       },
-      closing: "如果你真正关心的是能不能接入仓库、能不能协作、能不能离线部署，那 MonkeyCode 给出的不是抽象概念，而是明确的产品路径。",
+      closing: "如果你真正关心的是能不能接入仓库、能不能协作、能不能离线部署，那 DevLoom 给出的不是抽象概念，而是明确的产品路径。",
       platformTags: {
         github: "GitHub",
         gitlab: "GitLab",
@@ -2064,9 +2067,9 @@ const cn = {
       },
     },
     downloads: {
-      title: "全平台客户端",
-      description: "Web、桌面端和移动端统一接入同一套 AI 研发能力。需要切换设备时，不用重新适配工作流。",
-      action: "下载",
+      title: "客户端与构建产物",
+      description: "仓库包含 Web、桌面端和移动端代码；各平台是否提供可安装产物，以 GitHub Releases 为准。",
+      action: "查看发布",
       clients: {
         windows: "Windows 客户端",
         macos: "macOS 客户端",
@@ -2075,19 +2078,19 @@ const cn = {
       },
     },
     finalCta: {
-      title: "先不限额度免费用，再判断 MonkeyCode 是否适合你",
-      description: "它首先是在线 AI 编程平台，其次才是各种概念包装。先直接免费跑一次真实任务、用一次云开发环境，再决定要不要把它放进日常研发里。",
+      title: "从文档和部署配置开始",
+      description: "先确认模型、开发主机、存储、网络和权限配置，再使用真实仓库验证任务流程。",
       actions: {
-        start: "立即免费使用",
+        start: "进入工作台",
         docs: "查看文档",
-        pricing: "查看型号",
+        pricing: "查看部署说明",
       },
     },
   },
   terminalNative: {
     hero: {
       tagline: "在线 AI 开发平台",
-      description: "免费使用，无需安装，内置云端开发环境，并支持业内最全的顶尖大模型。无论是开发项目、做调研、写文档，还是分析数据、处理任务，打开浏览器就能随时开始，让 AI 持续帮你推进工作。",
+      description: "连接代码仓库、模型服务和远程开发主机，在浏览器中组织任务、终端、文件变更与 Git 协作。可用能力取决于部署配置。",
     },
     actions: {
       start: "开始使用",
@@ -2095,73 +2098,73 @@ const cn = {
     },
     features: {
       title: "功能与特色",
-      subtitle: "你不需要自己拼工具、搭环境、来回切流程。把需求交给 MonkeyCode，它会从开发到验证一路接住，真正把 AI 编程变成可持续的工作流。",
+      subtitle: "围绕同一任务集中管理模型调用、代码修改和运行记录。生成结果仍需经过人工审查、测试和安全评估。",
     },
     featureItems: {
       free: {
-        title: "免费即用",
-        body: "无需下载客户端，也不用折腾环境。浏览器打开、注册账号，几秒钟就能开始执行第一个 AI 开发任务。",
+        title: "浏览器工作台",
+        body: "通过 Web 控制台创建和查看任务。账号、模型、主机、额度与访问策略由当前实例的部署方配置。",
       },
       cloud: {
         title: "云端开发环境",
-        body: "不依赖本地开发机。每个任务背后都有一台真实服务器提供运行环境，编译、测试、预览都在云上完成。",
+        body: "管理员接入 Taskflow、运行器、开发主机和镜像后，任务可使用终端、构建、测试与端口预览能力。",
       },
       models: {
-        title: "全量主流模型",
-        body: "GLM、Kimi、MiniMax、Qwen、DeepSeek 等都已接入，按任务类型切换，也能手动指定。",
+        title: "模型服务接入",
+        body: "部署方可配置受支持的模型服务和 OpenAI 兼容接口；具体模型、费用、数据处理规则以提供方配置为准。",
       },
       mobile: {
-        title: "移动端原生支持",
-        body: "深度适配 iOS / Android，PC 和手机数据实时同步。通勤路上也能把任务交给 Agent 继续跑。",
+        title: "移动客户端",
+        body: "仓库包含 Expo 移动端代码，可查看任务并继续对话；可安装版本和功能范围以 Releases 与后端配置为准。",
       },
       openSource: {
-        title: "完全开源",
-        body: "核心代码全部公开在 GitHub。任何人都能审计、fork、二次开发，技术选型和安全策略自己掌控。",
+        title: "AGPL-3.0 开源",
+        body: "本仓库源码可按许可证审查、fork 和修改。运行器、Taskflow、预览服务及镜像需另行提供或实现。",
       },
       selfHost: {
         title: "私有化离线部署",
-        body: "对数据隐私要求高的企业和团队，可以把 MonkeyCode 独立部署到自己的内网中，数据不出本地。",
+        body: "控制台可部署在自有网络；是否完全离线、数据流向何处，取决于模型、Git、存储、日志和运行器等实际配置。",
       },
     },
     useCases: {
-      title: "能在 MonkeyCode 上做什么？",
-      subtitle: "从正经项目到灵感试验，从白天的工作任务到晚上的个人想法，只要你说清目标，MonkeyCode 就能陪你把它真正做出来。",
+      title: "能在 DevLoom 上做什么？",
+      subtitle: "以下是可配置的任务类型示例。输出质量取决于模型、仓库上下文、工具权限和运行环境，使用者应复核结果。",
     },
     useCaseItems: {
       game: {
         title: "做个小游戏",
-        body: "一句话描述玩法，AI 帮你搭框架、处理碰撞检测、补音效，一个下午就能跑出可玩的版本。",
+        body: "可用于搭建游戏原型、实现交互并运行测试；开发者需要确认素材许可、性能和发布质量。",
         stack: ["HTML5 · Canvas", "TypeScript", "零依赖"],
       },
       feature: {
         title: "实现一个需求",
-        body: "把需求丢进去，AI 读你的代码仓库、理解项目约定，直接改文件、跑测试、开 PR。",
+        body: "可读取授权仓库上下文、修改文件并调用测试工具；提交 PR 前需检查差异和测试结果。",
         stack: ["读懂代码风格", "自动写单测", "一键开 PR"],
       },
       security: {
         title: "安全审查",
-        body: "上线前做一次体检。AI 扫常见漏洞、硬编码密钥、依赖风险，输出可修复的清单。",
+        body: "可辅助检查常见漏洞、硬编码密钥和依赖风险，但不能替代专业安全审计。",
         stack: ["OWASP Top 10", "依赖 CVE", "SAST 规则"],
       },
       paper: {
         title: "写毕业论文",
-        body: "帮你查文献、列提纲、补实验代码、跑数据、画图、排版 LaTeX，从选题到定稿都能接力。",
+        body: "可辅助整理公开资料、生成实验代码和 LaTeX 草稿；引用、事实和学术规范必须人工核验。",
         stack: ["文献检索", "实验脚本", "LaTeX 排版"],
       },
       data: {
         title: "数据分析",
-        body: "丢一份 CSV 或 Parquet，描述你想看的角度。AI 自动清洗、建模、画图，再写一段可读结论。",
+        body: "可在授权环境中处理数据、生成分析脚本和图表；敏感数据与统计结论需按组织规则审查。",
         stack: ["Pandas / Polars", "Matplotlib", "自动写结论"],
       },
       research: {
         title: "产品 / 技术调研",
-        body: "AI 拉公开资料、跑 benchmark、出对比报告，带引用链接，适合做技术选型和产品预研。",
+        body: "可汇总公开资料和运行基准脚本；来源、时效性和比较方法需要使用者确认。",
         stack: ["公开资料聚合", "横向对比", "带引用"],
       },
     },
     mobile: {
       title: "移动客户端",
-      subtitle: "离开电脑也不必暂停开发。用手机查看任务进度、继续对话、接收结果，让 AI Agent 在你切换场景时继续工作。",
+      subtitle: "移动端可连接同一部署实例，用于查看任务和继续对话。后台执行能力取决于服务器与运行器状态。",
       items: {
         android: {
           cta: "下载 Android APK",
@@ -2173,106 +2176,20 @@ const cn = {
     },
     selfHosting: {
       title: "私有化部署",
-      subtitle: "当团队需要把 AI 开发能力放进企业内网，MonkeyCode 可以独立部署，统一管理研发团队、开发环境和模型配置。",
+      subtitle: "控制台和后端可部署在自有网络，用于管理成员、开发环境和模型配置；完整任务执行还需要外部运行组件。",
       action: "查看部署教程",
-      cardTitle: "给团队一套可控的 AI 研发平台",
-      cardBody: "私有化部署版适合企业研发团队在内网统一使用。管理员可以集中配置大模型、开发环境宿主机和成员权限，开发者只需要在浏览器里启动任务。",
+      cardTitle: "自有网络中的 AI 研发控制台",
+      cardBody: "管理员可配置模型、开发主机和成员权限。上线前需补齐 Taskflow、运行器、预览服务、镜像和安全运维方案。",
       advantages: {
-        dataBoundary: "部署在企业内网，代码仓库、任务记录和研发数据留在自己的网络边界内。",
+        dataBoundary: "可部署在企业内网；数据边界仍受外接模型、Git、存储、日志和更新服务影响。",
         governance: "统一管理团队成员、开发环境、AI 模型和任务流程，便于研发负责人做治理和审计。",
         integration: "支持对接企业已有的大模型、Git 平台和开发环境宿主机，适配内部研发基础设施。",
         offline: "可按在线或离线方式安装，适合有网络隔离、合规要求或本地算力资源的团队。",
       },
     },
-    compare: {
-      title: "和其他 Coding 工具的区别",
-      subtitle: "和依赖本地 IDE、CLI 或开发环境的工具不同，MonkeyCode 打开浏览器就能随时开始开发，并支持围绕同一个项目持续迭代、长期管理与协作。",
-      dimension: "对比维度",
-      rows: {
-        online: "在线使用",
-        localIde: "本地 IDE",
-        localCli: "本地 CLI",
-        specManagement: "需求与 SPEC 管理",
-        cloudEnvironment: "云端开发环境",
-        completion: "代码补全",
-        review: "PR / MR 自动代码审查",
-        collaboration: "团队协作",
-        domesticModels: "适配国产大模型",
-        selfHosting: "私有化部署",
-        openSource: "开源",
-      },
-      partialTooltip: "仅支持部分能力",
-      note: "数据基于各产品公开特性整理，如有遗漏欢迎提 issue 或 PR",
-    },
-    testimonials: {
-      title: "用户真实评价",
-      subtitle: "来自真实用户的使用反馈，覆盖开发、运营、创业、团队协作等不同场景。",
-      items: {
-        aiwenming: {
-          quote: "用起来有点像 OpenCode 和 Coze 的结合体。最良心的是提供了隔离的运行环境，启动非常快，编译完成后还能直接生成一个可对外访问的网址。你可以高度自由地配置自己的模型，当然它也内置了免费且高性价比的模型。自带很多实用的技能，上手简单又方便。最关键的是，它是一款开源产品，能陪你一起成长。",
-          name: "aiwenming",
-          role: "产品管理",
-        },
-        yitao: {
-          quote: "Vibe Coding 是一个全新的时代，告别闷热、逼窒的小格子，到更广阔的天地去，呼吸着自由的空气。即使是出差在路上，也只需带一个轻薄本或 iPad，使用 MonkeyCode，轻松在云端跑着复杂的编码工作。",
-          name: "弈韬",
-          role: "和旭电商 · 电商运营",
-        },
-        full: {
-          quote: "MonkeyCode 的云开发环境体验出色，Agent 能连接终端自主思考执行，真正实现“甩手掌柜”式编程。免费提供 MiniMax 和千问模型，响应快、调用无限制，相比别家月底掐算 Token 的日子一去不复返。",
-          name: "Full",
-          role: "安全工程师",
-        },
-        liHongxi: {
-          quote: "MonkeyCode 是一款定位独特的 AI 编程平台，它不仅仅是一个代码补全工具，更致力于成为一个覆盖“需求 → 设计 → 开发 → 评审”全流程的 AI 研发基础设施。其核心价值在于通过自动化和云端环境，改变传统的研发工作流，尤其适合我们这种传统性开发公司，提供了全流程支撑。",
-          name: "李宏喜",
-          role: "零商界网络科技 · 总经理",
-        },
-        clever: {
-          quote: "很喜欢 MonkeyCode 这种云端轻量级开发模式，开发都不用打开本地 IDE，未跑完的任务手机打开也可以接着跑，满足随时随地都可以开发的需求，而且还内置了各种主流模型、Skills、MCP 等供开发者自由选择，这也是未来的趋势。",
-          name: "Clever",
-          role: "中国电信 · 全栈工程师",
-        },
-        situBei: {
-          quote: "MonkeyCode 是我日常写项目、做课设的首选，AI 辅助生成效率很高，环境秒级启动，不用折腾本地配置。对学生党特别友好，很多复杂功能拖拽加描述就能搞定，节省了大量查文档的时间。",
-          name: "司徒北",
-          role: "独立开发者",
-        },
-        sinianLiu: {
-          quote: "之前让其他 AI 写代码还要自己不断测试，现在直接让 MonkeyCode 接入我的服务器自动进行写代码和测试就可以，还能自动根据测试的内容给我进行反馈，节省很多人为时间。",
-          name: "sinian-liu",
-          role: "37VPS · 创始人",
-        },
-        timeTraveler: {
-          quote: "以往光配置环境就耗费大量时间，低效又繁琐。使用 MonkeyCode 后省去大量无效劳动，开箱即用，可直接专注业务开发，流程顺畅，大幅提升开发体验与效率。",
-          name: "时光旅人",
-          role: "独立开发者",
-        },
-        darkStreet: {
-          quote: "上手零门槛，注册就能用，关键还免费。不用安装任何环境，打开浏览器就能在线编程，从需求到开发、测试到交付，包括终端调试和代码提交，几轮对话就能全部搞定。再也不用背着电脑到处跑了。",
-          name: "不开灯的街",
-          role: "技术负责人",
-        },
-        xiaotantan: {
-          quote: "MonkeyCode 是一款 AI 本位的开发工具，提供可落地的 AI + Dev 全链路开发能力。它不仅能帮助我写代码，还能理解项目、执行任务、协助调试，让我把更多时间和精力留给创意。",
-          name: "小谈谈",
-          role: "OPC 创业者",
-        },
-        nanshan: {
-          quote: "以前带新人做项目，第一步总是先花半天配环境。现在直接把需求和仓库交给 MonkeyCode，大家在同一套云端环境里推进，少了很多无意义的折腾，协作效率高很多。",
-          name: "南山",
-          role: "阿里巴巴 · 技术负责人",
-        },
-        ajie: {
-          quote: "我最看重的是它不挑设备。办公室用电脑，回家用平板，临时出门用手机看进度，任务都能接着跑。对经常要在多个场景切换的人来说，这种连续性真的很舒服。",
-          name: "阿杰",
-          role: "独立开发者",
-        },
-      },
-    },
     pricing: {
-      title: "套餐与费用",
-      subtitle: "个人用户可以直接免费使用；需要更高额度或团队能力时，可以按月或按年购买套餐。",
+      title: "商业功能（可选）",
+      subtitle: "仅在部署方实现兼容的订阅与支付后端并显式开启时显示。金额、额度和服务规则均由部署方配置。",
       recommended: "推荐",
       billing: {
         monthly: "按月购买",
@@ -2281,43 +2198,43 @@ const cn = {
       tiers: {
         free: {
           name: "基础会员",
-          monthlyUnit: "永久免费",
-          yearlyUnit: "永久免费",
+          monthlyUnit: "/ 月",
+          yearlyUnit: "/ 年",
           yearlyDiscount: "",
-          desc: "免费可用，适合轻量办公和简单开发任务。",
-          cta: "免费开始",
+          desc: "基础配置，实际能力和价格由部署方定义。",
+          cta: "查看配置",
         },
         pro: {
           name: "专业会员",
           monthlyUnit: "/ 月",
           yearlyUnit: "/ 年",
-          yearlyDiscount: "8.3 折",
-          desc: "适合日常高频使用。",
-          cta: "订阅专业会员",
+          yearlyDiscount: "",
+          desc: "扩展配置，实际能力和价格由部署方定义。",
+          cta: "查看配置",
         },
         ultra: {
           name: "旗舰会员",
           monthlyUnit: "/ 月",
           yearlyUnit: "/ 年",
-          yearlyDiscount: "8.3 折",
-          desc: "面向专业开发者和重度用户。",
-          cta: "订阅旗舰会员",
+          yearlyDiscount: "",
+          desc: "高级配置，实际能力和价格由部署方定义。",
+          cta: "查看配置",
         },
       },
       features: {
-        concurrency1: "1 个任务并发",
-        concurrency3: "3 个任务并发",
-        cloud1c4g: "云开发环境 1C / 4G",
-        cloud2c8g: "云开发环境 2C / 8G",
-        dailyQuotaBasic: "每日额度：每天 30M Token",
-        dailyQuotaPro: "每日额度：每天 100M Token",
-        dailyQuotaUltra: "每日额度：每天 300M Token",
+        concurrency1: "任务并发由部署方配置",
+        concurrency3: "任务并发由部署方配置",
+        cloud1c4g: "运行环境由部署方配置",
+        cloud2c8g: "运行环境由部署方配置",
+        dailyQuotaBasic: "模型额度由部署方配置",
+        dailyQuotaPro: "模型额度由部署方配置",
+        dailyQuotaUltra: "模型额度由部署方配置",
         modelScopeBasic: "模型范围：基础模型",
         modelScopePro: "模型范围：基础模型、专业模型",
         modelScopeUltra: "模型范围：基础模型、专业模型、旗舰模型",
-        noCredits: "不赠送积分",
-        credits10k: "每月赠送 1 万积分",
-        credits100k: "每月赠送 10 万积分",
+        noCredits: "积分策略由部署方配置",
+        credits10k: "积分策略由部署方配置",
+        credits100k: "积分策略由部署方配置",
         thirdPartyModels: "更多第三方大模型",
         enhancedCapabilities: "更多增强能力",
       },
@@ -2327,19 +2244,19 @@ const cn = {
         enhancedCapabilities: "图片识别、文档解析、联网搜索等能力，调用时消耗积分",
       },
       earn: {
-        title: "免费赚积分",
+        title: "积分活动（部署方配置）",
         items: {
           invite: {
             label: "每邀请 1 位新用户",
-            value: "+5000 积分",
+            value: "由部署方配置",
           },
           checkin: {
             label: "每日签到",
-            value: "每日 100 积分",
+            value: "由部署方配置",
           },
           article: {
             label: "征文投稿",
-            value: "1 万 - 10 万积分",
+            value: "由部署方配置",
           },
           community: {
             label: "其他社区活动",
@@ -2348,23 +2265,24 @@ const cn = {
         },
       },
       recharge: {
-        title: "充值积分",
+        title: "充值套餐（部署方配置）",
+        operatorConfigured: "部署方配置",
         items: {
           rmb10: {
-            points: "2,000 积分",
-            extra: "无折扣",
+            points: "积分数量由部署方配置",
+            extra: "价格由部署方配置",
           },
           rmb50: {
-            points: "15,000 积分",
-            extra: "6.7 折",
+            points: "积分数量由部署方配置",
+            extra: "价格由部署方配置",
           },
           rmb250: {
-            points: "100,000 积分",
-            extra: "5.0 折",
+            points: "积分数量由部署方配置",
+            extra: "价格由部署方配置",
           },
           rmb1000: {
-            points: "500,000 积分",
-            extra: "4.0 折",
+            points: "积分数量由部署方配置",
+            extra: "价格由部署方配置",
           },
         },
       },
@@ -2383,38 +2301,38 @@ const cn = {
       subtitle: "没有覆盖到的问题，可以直接进社区或者文档继续查。",
       items: {
         free: {
-          question: "真的完全免费？怎么赚钱？",
-          answer: "个人 Free tier 长期可用。我们主要通过 Pro 订阅和企业自托管商业支持赚钱，核心推理成本平台侧承担。",
+          question: "开源版包含哪些内容？",
+          answer: "本仓库按 AGPL-3.0 提供源码，不包含套餐购买、充值或支付接口。模型、计算、存储和第三方服务可能产生费用，由部署方承担并说明。",
         },
         training: {
           question: "代码会不会被拿去训练模型？",
-          answer: "默认不会。你的仓库、prompt 和输出默认不进入任何模型训练流程。自托管版本数据也不会出你的网络。",
+          answer: "项目无法替部署方或模型提供商作统一承诺。请检查当前实例的模型、日志、分析和存储配置，以及各第三方隐私条款。",
         },
         models: {
           question: "支持哪些模型？",
-          answer: "平台已接入 GPT、Claude、GLM、Kimi、MiniMax、Qwen、DeepSeek 等主流模型，也支持第三方兼容接口。",
+          answer: "可用模型由部署方配置。后端支持模型管理和兼容接口，但能否使用特定模型取决于 API、网络和提供方条款。",
         },
         offline: {
           question: "离线能用吗？",
-          answer: "主站依赖云端算力，需要网络。自托管版本可以部署在内网环境，模型也可以走本地 Ollama 或 vLLM。",
+          answer: "控制台可部署在内网。完整离线运行还需本地模型、Taskflow、运行器、镜像、Git 和存储等依赖全部可用。",
         },
         difference: {
           question: "和 Cursor / Copilot / Codex 有什么不同？",
-          answer: "它们更偏本地 IDE 插件或 CLI，环境仍然由你自己维护。MonkeyCode 是云端 agent + 云端运行时，你只需要浏览器。",
+          answer: "DevLoom 以任务、仓库和远程运行环境为中心。它需要服务端运行组件，不替代本地工具，也不对其他产品能力作保证。",
         },
         production: {
           question: "我能用在生产项目上吗？",
-          answer: "可以。所有修改都可以回到 Git PR 流程，你保留完整 review、审计和 rollback 能力。",
+          answer: "可以用于辅助生产项目，但生成代码必须经过代码审查、测试、安全评估和组织发布流程；请先在隔离环境验证。",
         },
       },
     },
     finalCta: {
       titlePrefix: "现在就开始，",
       titleHighlight: "把想法真正做出来",
-      description: "无需本地环境，无需复杂配置。打开浏览器，你就可以立刻开始第一个 AI 开发任务。",
+      description: "先完成模型、运行器、开发主机、存储和权限配置，再使用测试仓库验证完整任务流程。",
     },
     heroTerminal: {
-      title: "MonkeyCode · 开发一个网页版《我的世界》游戏",
+      title: "DevLoom · 开发一个网页版《我的世界》游戏",
       planTitle: "计划分成 3 步：",
       steps: {
         terrain: {
@@ -2445,12 +2363,12 @@ const cn = {
     hero: {
       eyebrow: "SELF HOSTING",
       title: "私有化部署",
-      subtitle: "面向需要内网部署、数据边界和统一治理的研发团队。MonkeyCode 可以部署在企业自己的基础设施内，集中管理团队成员、模型接入、开发环境和 AI 任务流程。",
+      subtitle: "面向需要内网部署、数据边界和统一治理的研发团队。DevLoom 可以部署在企业自己的基础设施内，集中管理团队成员、模型接入、开发环境和 AI 任务流程。",
     },
     actions: {
-      docs: "免费部署使用",
+      docs: "查看部署说明",
       github: "查看 GitHub",
-      contact: "咨询付费方案",
+      contact: "联系部署服务方",
       backHome: "返回首页",
     },
     sections: {
@@ -2478,13 +2396,13 @@ const cn = {
       },
       deploymentFlow: {
         title: "部署流程",
-        description: "把资源准备、控制台安装、宿主机安装和首次配置合并到一条路径里，按 6 步完成私有化部署。",
+        description: "以下步骤用于评估部署链路。仓库不包含 Taskflow、运行器、预览服务、开发镜像或宿主机安装包。",
         stepperLabel: "部署步骤",
         steps: {
           prepareResources: {
             title: "准备资源",
             body: "选择预期并发任务数，页面会直接给出控制台和开发环境宿主机的推荐配置。",
-            note: "准备两台 Linux x86 服务器，推荐 ubuntu24.04；最低配置支持 8 个并发任务。",
+            note: "以下资源仅为规划估算，不是容量承诺；请按模型、镜像、仓库大小和任务负载压测后定容。",
             calculatorTitle: "选择并发任务数",
             taskCountOption: "并发执行 {{taskCount}} 个任务",
             servers: {
@@ -2503,28 +2421,28 @@ const cn = {
             },
           },
           installConsole: {
-            title: "安装控制台",
-            body: "控制台支持在线安装和离线安装两种方式。服务器可以访问公网时，推荐使用在线安装。",
+            title: "获取控制台源码",
+            body: "先获取本仓库源码，再按 README 配置数据库、Redis、对象存储和外部运行组件。下列命令本身不会完成部署。",
             methodTabLabel: "控制台安装方式",
             methods: {
               online: {
-                title: "在线安装",
+                title: "在线获取源码",
                 recommendedBadge: "推荐",
-                description: "适合服务器可以访问公网的环境。直接执行下面命令完成控制台安装。",
+                description: "适合服务器可以访问 GitHub 的环境。命令只克隆源码；部署前仍需准备所列外部镜像和服务。",
               },
               offline: {
-                title: "离线安装",
-                description: "服务器不联网时，先在可联网环境下载离线安装包，再上传到目标服务器解压并执行安装脚本。",
+                title: "离线获取源码",
+                description: "先在联网环境下载 GitHub Release 中的源码归档，再传入目标网络。归档不包含运行器、开发镜像或安装器。",
               },
             },
           },
           installHost: {
             title: "安装宿主机",
-            body: "控制台安装完成后，绑定用于执行 AI 开发任务的宿主机。宿主机绑定命令由控制面板生成，不需要手动拼接。",
+            body: "先提供与当前控制台协议兼容的宿主机安装包和运行器，再配置 static_files 并绑定执行 AI 任务的宿主机。",
             hostSteps: {
               login: "使用管理员账号登录控制面板。",
               bind: "进入开发环境页面，点击绑定宿主机，控制面板会生成一条绑定命令。",
-              run: "在目标宿主机上执行生成的命令，完成宿主机安装和绑定。",
+              run: "确认命令引用的安装包来自受信来源，再在隔离测试宿主机上执行并验证绑定。",
             },
           },
           configureModels: {
@@ -2544,23 +2462,21 @@ const cn = {
     },
     final: {
       label: "GET STARTED",
-      title: "详细使用文档",
-      description: "部署文档会说明环境准备、安装步骤和关键配置。需要评估企业内网、模型接入或离线部署方案时，可以联系团队进一步确认。",
+      title: "仓库部署说明",
+      description: "README 和品牌替换文档列出了控制台配置与外部依赖。生产部署前请自行完成容量、安全、许可证和恢复验证。",
     },
   },
   legalPages: {
     privacy: {
       eyebrow: "PRIVACY POLICY",
       title: "隐私政策",
-      subtitle: "我们重视您的个人信息与数据安全。本页面用于说明 MonkeyCode 在提供产品与服务过程中，如何收集、使用、存储、共享和保护与您相关的信息，以及您可以如何管理这些信息。",
-      tags: ["适用于官网与控制台服务", "建议定期查看更新内容"],
+      subtitle: "DevLoom 是开源软件。实际运营本部署实例的组织或个人负责个人信息处理；本页面说明软件的默认能力，部署方应在对外提供服务前按实际配置修订并公布。",
+      tags: ["开源软件默认说明", "部署方应补充主体与联系方式"],
       contact: {
         prefix: "官方渠道：",
-        chaitin: "长亭科技官网",
+        repository: "DevLoom GitHub 仓库",
         or: " 或 ",
-        baizhi: "长亭百智云官网",
-        cyberserval: "CyberServal 官网",
-        safelineWaf: "SafeLine WAF",
+        support: "DevLoom 问题与支持",
         suffix: "。",
       },
       sections: [
@@ -2568,86 +2484,86 @@ const cn = {
           id: "collection",
           title: "我们可能收集的信息",
           content: [
-            "为提供账号注册、登录认证、任务协作、项目管理、支付结算、消息通知和客户支持等服务，我们可能收集与您相关的必要信息。",
+            "部署方启用账号、任务、项目、通知和支持功能时，可能通过 DevLoom 处理与您相关的必要信息。具体范围取决于部署配置。",
           ],
           items: [
             "账号信息：如昵称、邮箱地址、头像、团队归属、登录状态等。",
             "身份认证信息：如密码摘要、绑定的第三方身份信息、验证码校验结果等。",
             "使用信息：如访问时间、操作日志、设备信息、浏览器信息、IP 地址、错误日志等。",
             "业务数据：如项目、任务、仓库连接信息、模型选择、配置项以及您主动提交的内容。",
-            "客服与反馈信息：如您在工单、邮件、社群或反馈表单中提交的信息。",
+            "支持与反馈信息：如您向部署方或项目社区提交的信息。",
           ],
         },
         {
           id: "usage",
           title: "我们如何使用这些信息",
           items: [
-            "用于创建、维护和验证您的平台账号与团队身份。",
-            "用于提供 AI 开发、任务执行、协作管理、通知提醒等核心功能。",
-            "用于保障服务稳定性与安全性，包括风险识别、故障排查、审计追踪和异常处理。",
-            "用于改进产品体验，如统计分析、性能优化、功能迭代与服务质量提升。",
-            "在符合法律法规要求的前提下，用于履行合规义务或回应监管要求。",
+            "由部署方创建、维护和验证账号与团队身份。",
+            "执行 AI 开发、任务运行、协作管理和通知等已启用功能。",
+            "由部署方开展故障排查、安全审计、备份恢复和异常处理。",
+            "在部署方启用统计功能时分析性能和使用情况。",
+            "依法履行适用于部署方的合规义务。",
           ],
-          note: "我们仅在实现上述目的所必需的范围内处理个人信息，并尽量采用去标识化、权限隔离和最小化访问策略来降低风险。",
+          note: "部署方应遵循目的明确、最小必要和最小权限原则，并向用户说明实际启用的处理活动。",
         },
         {
           id: "sharing",
           title: "信息共享、转让与公开披露",
           content: [
-            "除法律法规另有规定，或为实现服务所必需外，我们不会向无关第三方出售您的个人信息。",
+            "DevLoom 项目维护者不会接收自托管实例中的业务数据。部署方是否与第三方共享数据，取决于其实际配置和适用法律。",
           ],
           items: [
-            "经您授权或主动选择后，与第三方平台或服务提供方进行必要的数据交互。",
-            "为完成支付、邮件发送、云资源调度、身份认证等基础能力，由受托服务商提供支持。",
-            "在法律法规、司法机关或监管机构依法要求下进行披露。",
+            "模型提供方、Git 平台、身份提供方、邮件、对象存储、日志和云资源服务可能接收完成请求所需的数据。",
+            "部署方应核对第三方服务条款、数据地域、保留周期和跨境传输要求。",
+            "部署方可能根据法律法规或有权机关的要求披露信息。",
           ],
         },
         {
           id: "storage",
           title: "信息存储与安全保护",
           items: [
-            "我们会采取访问控制、传输加密、日志审计、备份恢复等合理安全措施保护数据。",
-            "您的信息会在实现业务目的所需的最短期限内保存，超期后将按规则删除或匿名化处理。",
-            "如发生安全事件，我们会根据法律法规要求及时评估影响并采取补救措施。",
+            "部署方应配置访问控制、传输加密、日志审计、备份恢复和密钥管理等安全措施。",
+            "数据保存位置和期限由部署方、数据库、对象存储及所接入的第三方服务共同决定。",
+            "安全事件的响应、通知和补救责任由部署方依据适用法律承担。",
           ],
         },
         {
           id: "rights",
           title: "您享有的权利",
-          content: ["在法律法规允许的范围内，您可以通过平台功能或联系我们行使以下权利："],
+          content: ["在适用法律允许的范围内，您可以通过实例内功能或联系实际部署方向运营者行使以下权利："],
           items: [
             "查询、访问和更正您的账号资料。",
             "绑定、修改或删除部分账号信息与身份信息。",
             "注销账号，或在符合法律规定的情况下申请删除相关个人信息。",
-            "对我们的信息处理规则提出意见、解释请求或投诉建议。",
+            "向部署方提出解释请求、异议、投诉或撤回同意。",
           ],
         },
         {
           id: "cookies",
           title: "Cookies、会话与日志信息",
           content: [
-            "为维持登录状态、提升访问效率并分析服务运行情况，我们可能使用 Cookies、本地存储、会话标识符以及服务日志。您可通过浏览器设置进行控制，但部分功能可能因此无法正常使用。",
+            "软件可使用 Cookies、本地存储和会话标识维持登录状态，也可按部署配置记录服务日志。禁用必要存储可能导致登录或控制台功能不可用。",
           ],
         },
         {
           id: "children",
           title: "未成年人保护",
           content: [
-            "本平台主要面向具备相应民事行为能力的用户和企业研发团队。若您为未成年人，请在监护人陪同下阅读并决定是否使用相关服务。",
+            "软件主要面向研发人员和团队。部署方向未成年人提供服务前，应实施适用法律要求的年龄核验和监护人同意机制。",
           ],
         },
         {
           id: "updates",
           title: "政策更新",
           content: [
-            "我们可能根据业务变化、产品升级或法律法规要求适时修订本隐私政策。更新后的版本会发布在本页面，并自发布之日起生效。若变更涉及您的重大权益，我们会通过合理方式向您提示。",
+            "项目可能随软件能力更新此默认说明；部署方应同步维护其对外发布的隐私政策，并就重大变更依法通知用户。",
           ],
         },
         {
           id: "contact",
           title: "联系我们",
           content: [
-            "如您对本隐私政策或个人信息处理事项有任何疑问、意见或投诉建议，可通过官方渠道与我们联系。",
+            "个人信息请求应优先提交给实际部署方。软件缺陷和默认行为问题可通过项目官方渠道反馈。",
           ],
         },
       ],
@@ -2655,15 +2571,13 @@ const cn = {
     userAgreement: {
       eyebrow: "USER AGREEMENT",
       title: "用户协议",
-      subtitle: "本协议用于说明您在使用 MonkeyCode 及相关服务时应遵守的规则，以及平台与您之间的权利义务关系。请在使用前认真阅读。",
-      tags: ["适用于官网与控制台服务", "使用服务即视为同意本协议"],
+      subtitle: "DevLoom 是按 AGPL-3.0 发布的开源软件。本协议是默认使用规则模板；实际部署方应补充运营主体、服务范围和适用法律后再向用户发布。",
+      tags: ["开源软件默认条款", "部署方应按实际服务修订"],
       contact: {
         prefix: "官方渠道：",
-        chaitin: "长亭科技官网",
+        repository: "DevLoom GitHub 仓库",
         or: " 或 ",
-        baizhi: "长亭百智云官网",
-        cyberserval: "CyberServal 官网",
-        safelineWaf: "SafeLine WAF",
+        support: "DevLoom 问题与支持",
         suffix: "。",
       },
       sections: [
@@ -2671,8 +2585,8 @@ const cn = {
           id: "scope",
           title: "协议适用范围",
           content: [
-            "本协议适用于您访问、注册、登录或使用 MonkeyCode 智能开发平台及其相关网站、控制台、工具和服务的全部行为。",
-            "您在使用平台前，应仔细阅读并理解本协议内容。您开始使用平台，即视为已阅读并同意接受本协议约束。",
+            "本协议适用于您使用当前部署实例的网站、控制台、客户端和相关工具的行为。",
+            "软件许可适用 AGPL-3.0；实例运营、账号和托管服务由实际部署方负责。",
           ],
         },
         {
@@ -2681,9 +2595,9 @@ const cn = {
           items: [
             "您应提供真实、准确、完整的注册信息，并及时更新。",
             "您应妥善保管账号、密码及登录凭证，并对账号下的行为承担相应责任。",
-            "未经平台书面许可，您不得出租、出借、转让或售卖账号。",
-            "如发现账号异常、被盗用或存在安全风险，应及时通知平台。",
-            "账号仅限在合法、合规且经平台授权的范围内使用；如账号被用于违规、滥用、攻击、刷量或其他恶意目的，平台有权对账号采取限制、冻结或封禁等措施。",
+            "未经部署方许可，您不得出租、出借、转让或售卖账号。",
+            "如发现账号异常、被盗用或存在安全风险，应及时通知部署方。",
+            "账号仅限合法、合规使用；部署方可按其已公布规则处理违规、滥用、攻击或恶意调用。",
           ],
         },
         {
@@ -2691,8 +2605,8 @@ const cn = {
           title: "服务内容与变更",
           items: [
             "平台提供 AI 开发、任务执行、项目协作、代码审查及相关辅助功能。",
-            "平台有权根据业务发展、合规要求或产品升级调整服务内容、收费策略、功能路径或技术方案。",
-            "平台会尽力保持服务连续稳定，但不对因维护、升级、网络波动或不可抗力造成的短时中断承担违约责任。",
+            "可用功能取决于部署方配置的模型、运行器、存储、网络和第三方服务。",
+            "开源项目不承诺特定可用性、性能或持续运营；部署方应另行说明其服务级别。",
           ],
         },
         {
@@ -2705,10 +2619,10 @@ const cn = {
             "攻击、干扰、绕过或破坏平台系统、接口、安全机制或服务稳定性。",
             "利用平台从事未经授权的数据抓取、作弊刷量、恶意调用或其他不正当行为。",
             "侵犯他人的知识产权、商业秘密、个人信息或其他合法权益。",
-            "利用 MonkeyCode 制造、传播或协助开发带有网络攻击、入侵破坏、恶意控制、漏洞利用等性质的软件、脚本或工具。",
-            "直接使用 MonkeyCode 或借助平台生成内容发起网络攻击、渗透破坏、恶意扫描、批量漏洞利用、拒绝服务攻击或其他危害网络与信息系统安全的行为。",
-            "以盗取、冒用、转售、共享、绕过限制或其他未经授权的方式使用 MonkeyCode 的 API Token、账号能力或平台资源，并将其提供给其他 AI 工具、脚本、服务或第三方继续调用。",
-            "通过批量注册、伪造身份、作弊邀请、脚本刷量、异常设备或其他恶意方式套取、盗刷、骗取邀请注册积分、活动奖励、补贴或其他平台权益。",
+            "利用 DevLoom 制造、传播或协助开发带有网络攻击、入侵破坏、恶意控制、漏洞利用等性质的软件、脚本或工具。",
+            "直接使用 DevLoom 或借助平台生成内容发起网络攻击、渗透破坏、恶意扫描、批量漏洞利用、拒绝服务攻击或其他危害网络与信息系统安全的行为。",
+            "以盗取、冒用、转售、共享、绕过限制或其他未经授权的方式使用 DevLoom 的 API Token、账号能力或平台资源，并将其提供给其他 AI 工具、脚本、服务或第三方继续调用。",
+            "通过批量注册、伪造身份、脚本刷量或异常设备绕过部署方的访问控制和资源限制。",
           ],
         },
         {
@@ -2717,23 +2631,23 @@ const cn = {
           items: [
             "您对自行上传、提交、输入或发布的内容依法享有相应权利，并应确保其来源合法。",
             "为向您提供服务，您授权平台在必要范围内对相关内容进行存储、处理、传输与展示。",
-            "平台及其相关标识、页面设计、代码、文档和服务能力的知识产权归平台或权利人所有。",
-            "未经授权，任何人不得对平台内容进行复制、修改、反向工程、传播或商业化利用。",
+            "DevLoom 源代码按 AGPL-3.0 授权；第三方依赖、模型、字体、图标和其他资产适用各自许可。",
+            "项目名称、标识及第三方商标不因开源许可自动授予商标使用权。",
           ],
         },
         {
           id: "fees",
-          title: "费用与结算",
+          title: "第三方服务与成本",
           content: [
-            "如平台部分服务涉及付费，您应按照页面展示或双方约定的规则完成购买、充值、结算或续费。",
-            "除法律法规另有规定或平台明确说明外，已支付费用通常不支持无理由退还。",
+            "开源仓库不提供套餐、充值或支付结算接口。部署方接入的模型、云资源、Git、邮件或其他第三方服务可能产生费用。",
+            "费用标准、结算和退款规则由部署方或第三方服务商另行说明，DevLoom 项目维护者不参与相关交易。",
           ],
         },
         {
           id: "liability",
           title: "责任限制",
           items: [
-            "平台将尽合理努力保障服务可用性与结果质量，但 AI 生成内容可能存在偏差、遗漏或不完全准确，您应自行判断与复核。",
+            "软件按现状提供，不承诺无错误、持续可用或适用于特定目的；AI 生成内容可能存在偏差、遗漏或不准确，您应自行复核。",
             "对于因您违反本协议、提供不实信息、错误操作或第三方原因造成的损失，平台不承担责任。",
             "在法律允许范围内，平台对间接损失、预期利益损失、数据附带损失不承担责任。",
           ],
@@ -2747,15 +2661,15 @@ const cn = {
           items: [
             "如您违反本协议或相关规则，平台有权视情节采取警示、限制功能、暂停服务、封禁账号等措施。",
             "您可依据平台提供的路径停止使用相关服务；账号注销后，平台将按规则处理相关数据。",
-            "如平台认定您存在违规、滥用、欺诈、攻击、盗用资源或其他危害平台、用户或第三方安全与权益的行为，平台有权在不事先通知的情况下，对相关账号采取临时限制、永久封禁、冻结权益、清除异常奖励、终止服务等处理措施，并保留追究法律责任的权利。",
-            "前述可导致封号或其他处置的行为，包括但不限于：使用 MonkeyCode 制造带有网络攻击性质的软件，直接使用 MonkeyCode 发起网络攻击，盗取或冒用 MonkeyCode API Token 供其他 AI 工具继续调用，以及通过批量注册、作弊邀请、脚本刷量等恶意行为盗刷邀请注册积分或其他平台权益。",
+            "部署方可根据已公布规则，对违规、滥用、攻击或盗用资源的账号采取临时限制、封禁或终止服务等措施。",
+            "可能触发处置的行为包括发起网络攻击、盗取凭证、绕过访问控制、恶意消耗资源或侵犯第三方权益。",
           ],
         },
         {
           id: "contact",
           title: "联系我们",
           content: [
-            "若您对本协议有任何疑问、建议或投诉，可通过官方渠道与我们联系。",
+            "账号或服务争议应联系实际部署方；软件许可、代码和默认行为问题可通过项目官方渠道反馈。",
           ],
         },
       ],
@@ -3767,7 +3681,7 @@ const cn = {
     },
   },
   consoleTasks: {
-    title: "MonkeyCode 智能任务",
+    title: "DevLoom 智能任务",
     hover: {
       taskName: "任务名称",
       taskContent: "任务内容",
@@ -3818,7 +3732,7 @@ const cn = {
   },
   taskWorkflow: {
     input: {
-      placeholder: "你想让 MonkeyCode 做什么？例如：开发一个小游戏、实现一个新功能、做数据分析、做技术调研、写毕业论文等等。。。",
+      placeholder: "你想让 DevLoom 做什么？例如：开发一个小游戏、实现一个新功能、做数据分析、做技术调研、写毕业论文等等。。。",
       code: "代码",
       clearSelection: "清空选择",
       zipFile: "ZIP 文件",
@@ -3910,6 +3824,8 @@ const cn = {
       team: "团队模型",
       paid: "付费模型",
       paidUsage: "消耗积分使用",
+      public: "公共模型",
+      operatorConfigured: "由部署方配置",
       mine: "我的模型",
       recommended: "推荐",
       select: "选择模型",
@@ -3918,6 +3834,7 @@ const cn = {
       basic: "基础会员",
       pro: "专业会员",
       ultra: "旗舰会员",
+      openSource: "开源版",
     },
     skill: {
       all: "全部",
@@ -4023,7 +3940,7 @@ const cn = {
         publishWebsite: {
           button: "发布",
           title: "发布 Web 应用",
-          description: "发布会将当前任务所作的 Web 应用打包发布到 MonkeyCode 作品集，发布后将可以公开访问。",
+          description: "发布会将当前任务所作的 Web 应用打包发布到 DevLoom 作品集，发布后将可以公开访问。",
           confirm: "确认发布",
         },
       },

@@ -17,7 +17,7 @@ const (
 	ModelProviderDeepSeek    ModelProvider = "DeepSeek"
 	ModelProviderMoonshot    ModelProvider = "Moonshot"
 	ModelProviderAzureOpenAI ModelProvider = "AzureOpenAI"
-	ModelProviderBaiZhiCloud ModelProvider = "BaiZhiCloud"
+	ModelProviderCompatible ModelProvider = "Compatible"
 	ModelProviderHunyuan     ModelProvider = "Hunyuan"
 	ModelProviderBaiLian     ModelProvider = "BaiLian"
 	ModelProviderVolcengine  ModelProvider = "Volcengine"

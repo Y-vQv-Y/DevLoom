@@ -5,11 +5,11 @@ ENV CGO_ENABLED=0
 
 COPY go.mod go.sum ./
 
-ARG GOMODCACHE
+ARG GOMODCACHE=/go/pkg/mod
 RUN --mount=type=cache,target=${GOMODCACHE} \
     go mod download
 
-ARG TARGETOS TARGETARCH GOCACHE
+ARG TARGETOS TARGETARCH GOCACHE=/root/.cache/go-build
 RUN --mount=type=bind,target=. \
 --mount=type=cache,target=${GOMODCACHE} \
 --mount=type=cache,target=${GOCACHE} \

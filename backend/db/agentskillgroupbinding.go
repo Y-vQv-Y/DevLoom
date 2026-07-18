@@ -9,9 +9,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/chaitin/MonkeyCode/backend/db/agentskill"
-	"github.com/chaitin/MonkeyCode/backend/db/agentskillgroupbinding"
-	"github.com/chaitin/MonkeyCode/backend/db/teamgroup"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/agentskill"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/agentskillgroupbinding"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamgroup"
 	"github.com/google/uuid"
 )
 

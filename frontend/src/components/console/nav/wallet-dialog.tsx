@@ -74,11 +74,11 @@ export default function WalletDialog() {
 
   const formatPoints = (value: number) => Math.ceil(value).toLocaleString()
   const getInvitationInitial = (name?: string) => name?.trim().charAt(0).toUpperCase() || "?"
-  const invitationLink = `https://monkeycode-ai.com/?ic=${user.id}`
+  const invitationLink = `${window.location.origin}/?ic=${user.id}`
   const rechargeOptions = CREDIT_RECHARGE_PACKAGES.map((option) => ({
     ...option,
     amount: getCreditRechargeAmount(pricingRegion, option),
-  }))
+  })).filter((option): option is typeof option & { amount: number } => option.amount !== null)
   const navLabels = {
     earn: t("walletDialog.nav.earn"),
     usage: t("walletDialog.nav.usage"),
@@ -388,17 +388,21 @@ export default function WalletDialog() {
       <div className="rounded-md border p-4">
         <div className="flex items-center justify-between gap-3">
           <div className="text-md font-medium">{t("walletDialog.earn.balanceTitle")}</div>
-          <Button
-            variant="default"
-            size="sm"
-            className="px-3"
-            onClick={() => {
-              setSelectedRechargeCredits(null)
-              setShowRechargeDialog(true)
-            }}
-          >
-            {t("walletDialog.earn.recharge")}
-          </Button>
+          {rechargeOptions.length > 0 ? (
+            <Button
+              variant="default"
+              size="sm"
+              className="px-3"
+              onClick={() => {
+                setSelectedRechargeCredits(null)
+                setShowRechargeDialog(true)
+              }}
+            >
+              {t("walletDialog.earn.recharge")}
+            </Button>
+          ) : (
+            <span className="text-xs text-muted-foreground">{t("walletDialog.earn.billingNotConfigured")}</span>
+          )}
         </div>
         <div className="mt-4 grid gap-3">
           <div className="rounded-md bg-muted/40 px-4 py-3">

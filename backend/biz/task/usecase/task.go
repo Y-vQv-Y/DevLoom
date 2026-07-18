@@ -17,25 +17,25 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/biz/agentresource"
-	gituc "github.com/chaitin/MonkeyCode/backend/biz/git/usecase"
-	"github.com/chaitin/MonkeyCode/backend/biz/task/service"
-	vmidle "github.com/chaitin/MonkeyCode/backend/biz/vmidle/usecase"
-	"github.com/chaitin/MonkeyCode/backend/config"
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/db/teammember"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/errcode"
-	"github.com/chaitin/MonkeyCode/backend/pkg/cvt"
-	"github.com/chaitin/MonkeyCode/backend/pkg/entx"
-	"github.com/chaitin/MonkeyCode/backend/pkg/git/giturl"
-	"github.com/chaitin/MonkeyCode/backend/pkg/lifecycle"
-	"github.com/chaitin/MonkeyCode/backend/pkg/loki"
-	"github.com/chaitin/MonkeyCode/backend/pkg/notify/dispatcher"
-	"github.com/chaitin/MonkeyCode/backend/pkg/taskflow"
-	"github.com/chaitin/MonkeyCode/backend/pkg/vmstatus"
-	"github.com/chaitin/MonkeyCode/backend/templates"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/agentresource"
+	gituc "github.com/Y-vQv-Y/DevLoom/backend/biz/git/usecase"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/task/service"
+	vmidle "github.com/Y-vQv-Y/DevLoom/backend/biz/vmidle/usecase"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teammember"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/errcode"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/cvt"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/entx"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/git/giturl"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/lifecycle"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/loki"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/notify/dispatcher"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/taskflow"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/vmstatus"
+	"github.com/Y-vQv-Y/DevLoom/backend/templates"
 )
 
 const defaultCreateReqTTL = 10 * time.Minute
@@ -221,7 +221,7 @@ func (a *TaskUsecase) SwitchModel(ctx context.Context, user *domain.User, taskID
 		"OPENCODE_DISABLE_LSP_DOWNLOAD":    "true",
 	}
 	if model.InterfaceType != "" {
-		envs["MCAI_MODEL_PROVIDER_TYPE"] = model.InterfaceType
+		envs["DEVLOOM_MODEL_PROVIDER_TYPE"] = model.InterfaceType
 	}
 
 	var fromModelID *uuid.UUID
@@ -440,7 +440,7 @@ func (a *TaskUsecase) Continue(ctx context.Context, user *domain.User, id uuid.U
 	}
 
 	// 缓存最近一次 user-input，供通知推送使用
-	a.redis.Set(ctx, fmt.Sprintf("mcai:task:%s:last_input", id.String()), string(req.Content), 24*time.Hour)
+	a.redis.Set(ctx, fmt.Sprintf("devloom:task:%s:last_input", id.String()), string(req.Content), 24*time.Hour)
 
 	return nil
 }
@@ -448,13 +448,13 @@ func (a *TaskUsecase) Continue(ctx context.Context, user *domain.User, id uuid.U
 // IncrUserInputCount 记录用户输入次数到 Redis Hash，并按天计数
 func (a *TaskUsecase) IncrUserInputCount(ctx context.Context, userID, taskID uuid.UUID) error {
 	// 按 task 维度计数（总量，不设过期）
-	key := fmt.Sprintf("mcai:user:%s:input_count", userID.String())
+	key := fmt.Sprintf("devloom:user:%s:input_count", userID.String())
 	if err := a.redis.HIncrBy(ctx, key, taskID.String(), 1).Err(); err != nil {
 		return err
 	}
 
 	// 按天计数（用于时间范围统计，90 天过期）
-	dailyKey := fmt.Sprintf("mcai:user:%s:input_daily:%s", userID.String(), time.Now().Format("2006-01-02"))
+	dailyKey := fmt.Sprintf("devloom:user:%s:input_daily:%s", userID.String(), time.Now().Format("2006-01-02"))
 	pipe := a.redis.Pipeline()
 	pipe.Incr(ctx, dailyKey)
 	pipe.Expire(ctx, dailyKey, 90*24*time.Hour)
@@ -628,7 +628,7 @@ func (a *TaskUsecase) Create(ctx context.Context, user *domain.User, req domain.
 
 	mcps := a.buildMCPConfigs(t.ID, runtimeToken)
 
-	// DEBUG: 把准备透传给 taskflow → codingmatrix 的整组 ConfigFile
+	// DEBUG: 把准备透传给 taskflow → devloom 的整组 ConfigFile
 	// marshal 成一个 JSON 串、一行日志打出来。仅在 DEBUG 级别开启，
 	// 生产无噪声。
 	if a.logger.Enabled(ctx, slog.LevelDebug) {
@@ -736,7 +736,7 @@ func (a *TaskUsecase) buildMCPConfigs(taskID uuid.UUID, token string) []taskflow
 	mcps := []taskflow.McpServerConfig{
 		{
 			Type: "http",
-			Name: "mcaiBuiltin",
+			Name: "devloomBuiltin",
 			Url:  proto.String(fmt.Sprintf("http://127.0.0.1:65510/mcp?task_id=%s", taskID.String())),
 		},
 	}
@@ -744,7 +744,7 @@ func (a *TaskUsecase) buildMCPConfigs(taskID uuid.UUID, token string) []taskflow
 	if token != "" {
 		mcps = append(mcps, taskflow.McpServerConfig{
 			Type: "http",
-			Name: "monkeycode-ai",
+			Name: "devloom",
 			Url:  proto.String(fmt.Sprintf("%s/mcp", strings.TrimRight(a.cfg.Server.BaseURL, "/"))),
 			Headers: []*taskflow.McpHttpHeader{
 				{
@@ -786,14 +786,14 @@ func modelRuntimeDefaults(m *db.Model) (thinking bool, contextLimit int, outputL
 	return thinking, contextLimit, outputLimit
 }
 
-// agentRuleBaseDir / agentSkillBaseDir / agentPluginBaseDir 是 codingmatrix 在
+// agentRuleBaseDir / agentSkillBaseDir / agentPluginBaseDir 是 devloom 在
 // VM 内部约定的 .ai-ready/ 投放路径。rule 走 .md 平铺；skill / plugin 解 zip
 // 后按目录结构展开；plugin 的 entry 字段再以 file:// 注入到 opencode.json 的
 // `plugin` 数组里。Claude / Codex 不消费 plugin（spec §6.3）。
 const (
-	agentRuleBaseDir   = "${HOME}/.codingmatrix/project-tpl/.ai-ready/rules/"
-	agentSkillBaseDir  = "${HOME}/.codingmatrix/project-tpl/.ai-ready/skills/"
-	agentPluginBaseDir = "${HOME}/.codingmatrix/project-tpl/.ai-ready/plugins/"
+	agentRuleBaseDir   = "${HOME}/.devloom/project-tpl/.ai-ready/rules/"
+	agentSkillBaseDir  = "${HOME}/.devloom/project-tpl/.ai-ready/skills/"
+	agentPluginBaseDir = "${HOME}/.devloom/project-tpl/.ai-ready/plugins/"
 )
 
 // parseStringUUIDs 把字符串切片解析成 uuid.UUID 切片。单条解析失败时打一条
@@ -934,7 +934,7 @@ func (a *TaskUsecase) getCodingConfigs(ctx context.Context, cli consts.CliName, 
 		"npm_package":      npmPackage,
 		"thinking_enabled": thinkingEnabled,
 		"support_image":    m.SupportImage,
-		"force_reasoning":  strings.HasPrefix(m.Model, "monkeycode-ultra"),
+		"force_reasoning":  strings.HasPrefix(m.Model, "devloom-ultra"),
 		"context_limit":    contextLimit,
 		"output_limit":     outputLimit,
 	}); err != nil {
@@ -948,7 +948,7 @@ func (a *TaskUsecase) getCodingConfigs(ctx context.Context, cli consts.CliName, 
 
 	// 注入 agent-resource：rule 仍走 ConfigFile inline（DB content 小，对
 	// gRPC 4MiB ceiling 不构成压力）；skill / plugin 走 AgentResources
-	// presigned URL，由 codingmatrix agent 在 VM 内 HTTP GET + 解压。
+	// presigned URL，由 devloom agent 在 VM 内 HTTP GET + 解压。
 	// resolver==nil 时（zero-value TaskUsecase{} 单测）整个块跳过。
 	var agentRes *taskflow.AgentResources
 	if a.resolver == nil {

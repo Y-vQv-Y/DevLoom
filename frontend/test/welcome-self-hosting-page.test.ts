@@ -40,16 +40,16 @@ test("私有化部署页面提供中英文文案", () => {
   assert.equal(en.selfHostingPage?.hero.title, "Private deployment");
   assert.equal(cn.selfHostingPage?.sections.scenarios.title, "适用场景");
   assert.equal(en.selfHostingPage?.sections.scenarios.title, "When to use it");
-  assert.equal(cn.selfHostingPage?.actions.docs, "免费部署使用");
-  assert.equal(en.selfHostingPage?.actions.docs, "Deploy for free");
-  assert.equal(cn.selfHostingPage?.actions.contact, "咨询付费方案");
-  assert.equal(en.selfHostingPage?.actions.contact, "Discuss paid plans");
+  assert.equal(cn.selfHostingPage?.actions.docs, "查看部署说明");
+  assert.equal(en.selfHostingPage?.actions.docs, "View deployment notes");
+  assert.equal(cn.selfHostingPage?.actions.contact, "联系部署服务方");
+  assert.equal(en.selfHostingPage?.actions.contact, "Contact the deployment provider");
 });
 
 test("私有化部署页面 hero 不展示部署路径卡片", () => {
   assert.doesNotMatch(sourceFiles.page, /selfHostingPage\.hero\.panelTitle/);
   assert.doesNotMatch(sourceFiles.page, /selfHostingPage\.hero\.terminal|selfHostingPage\.hero\.stats/);
-  assert.doesNotMatch(sourceFiles.page, /monkey deploy --self-hosted|self-hosted/);
+  assert.doesNotMatch(sourceFiles.page, /self-hosted/);
 
   assert.equal(cn.selfHostingPage?.hero.panelTitle, undefined);
   assert.equal(en.selfHostingPage?.hero.panelTitle, undefined);
@@ -110,21 +110,21 @@ test("私有化部署流程使用步骤条和时间轴布局", () => {
 
 test("私有化部署流程直接展示控制台和宿主机安装方法", () => {
   assert.match(sourceFiles.page, /const ONLINE_INSTALL_COMMAND =/);
-  assert.match(sourceFiles.page, /bash -c "\$\(curl -fsSL 'https:\/\/monkeycode-ai\.com\/online\/install'\)"/);
+  assert.match(sourceFiles.page, /git clone \$\{BRAND\.repositoryUrl}/);
   assert.match(sourceFiles.page, /const OFFLINE_INSTALL_COMMAND =/);
-  assert.match(sourceFiles.page, /https:\/\/monkeycode-release\.oss-cn-hangzhou\.aliyuncs\.com\/public\/offline-package\/monkeycode-offline-linux-amd64\.tgz/);
-  assert.match(sourceFiles.page, /tar -zxvf monkeycode-offline-linux-amd64\.tgz/);
-  assert.match(sourceFiles.page, /sh install\.sh/);
+  assert.match(sourceFiles.page, /\$\{BRAND\.releasesUrl}\/latest\/download\/devloom-source\.tar\.gz/);
+  assert.match(sourceFiles.page, /tar -zxvf devloom-source\.tar\.gz/);
+  assert.doesNotMatch(sourceFiles.page, /install\.sh|devloom\.com/);
   assert.match(sourceFiles.page, /hostInstallStepKeys/);
   assert.match(sourceFiles.page, /role="tablist"/);
   assert.match(sourceFiles.page, /setInstallMethod/);
   assert.match(sourceFiles.page, /installMethod === key/);
   assert.match(sourceFiles.page, /installMethod === "online"/);
 
-  assert.equal(cn.selfHostingPage?.sections.deploymentFlow.steps.installConsole.title, "安装控制台");
-  assert.equal(en.selfHostingPage?.sections.deploymentFlow.steps.installConsole.title, "Install the console");
-  assert.equal(cn.selfHostingPage?.sections.deploymentFlow.steps.installConsole.methods.online.title, "在线安装");
-  assert.equal(en.selfHostingPage?.sections.deploymentFlow.steps.installConsole.methods.online.title, "Online install");
+  assert.equal(cn.selfHostingPage?.sections.deploymentFlow.steps.installConsole.title, "获取控制台源码");
+  assert.equal(en.selfHostingPage?.sections.deploymentFlow.steps.installConsole.title, "Obtain the console source");
+  assert.equal(cn.selfHostingPage?.sections.deploymentFlow.steps.installConsole.methods.online.title, "在线获取源码");
+  assert.equal(en.selfHostingPage?.sections.deploymentFlow.steps.installConsole.methods.online.title, "Online source checkout");
   assert.equal(cn.selfHostingPage?.sections.deploymentFlow.steps.installConsole.methods.online.recommendedBadge, "推荐");
   assert.equal(en.selfHostingPage?.sections.deploymentFlow.steps.installConsole.methods.online.recommendedBadge, "Recommended");
   assert.doesNotMatch(cn.selfHostingPage?.sections.deploymentFlow.steps.installConsole.methods.online.title ?? "", /一键/);
@@ -156,8 +156,8 @@ test("私有化部署流程在准备资源步骤提供资源计算器", () => {
   const prepareResources = cn.selfHostingPage?.sections.deploymentFlow.steps.prepareResources;
   assert.equal(prepareResources?.title, "准备资源");
   assert.equal(en.selfHostingPage?.sections.deploymentFlow.steps.prepareResources.title, "Prepare resources");
-  assert.match(prepareResources?.note ?? "", /两台 Linux x86 服务器/);
-  assert.match(prepareResources?.note ?? "", /ubuntu24\.04/i);
+  assert.match(prepareResources?.note ?? "", /规划估算/);
+  assert.match(prepareResources?.note ?? "", /压测后定容/);
   assert.equal(prepareResources?.calculatorTitle, "选择并发任务数");
   assert.equal(prepareResources?.taskCountOption, "并发执行 {{taskCount}} 个任务");
   assert.equal(en.selfHostingPage?.sections.deploymentFlow.steps.prepareResources.taskCountOption, "Run {{taskCount}} tasks concurrently");
@@ -193,6 +193,6 @@ test("私有化部署页面不展示核心能力说明", () => {
 });
 
 test("私有化部署页面底部入口指向详细使用文档", () => {
-  assert.equal(cn.selfHostingPage?.final.title, "详细使用文档");
-  assert.equal(en.selfHostingPage?.final.title, "Detailed documentation");
+  assert.equal(cn.selfHostingPage?.final.title, "仓库部署说明");
+  assert.equal(en.selfHostingPage?.final.title, "Repository deployment notes");
 });

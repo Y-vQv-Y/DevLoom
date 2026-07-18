@@ -8,6 +8,7 @@ import {
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { BRAND } from "@/config/brand";
 
 const stats = [
   { key: "free" },
@@ -45,7 +46,7 @@ const Banner = () => {
               </Link>
             </Button>
             <Button size="lg" variant="secondary" className="pixel-button h-12 border-slate-900 bg-white px-6 text-slate-900 hover:bg-slate-50" asChild>
-              <a href="https://github.com/chaitin/MonkeyCode" target="_blank" rel="noreferrer">
+              <a href={BRAND.repositoryUrl} target="_blank" rel="noreferrer">
                 <IconCodeDots className="size-4" />
                 {t("welcomeHome.banner.actions.repo")}
               </a>
@@ -83,10 +84,10 @@ const Banner = () => {
           <div className="pixel-panel pixel-grid border-slate-900 bg-[#fffdf8] p-3 sm:p-4">
             <div className="flex items-center justify-between border-2 border-slate-900 bg-slate-950 px-4 py-3 text-white">
               <div className="flex items-center gap-3">
-                <img src="/logo-light.png" className="size-8 border border-white/15 bg-white p-1" alt="MonkeyCode Logo" />
+                <img src="/logo-light.png" className="size-8 border border-white/15 bg-white p-1" alt="DevLoom Logo" />
                 <div>
                   <div className="font-pixel text-[10px] text-amber-200">TASK RUNNING</div>
-                  <div className="mt-2 text-xs text-slate-300">MonkeyCode Workspace</div>
+                  <div className="mt-2 text-xs text-slate-300">DevLoom Workspace</div>
                 </div>
               </div>
               <div className="font-terminal text-2xl leading-none text-emerald-300">ONLINE</div>

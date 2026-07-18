@@ -486,7 +486,7 @@ export default function StartDevelopTaskDialog({
                     {!IS_OFFLINE_EDITION && (
                       <SelectItem value="public_host">
                         <div className="flex items-center gap-2">
-                          <span>MonkeyCode</span>
+                          <span>DevLoom</span>
                           <Badge className="!text-primary-foreground">{t("consoleProject.startTask.free")}</Badge>
                         </div>
                       </SelectItem>

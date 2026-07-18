@@ -5,8 +5,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
 )
 
 // ModelUsecase 模型配置业务逻辑接口
@@ -106,7 +106,7 @@ func (m *Model) From(src *db.Model) *Model {
 		m.Owner = &Owner{
 			ID:   src.Edges.User.ID.String(),
 			Type: consts.OwnerTypePublic,
-			Name: consts.MonkeyCodeAITeamName,
+			Name: consts.DevLoomAITeamName,
 		}
 		return m
 	}
@@ -261,7 +261,7 @@ type UpdateModelReq struct {
 }
 
 type GetProviderModelListReq struct {
-	Provider  consts.ModelProvider `json:"provider" query:"provider" validate:"required,oneof=SiliconFlow OpenAI Ollama DeepSeek Moonshot AzureOpenAI BaiZhiCloud Hunyuan BaiLian Volcengine Gemini Other"`
+	Provider  consts.ModelProvider `json:"provider" query:"provider" validate:"required,oneof=SiliconFlow OpenAI Ollama DeepSeek Moonshot AzureOpenAI Compatible Hunyuan BaiLian Volcengine Gemini Other"`
 	BaseURL   string               `json:"base_url" query:"base_url" validate:"required"`
 	APIKey    string               `json:"api_key" query:"api_key" validate:"required"`
 	APIHeader string               `json:"api_header" query:"api_header"`

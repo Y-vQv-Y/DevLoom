@@ -3,7 +3,7 @@ import test from "node:test";
 
 test("Matomo 在识别用户后记录 Console 页面且避免重复 PV", async () => {
   const queue: unknown[][] = [];
-  const location = new URL("https://monkeycode-ai.com/login");
+  const location = new URL("https://example.com/login");
 
   Object.defineProperty(globalThis, "window", {
     configurable: true,
@@ -14,7 +14,7 @@ test("Matomo 在识别用户后记录 Console 页面且避免重复 PV", async (
   });
   Object.defineProperty(globalThis, "document", {
     configurable: true,
-    value: { title: "MonkeyCode" },
+    value: { title: "DevLoom" },
   });
 
   const {
@@ -27,11 +27,11 @@ test("Matomo 在识别用户后记录 Console 页面且避免重复 PV", async (
   assert.equal(identifyMatomoUser("user-1"), true);
   assert.deepEqual(queue.at(-1), ["setUserId", "user-1"]);
 
-  location.href = "https://monkeycode-ai.com/console/tasks";
+  location.href = "https://example.com/console/tasks";
   assert.equal(observeMatomoRoute({ trackPageView: true }), true);
   assert.deepEqual(queue.slice(-3), [
-    ["setCustomUrl", "https://monkeycode-ai.com/console/tasks"],
-    ["setDocumentTitle", "monkeycode-ai.com/MonkeyCode"],
+    ["setCustomUrl", "https://example.com/console/tasks"],
+    ["setDocumentTitle", "example.com/DevLoom"],
     ["trackPageView"],
   ]);
 

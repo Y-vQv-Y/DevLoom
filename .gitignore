@@ -8,7 +8,7 @@ logs
 .codex/
 
 # Local build artifacts
-monkeycode-ai/
+devloom/
 backend/bin/
 .pnpm-store/
 frontend/.vite/

@@ -27,7 +27,7 @@ import { ArrowLeft, Eye, EyeOff } from "lucide-react"
 import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react"
 import { IS_OFFLINE_EDITION } from "@/utils/edition"
 import { Api } from "@/api/Api"
-import type { GithubComChaitinMonkeyCodeBackendDomainTeamOIDCPublicConfigResp as DomainTeamOIDCPublicConfigResp, GithubComGoYokoWebResp } from "@/api/Api"
+import type { GithubComYVQvYDevLoomBackendDomainTeamOIDCPublicConfigResp as DomainTeamOIDCPublicConfigResp, GithubComGoYokoWebResp } from "@/api/Api"
 import { useTranslation } from "react-i18next"
 import { useAppRuntime } from "@/components/app-runtime-provider"
 
@@ -47,7 +47,7 @@ export default function LoginPage({
   const [showUserPassword, setShowUserPassword] = React.useState(false)
   const [showManagerPassword, setShowManagerPassword] = React.useState(false)
   const [userLoginView, setUserLoginView] = React.useState<'choices' | 'password'>('choices')
-  const [agreedToTerms, setAgreedToTerms] = React.useState(true)
+  const [agreedToTerms, setAgreedToTerms] = React.useState(false)
   const [oauthLoggingProvider, setOauthLoggingProvider] = React.useState<OAuthProvider | null>(null)
   const [defaultOIDCConfig, setDefaultOIDCConfig] = React.useState<DomainTeamOIDCPublicConfigResp | null>(null)
   const navigate = useNavigate()
@@ -252,7 +252,7 @@ export default function LoginPage({
                               }
                             }}
                           >
-                            {t("login.choices.baizhi")}
+                            {t("login.choices.devloom")}
                           </a>
                         </Button>
                       )}
@@ -309,7 +309,7 @@ export default function LoginPage({
                             <FieldLabel htmlFor="user-email">{t("login.fields.account")}</FieldLabel>
                             <Input
                               value={userEmail}
-                              placeholder="monkeycode@example.com"
+                              placeholder="devloom@example.com"
                               onChange={(e) => setUserEmail(e.target.value)}
                               id="user-email"
                               type="email"
@@ -365,7 +365,7 @@ export default function LoginPage({
                         <FieldLabel htmlFor="email">{t("login.fields.account")}</FieldLabel>
                         <Input
                           value={teamManagerEmail}
-                          placeholder="monkeycode@example.com"
+                          placeholder="devloom@example.com"
                           onChange={(e) => setTeamManagerEmail(e.target.value)}
                           id="email"
                           type="email"

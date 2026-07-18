@@ -14,7 +14,7 @@ import (
 
 	"github.com/GoYoko/web"
 
-	"github.com/chaitin/MonkeyCode/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
 )
 
 // ParseProjectPath 从仓库 URL 解析出项目路径（path_with_namespace）

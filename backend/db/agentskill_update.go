@@ -12,10 +12,10 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
-	"github.com/chaitin/MonkeyCode/backend/db/agentskill"
-	"github.com/chaitin/MonkeyCode/backend/db/agentskillrepo"
-	"github.com/chaitin/MonkeyCode/backend/db/agentskillversion"
-	"github.com/chaitin/MonkeyCode/backend/db/predicate"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/agentskill"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/agentskillrepo"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/agentskillversion"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/predicate"
 	"github.com/google/uuid"
 )
 

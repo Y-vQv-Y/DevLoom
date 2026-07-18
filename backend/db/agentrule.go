@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/chaitin/MonkeyCode/backend/db/agentrule"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/agentrule"
 	"github.com/google/uuid"
 )
 

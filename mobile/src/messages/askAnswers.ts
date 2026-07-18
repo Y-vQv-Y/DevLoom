@@ -2,7 +2,7 @@ import type { AskQuestion } from './handler';
 
 export type AnswerMap = Record<string, string | string[]>;
 
-export const CUSTOM_ANSWER_KEY = '__monkeycode_custom_answer__';
+export const CUSTOM_ANSWER_KEY = '__devloom_custom_answer__';
 
 export function buildAskAnswers(
   questions: AskQuestion[],

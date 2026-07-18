@@ -1,20 +1,21 @@
 import type { Image, Model, Skill } from '@/api/types';
+import { COMMERCIAL_BILLING_ENABLED } from '@/features';
 
 /** 默认技能 ID（与 Web 端 src/utils/config.tsx 一致），始终勾选、不可取消。 */
 export const DEFAULT_SKILL_IDS = [
-  'MonkeyCodeOfficialPlugins/main/skills/feature-design',
-  'MonkeyCodeOfficialPlugins/main/skills/project-wiki',
-  'MonkeyCodeOfficialPlugins/main/skills/feature-implementer',
-  'MonkeyCodeOfficialPlugins/main/skills/implementation-planner',
+  'DevLoomOfficialPlugins/main/skills/feature-design',
+  'DevLoomOfficialPlugins/main/skills/project-wiki',
+  'DevLoomOfficialPlugins/main/skills/feature-implementer',
+  'DevLoomOfficialPlugins/main/skills/implementation-planner',
 ];
 
-const BUILTIN_META = new Set(['monkeycode-basic', 'monkeycode-pro', 'monkeycode-ultra']);
+const BUILTIN_META = new Set(['devloom-basic', 'devloom-pro', 'devloom-ultra']);
 
-function builtinName(model?: string): 'monkeycode-basic' | 'monkeycode-pro' | 'monkeycode-ultra' | undefined {
+function builtinName(model?: string): 'devloom-basic' | 'devloom-pro' | 'devloom-ultra' | undefined {
   const n = (model || '').toLowerCase();
-  if (n.startsWith('monkeycode-basic')) return 'monkeycode-basic';
-  if (n.startsWith('monkeycode-pro')) return 'monkeycode-pro';
-  if (n.startsWith('monkeycode-ultra')) return 'monkeycode-ultra';
+  if (n.startsWith('devloom-basic')) return 'devloom-basic';
+  if (n.startsWith('devloom-pro')) return 'devloom-pro';
+  if (n.startsWith('devloom-ultra')) return 'devloom-ultra';
   return undefined;
 }
 
@@ -24,9 +25,9 @@ function builtinName(model?: string): 'monkeycode-basic' | 'monkeycode-pro' | 'm
  */
 export function translateBuiltinNames(text: string): string {
   return text
-    .replace(/monkeycode-ultra/gi, '旗舰模型')
-    .replace(/monkeycode-pro/gi, '专业模型')
-    .replace(/monkeycode-basic/gi, '基础模型')
+    .replace(/devloom-ultra/gi, '旗舰模型')
+    .replace(/devloom-pro/gi, '专业模型')
+    .replace(/devloom-basic/gi, '基础模型')
     .replace(/\s*\/\s*/g, ' / ');
 }
 
@@ -42,16 +43,16 @@ export function modelLabel(model?: { model?: string; remark?: string } | null): 
   if (remark) return translateBuiltinNames(remark);
   // 无备注则按内置名翻译为「基础/专业/旗舰模型」
   const name = (model.model || '').toLowerCase();
-  if (name.startsWith('monkeycode-basic')) {
-    const nested = (model.model || '').slice('monkeycode-basic'.length).replace(/^\/+/, '');
+  if (name.startsWith('devloom-basic')) {
+    const nested = (model.model || '').slice('devloom-basic'.length).replace(/^\/+/, '');
     return nested ? `基础模型 / ${nested}` : '基础模型';
   }
-  if (name.startsWith('monkeycode-pro')) {
-    const nested = (model.model || '').slice('monkeycode-pro'.length).replace(/^\/+/, '');
+  if (name.startsWith('devloom-pro')) {
+    const nested = (model.model || '').slice('devloom-pro'.length).replace(/^\/+/, '');
     return nested ? `专业模型 / ${nested}` : '专业模型';
   }
-  if (name.startsWith('monkeycode-ultra')) {
-    const nested = (model.model || '').slice('monkeycode-ultra'.length).replace(/^\/+/, '');
+  if (name.startsWith('devloom-ultra')) {
+    const nested = (model.model || '').slice('devloom-ultra'.length).replace(/^\/+/, '');
     return nested ? `旗舰模型 / ${nested}` : '旗舰模型';
   }
   return translateBuiltinNames(model.model || '');
@@ -64,8 +65,9 @@ export function usableModels(models: Model[]): Model[] {
 
 /** 会员等级能否使用该内置档（基础/专业/旗舰）。 */
 function planAllowsBuiltin(builtin: ReturnType<typeof builtinName>, plan?: string): boolean {
-  if (builtin === 'monkeycode-pro') return plan === 'pro' || plan === 'flagship' || plan === 'ultra';
-  if (builtin === 'monkeycode-ultra') return plan === 'flagship' || plan === 'ultra';
+  if (!COMMERCIAL_BILLING_ENABLED) return true;
+  if (builtin === 'devloom-pro') return plan === 'pro' || plan === 'flagship' || plan === 'ultra';
+  if (builtin === 'devloom-ultra') return plan === 'flagship' || plan === 'ultra';
   return true;
 }
 
@@ -88,10 +90,10 @@ const byWeightThenName = (a: Model, b: Model) => {
  */
 export function pickDefaultModel(models: Model[], plan?: string): string {
   const planBuiltin = plan === 'pro'
-    ? 'monkeycode-pro'
+    ? 'devloom-pro'
     : plan === 'flagship' || plan === 'ultra'
-      ? 'monkeycode-ultra'
-      : 'monkeycode-basic';
+      ? 'devloom-ultra'
+      : 'devloom-basic';
 
   const planModel = models
     .filter((m) => m.id && builtinName(m.model) === planBuiltin && planAllowsModel(m, plan))
@@ -132,9 +134,9 @@ export interface ModelGroup {
 export function groupModels(models: Model[], plan?: string): ModelGroup[] {
   const supported = models.filter((m) => m.id && m.model && !m.is_hidden);
   const builtin: ModelGroup[] = ([
-    { key: 'monkeycode-basic', label: '基础模型', badge: '免费使用' },
-    { key: 'monkeycode-pro', label: '专业模型', badge: '专业会员免费' },
-    { key: 'monkeycode-ultra', label: '旗舰模型', badge: '旗舰会员免费' },
+    { key: 'devloom-basic', label: '基础模型', badge: COMMERCIAL_BILLING_ENABLED ? '免费使用' : '由部署方配置' },
+    { key: 'devloom-pro', label: '专业模型', badge: COMMERCIAL_BILLING_ENABLED ? '专业会员免费' : '由部署方配置' },
+    { key: 'devloom-ultra', label: '旗舰模型', badge: COMMERCIAL_BILLING_ENABLED ? '旗舰会员免费' : '由部署方配置' },
   ] as const)
     .filter((o) => planAllowsBuiltin(o.key, plan))
     .map((o) => ({ ...o, models: supported.filter((m) => builtinName(m.model) === o.key) }));
@@ -154,7 +156,7 @@ export function groupModels(models: Model[], plan?: string): ModelGroup[] {
 
   return [
     ...builtin,
-    { key: 'paid', label: '付费模型', badge: '消耗积分', models: paid },
+    { key: 'paid', label: COMMERCIAL_BILLING_ENABLED ? '付费模型' : '公共模型', badge: COMMERCIAL_BILLING_ENABLED ? '消耗积分' : '由部署方配置', models: paid },
     { key: 'private', label: '我的模型', models: priv },
     ...Array.from(teamMap.values()),
   ].filter((g) => g.models.length > 0);

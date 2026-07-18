@@ -55,7 +55,7 @@ func VMTransitions() map[VMState][]VMState {
 
 - [ ] **Step 3: 编译验证**
 
-Run: `cd /Users/yoko/chaitin/ai/MonkeyCode/backend && go build ./...`
+Run: `cd backend && go build ./...`
 Expected: 编译通过，无错误
 
 - [ ] **Step 4: Commit**
@@ -94,11 +94,11 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/pkg/delayqueue"
-	"github.com/chaitin/MonkeyCode/backend/pkg/entx"
-	"github.com/chaitin/MonkeyCode/backend/pkg/taskflow"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/delayqueue"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/entx"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/taskflow"
 )
 
 const (
@@ -207,7 +207,7 @@ func (h *VMRecycleHook) cleanup(ctx context.Context, logger *slog.Logger, vm *db
 		taskIDStr := metadata.TaskID.String()
 		if err := h.redis.Del(ctx,
 			fmt.Sprintf("task:create_req:%s", taskIDStr),
-			fmt.Sprintf("mcai:task:%s:last_input", taskIDStr),
+			fmt.Sprintf("devloom:task:%s:last_input", taskIDStr),
 		).Err(); err != nil {
 			logger.WarnContext(ctx, "failed to clean task redis keys", "error", err)
 		}
@@ -233,7 +233,7 @@ func (h *VMRecycleHook) cleanup(ctx context.Context, logger *slog.Logger, vm *db
 
 - [ ] **Step 2: 编译验证**
 
-Run: `cd /Users/yoko/chaitin/ai/MonkeyCode/backend && go build ./...`
+Run: `cd backend && go build ./...`
 Expected: 编译通过
 
 - [ ] **Step 3: Commit**
@@ -271,7 +271,7 @@ git commit -m "feat: add VMRecycleHook for VM cleanup on recycled state"
 
 - [ ] **Step 2: 编译验证**
 
-Run: `cd /Users/yoko/chaitin/ai/MonkeyCode/backend && go build ./...`
+Run: `cd backend && go build ./...`
 Expected: 编译通过
 
 - [ ] **Step 3: Commit**
@@ -357,7 +357,7 @@ func (a *TaskUsecase) Stop(ctx context.Context, user *domain.User, id uuid.UUID)
 }
 ```
 
-注意：需要在文件顶部 import 中确认已有 `lifecycle` 包的导入（`"github.com/chaitin/MonkeyCode/backend/pkg/lifecycle"`），当前文件已导入。
+注意：需要在文件顶部 import 中确认已有 `lifecycle` 包的导入（`"github.com/Y-vQv-Y/DevLoom/backend/pkg/lifecycle"`），当前文件已导入。
 
 - [ ] **Step 2: 改造 `Delete()` — 去掉限制并回收 VM**
 
@@ -427,7 +427,7 @@ func (a *TaskUsecase) Delete(ctx context.Context, user *domain.User, id uuid.UUI
 
 - [ ] **Step 3: 编译验证**
 
-Run: `cd /Users/yoko/chaitin/ai/MonkeyCode/backend && go build ./...`
+Run: `cd backend && go build ./...`
 Expected: 编译通过
 
 - [ ] **Step 4: Commit**

@@ -10,8 +10,8 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 
-	"github.com/chaitin/MonkeyCode/backend/ent/types"
-	"github.com/chaitin/MonkeyCode/backend/pkg/entx"
+	"github.com/Y-vQv-Y/DevLoom/backend/ent/types"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/entx"
 )
 
 // VirtualMachine holds the schema definition for the VirtualMachine entity.

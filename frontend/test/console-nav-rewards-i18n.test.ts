@@ -39,7 +39,7 @@ test("侧边栏在线权益入口使用 consoleShell rewards i18n key", () => {
   assert.match(sourceFiles.freeModelUsage, /const \{\s*user,\s*\} = useCommonData\(\)/);
   assert.match(sourceFiles.freeModelUsage, /const userId = user\?\.id \|\| "-"/);
   assert.match(sourceFiles.freeModelUsage, /className="hidden h-8[\s\S]*lg:inline-flex/);
-  assert.match(sourceFiles.freeModelUsage, /const GITHUB_REPOSITORY_URL = "https:\/\/github\.com\/chaitin\/monkeycode"/);
+  assert.match(sourceFiles.freeModelUsage, /const GITHUB_REPOSITORY_URL = "https:\/\/github\.com\/Y-vQv-Y\/DevLoom"/);
   assert.match(sourceFiles.freeModelUsage, /window\.open\(GITHUB_REPOSITORY_URL, "_blank", "noopener,noreferrer"\)/);
 });
 
@@ -65,5 +65,5 @@ test("侧边栏在线权益入口提供中英文资源", () => {
   assert.match(cn.consoleShell.rewards.feedback.template, /\{\{uid\}\}/);
   assert.match(cn.consoleShell.rewards.feedback.template, /我的 UID/);
   assert.match(en.consoleShell.rewards.feedback.template, /\{\{uid\}\}/);
-  assert.equal(cn.consoleShell.rewards.feedback.description, "到 MonkeyCode 的 GitHub 提 Issue，并留下你的 UID。\nIssue 被采纳后你将获得 3 万积分的奖励。");
+  assert.equal(cn.consoleShell.rewards.feedback.description, "到 DevLoom 的 GitHub 提 Issue，并留下你的 UID。\nIssue 被采纳后你将获得 3 万积分的奖励。");
 });

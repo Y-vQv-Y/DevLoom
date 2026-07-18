@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/chaitin/MonkeyCode/backend/db/modelapikey"
-	"github.com/chaitin/MonkeyCode/backend/db/predicate"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/modelapikey"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/predicate"
 )
 
 // ModelApiKeyDelete is the builder for deleting a ModelApiKey entity.

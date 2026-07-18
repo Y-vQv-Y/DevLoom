@@ -115,7 +115,7 @@ export function VmPortForwardDialog({
 
   const getMyIP = async (): Promise<string | null> => {
     try {
-      const resp = await fetch('https://monkeycode-ai.online/get-my-ip', {
+      const resp = await fetch('https://api.ipify.org?format=json', {
         method: 'GET',
         mode: 'cors',
       })

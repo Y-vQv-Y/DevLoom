@@ -1,6 +1,7 @@
 import { ConstsGitPlatform, ConstsOwnerType, type DomainGitIdentity, type DomainHost, type DomainImage, type DomainModel, type DomainProject, type DomainProjectTask, type DomainSubscriptionResp, type DomainUser, type DomainVirtualMachine } from '@/api/Api';
 import { useAppRuntime } from '@/components/app-runtime-provider';
 import { WechatMpBindDialog } from '@/components/console/wechat-mp-bind-dialog';
+import { COMMERCIAL_BILLING_ENABLED } from '@/config/features';
 import { getImageShortName } from '@/utils/common';
 import { IS_OFFLINE_EDITION } from '@/utils/edition';
 import { apiRequest } from '@/utils/requestUtils';
@@ -130,7 +131,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [dailyTokenBalance, setDailyTokenBalance] = useState(0);
   const [dailyTokenLimit, setDailyTokenLimit] = useState(0);
   const [checkedInToday, setCheckedInToday] = useState<boolean | null>(null);
-  const [loadingCheckinStatus, setLoadingCheckinStatus] = useState(true);
+  const [loadingCheckinStatus, setLoadingCheckinStatus] = useState(COMMERCIAL_BILLING_ENABLED);
   const [subscription, setSubscription] = useState<DomainSubscriptionResp | null>(null);
   const [loadingSubscription, setLoadingSubscription] = useState(true);
   
@@ -312,7 +313,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   const fetchWallet = useCallback(() => {
-    if (IS_OFFLINE_EDITION) {
+    if (!COMMERCIAL_BILLING_ENABLED || IS_OFFLINE_EDITION) {
       return;
     }
 
@@ -328,7 +329,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [t])
 
   const fetchCheckinStatus = async (showLoading = true) => {
-    if (IS_OFFLINE_EDITION) {
+    if (!COMMERCIAL_BILLING_ENABLED || IS_OFFLINE_EDITION) {
       setCheckedInToday(null)
       setLoadingCheckinStatus(false)
       return

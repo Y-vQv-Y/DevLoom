@@ -3,7 +3,7 @@ package static
 import (
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/biz/static/handler"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/static/handler"
 )
 
 func ProviderStatic(i *do.Injector) {

@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/chaitin/MonkeyCode/backend/db/image"
-	"github.com/chaitin/MonkeyCode/backend/db/predicate"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/image"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/predicate"
 )
 
 // ImageDelete is the builder for deleting a Image entity.

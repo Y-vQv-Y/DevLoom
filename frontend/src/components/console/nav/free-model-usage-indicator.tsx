@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
 const OPEN_WALLET_DIALOG_EVENT = "open-wallet-dialog"
-const GITHUB_REPOSITORY_URL = "https://github.com/chaitin/monkeycode"
+const GITHUB_REPOSITORY_URL = "https://github.com/Y-vQv-Y/DevLoom"
 
 type PlanKey = "basic" | "pro" | "ultra"
 

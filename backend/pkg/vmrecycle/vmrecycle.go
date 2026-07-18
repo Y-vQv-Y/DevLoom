@@ -11,12 +11,12 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/pkg/delayqueue"
-	"github.com/chaitin/MonkeyCode/backend/pkg/entx"
-	"github.com/chaitin/MonkeyCode/backend/pkg/taskflow"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/delayqueue"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/entx"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/taskflow"
 )
 
 const (
@@ -215,7 +215,7 @@ func (r *recycler) cleanup(ctx context.Context, vm *db.VirtualMachine) error {
 	for _, taskID := range taskIDs(vm) {
 		keys = append(keys,
 			fmt.Sprintf("task:create_req:%s", taskID),
-			fmt.Sprintf("mcai:task:%s:last_input", taskID),
+			fmt.Sprintf("devloom:task:%s:last_input", taskID),
 		)
 	}
 	if err := r.redis.Del(ctx, keys...).Err(); err != nil {

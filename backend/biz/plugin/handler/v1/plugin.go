@@ -8,11 +8,11 @@ import (
 	"github.com/GoYoko/web"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/biz/agentresource"
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/db/teammember"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/middleware"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/agentresource"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teammember"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/middleware"
 )
 
 // PluginHandler plugin 列表处理器
@@ -46,7 +46,7 @@ func NewPluginHandler(i *do.Injector) (*PluginHandler, error) {
 //	@Summary		获取 Plugins 列表
 //	@Description	并集返回 (global ∪ 用户 active team) 两级 scope 下的 plugin,同名 team>global 覆盖;disabled 仍返回但 enabled=false。
 //	@Tags			【公共】plugin
-//	@Security		MonkeyCodeAIAuth
+//	@Security		DevLoomAIAuth
 //	@Accept			json
 //	@Produce		json
 //	@Success		200	{object}	web.Resp{data=[]domain.PluginListItem}	"获取成功"

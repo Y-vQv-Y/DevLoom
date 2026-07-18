@@ -9,11 +9,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/db/mcptool"
-	"github.com/chaitin/MonkeyCode/backend/db/teamgroupmcpupstream"
-	"github.com/chaitin/MonkeyCode/backend/db/teamgroupmember"
-	"github.com/chaitin/MonkeyCode/backend/pkg/entx"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/mcptool"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamgroupmcpupstream"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/teamgroupmember"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/entx"
 )
 
 type ToolSnapshot struct {

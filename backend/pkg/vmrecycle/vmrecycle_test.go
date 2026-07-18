@@ -12,11 +12,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 
-	"github.com/chaitin/MonkeyCode/backend/consts"
-	"github.com/chaitin/MonkeyCode/backend/db"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/pkg/delayqueue"
-	"github.com/chaitin/MonkeyCode/backend/pkg/taskflow"
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
+	"github.com/Y-vQv-Y/DevLoom/backend/db"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/delayqueue"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/taskflow"
 )
 
 func TestRecyclerRecyclesVMAndCleansLocalState(t *testing.T) {
@@ -72,7 +72,7 @@ func TestRecyclerRecyclesVMAndCleansLocalState(t *testing.T) {
 		"vm:idle:debounce:" + vm.ID + ":activity",
 		"vm:idle:not-found:" + vm.ID,
 		"task:create_req:" + processingTaskID.String(),
-		"mcai:task:" + processingTaskID.String() + ":last_input",
+		"devloom:task:" + processingTaskID.String() + ":last_input",
 	}
 	for _, key := range keys {
 		if err := rdb.Set(ctx, key, "value", time.Hour).Err(); err != nil {

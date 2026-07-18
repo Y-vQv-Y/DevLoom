@@ -131,7 +131,7 @@ export function CreateGitBotDialog({ open, onOpenChange, onSuccess }: CreateGitB
                 <SelectContent>
                   <SelectItem value={"public_host"}>
                     <div className="flex items-center gap-2">
-                      <span>MonkeyCode</span>
+                      <span>DevLoom</span>
                       <Badge variant="outline">{t("consoleGitBot.fields.builtin")}</Badge>
                     </div>
                   </SelectItem>

@@ -14,13 +14,13 @@ import { Icons } from '@/components/Icons';
 import { GlassNav, LoadingView, PickerSheet, PrimaryButton } from '@/components/ui';
 import { spacing, useTheme } from '@/theme';
 
-// 与 Web 端一致：用户自有模型固定走 BaiZhiCloud 渠道
-const PROVIDER = 'BaiZhiCloud';
+// 用户自有模型默认使用 OpenAI 兼容协议，也可填写其他兼容服务地址。
+const PROVIDER = 'OpenAI';
 // 默认 API 地址按接口格式区分；用户改过地址后切换接口格式不再覆盖
 const DEFAULT_BASE_URLS: Record<ModelInterfaceType, string> = {
-  openai_chat: 'https://ai-models.app.baizhi.cloud/api/openai',
-  openai_responses: 'https://ai-models.app.baizhi.cloud/api/openai',
-  anthropic: 'https://ai-models.app.baizhi.cloud/api/anthropic',
+  openai_chat: 'https://api.openai.com/v1',
+  openai_responses: 'https://api.openai.com/v1',
+  anthropic: 'https://api.anthropic.com',
 };
 const DEFAULT_CONTEXT_LIMIT = '200000';
 const DEFAULT_OUTPUT_LIMIT = '32000';

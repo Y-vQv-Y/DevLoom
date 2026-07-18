@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chaitin/MonkeyCode/backend/config"
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
 )
 
 func TestCreateReqTTLUsesConfiguredSeconds(t *testing.T) {

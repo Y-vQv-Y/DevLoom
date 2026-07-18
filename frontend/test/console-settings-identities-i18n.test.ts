@@ -42,12 +42,12 @@ test("设置身份页面提供中英文资源", () => {
   assert.equal(en.consoleSettings.identities.delete.description, "Remove identity \"{{name}}\"? This action cannot be undone.");
 });
 
-test("GitHub App 绑定地址按国内和国际版切换", () => {
+test("GitHub App 绑定地址由部署环境配置", () => {
   assert.match(sourceFiles.identities, /useAppRuntime/);
   assert.match(sourceFiles.identities, /const isGlobalRegion = serverConfig\?\.region === "global"/);
   assert.match(sourceFiles.identities, /getGithubAppInstallUrl\(isGlobalRegion\)/);
   assert.match(commonSource, /getGithubAppInstallUrl\(isGlobalRegion: boolean\)/);
-  assert.match(commonSource, /https:\/\/github\.com\/apps\/monkeycode-global\/installations\/new/);
-  assert.match(commonSource, /https:\/\/github\.com\/apps\/monkeycode-ai\/installations\/new/);
-  assert.doesNotMatch(commonSource, /mcai-dev-nb|window\.location\.origin/);
+  assert.match(commonSource, /VITE_GITHUB_APP_INSTALL_URL/);
+  assert.match(commonSource, /VITE_GLOBAL_GITHUB_APP_INSTALL_URL/);
+  assert.doesNotMatch(commonSource, /github\.com\/apps|window\.location\.origin/);
 });

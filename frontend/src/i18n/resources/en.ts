@@ -1,10 +1,10 @@
 const en = {
   meta: {
     default: {
-      title: "MonkeyCode AI Platform",
+      title: "DevLoom AI Platform",
       description:
-        "MonkeyCode AI is an intelligent code generation platform that helps developers build applications faster with AI-powered coding assistants, automated workflows, and smart development tools.",
-      keywords: "AI code generation, intelligent programming, developer tools, automated programming, code assistant, AI development platform, MonkeyCode, artificial intelligence programming",
+        "DevLoom AI is an intelligent code generation platform that helps developers build applications faster with AI-powered coding assistants, automated workflows, and smart development tools.",
+      keywords: "AI code generation, intelligent programming, developer tools, automated programming, code assistant, AI development platform, DevLoom, artificial intelligence programming",
     },
   },
   common: {
@@ -78,7 +78,7 @@ const en = {
       pro: "Pro model",
       ultra: "Ultra model",
     },
-    taskPromptPlaceholder: "Ask MonkeyCode what to do. For example: build a mini game, implement a feature, analyze data, research a topic, or draft a paper.",
+    taskPromptPlaceholder: "Ask DevLoom what to do. For example: build a mini game, implement a feature, analyze data, research a topic, or draft a paper.",
     time: {
       seconds: "{{count}} sec",
       minutes: "{{count}} min",
@@ -147,14 +147,14 @@ const en = {
     },
   },
   login: {
-    title: "MonkeyCode AI Platform",
+    title: "DevLoom AI Platform",
     tabs: {
       user: "User",
       manager: "Admin",
     },
     choices: {
       title: "Choose a sign-in method",
-      baizhi: "Baizhi Cloud Sign-in - Recommended",
+      devloom: "DevLoom Sign-in",
       oidc: "Enterprise Sign-in",
       google: "Google Sign-in",
       github: "GitHub Sign-in",
@@ -505,7 +505,7 @@ const en = {
       label: "Auto review",
       enabled: "Enabled",
       disabled: "Disabled",
-      description: "When enabled, the corresponding repository webhook is configured automatically. When a new Pull Request or Merge Request is submitted, MonkeyCode starts a review task automatically.",
+      description: "When enabled, the corresponding repository webhook is configured automatically. When a new Pull Request or Merge Request is submitted, DevLoom starts a review task automatically.",
       toast: {
         enabled: "Auto review enabled",
         disabled: "Auto review disabled",
@@ -537,7 +537,7 @@ const en = {
       image: "System image",
       selectImage: "Select system image",
       content: "Task content",
-      contentPlaceholder: "What do you want MonkeyCode to do? For example: build a mini game, implement a new feature, analyze data, research a technical topic, or write a thesis...",
+      contentPlaceholder: "What do you want DevLoom to do? For example: build a mini game, implement a new feature, analyze data, research a technical topic, or write a thesis...",
       contentTooLong: "{{over}} characters over the limit. Maximum {{max}} characters. Cannot send.",
       start: "Start conversation",
       toast: {
@@ -1375,8 +1375,8 @@ const en = {
       refreshPage: "Refresh page",
     },
     sidebar: {
-      brandSubtitle: "Chaitin Baizhi Cloud",
-      globalBrandSubtitle: "CyberServal",
+      brandSubtitle: "DevLoom Open Source Platform",
+      globalBrandSubtitle: "DevLoom Open Source Platform",
       consultPurchase: "Contact sales",
       currentVersion: "Current version",
       unknownVersion: "Unknown version",
@@ -1612,9 +1612,10 @@ const en = {
     },
     account: {
       title: "My account",
-      description: "View account details, credit balance, plan, and usage records",
+      description: "View and maintain account details and security settings",
       tooltipAccount: "Account",
       tooltipBalance: "Account and balance",
+      openSourceEdition: "Open-source edition",
     },
     plan: {
       currentPlan: "Current plan",
@@ -1728,6 +1729,7 @@ const en = {
       balanceTitle: "Credit balance",
       recharge: "Recharge",
       balanceLabel: "Current credits",
+      billingNotConfigured: "The operator has not configured recharge packages",
       dailyCheckin: "Daily check-in",
       checkinDoneDescription: "You have checked in today. Come back tomorrow to claim more credits.",
       checkinAvailableDescription: "Check in daily to claim 100 credits.",
@@ -1797,10 +1799,11 @@ const en = {
       cancel: "Cancel",
       creditsLabel: "{{points}} credits",
       discounts: {
-        none: "No discount",
-        sixSeven: "33% off",
-        five: "50% off",
-        four: "60% off",
+        none: "Operator-configured",
+        sixSeven: "Operator-configured",
+        five: "Operator-configured",
+        four: "Operator-configured",
+        configured: "Operator-configured",
       },
     },
   },
@@ -1915,28 +1918,28 @@ const en = {
       console: "Console",
     },
     footer: {
-      brandTitle: "MonkeyCode AI Platform",
-      brandDescription: "MonkeyCode is not just an AI coding tool. It changes the traditional development workflow with a new AI coding experience that helps your engineering team move faster.",
-      description: "Free to use, no installation required, with built-in cloud development environments and broad support for leading models. Whether you are building projects, researching, writing docs, analyzing data, or handling tasks, open a browser and let AI keep the work moving.",
+      brandTitle: "DevLoom AI development workspace",
+      brandDescription: "DevLoom connects code repositories, model services, development hosts, and team tasks, and can be extended for each deployment.",
+      description: "Feature availability, model access, resource limits, and costs are configured by the deployment operator. Review the deployment documentation and operator notices before using an instance.",
       resources: "Resources",
       about: "About",
       community: "Community",
+      website: "Project Website",
       productDocs: "Product Docs",
       forum: "Forum",
-      chaitin: "Chaitin Tech",
-      baizhi: "Baizhi Cloud",
-      cyberserval: "CyberServal",
-      safelineWaf: "SafeLine WAF",
-      copyright: "© 2026 MonkeyCode · Copyright: Beijing Chaitin Technology Co., Ltd. · Built with MonkeyCode",
-      globalCopyright: "© 2026 MonkeyCode · Copyright: CyberServal Co., Limited · Built with MonkeyCode",
-      icp: "京ICP备2024055124号-12",
+      company: "Project Maintainer",
+      repository: "DevLoom GitHub Repository",
+      consultation: "Consulting and Partnerships",
+      support: "Issues and Support",
+      releases: "Release Announcements",
+      copyright: "© 2026 DevLoom contributors · AGPL-3.0",
     },
     community: {
       wechat: "WeCom group",
       feishu: "Feishu group",
       dingtalk: "DingTalk group",
-      discord: "Discord community",
-      discordDescription: "Join the MonkeyCode Discord for product updates and technical support.",
+      channel: "DevLoom Developer Community",
+      channelDescription: "Open the community channel for updates, usage discussions, and feedback.",
       wechatAlt: "WeCom group QR code",
       feishuAlt: "Feishu group QR code",
       dingtalkAlt: "DingTalk group QR code",
@@ -1952,74 +1955,74 @@ const en = {
   },
   welcomeHome: {
     banner: {
-      headlinePrefix: "MonkeyCode is",
-      headlineMain: "an online AI coding platform",
-      description: "Use it for free without quota limits. There is no need to connect a local development machine or prepare a complex environment first. Create tasks directly on the platform, let AI code, use the cloud development environment for terminal work, file management, and previews, then bring the result back into your Git collaboration workflow.",
+      headlinePrefix: "DevLoom is",
+      headlineMain: "a self-hostable AI development workspace",
+      description: "Organize AI tasks, repositories, terminals, files, and Git collaboration in one workspace. Models, development hosts, storage, and access controls are configured by the deployment administrator.",
       actions: {
-        start: "Start free",
+        start: "Open workspace",
         repo: "View open source repo",
       },
       stats: {
         free: {
-          value: "Unlimited",
-          label: "Free to use",
+          value: "Configurable",
+          label: "Model and resource policy",
         },
         cloud: {
-          value: "Cloud",
-          label: "Built-in dev environment",
+          value: "Self-hosted",
+          label: "Deployment and data boundary",
         },
         openSource: {
-          value: "Open",
-          label: "Supports private deployment",
+          value: "Open source",
+          label: "AGPL-3.0",
         },
       },
       badges: {
-        free: "Free use without quota limits",
-        noLocalMachine: "No local development machine required",
+        free: "Limits and costs are operator-configured",
+        noLocalMachine: "Supports remote development hosts",
       },
-      mockAlt: "MonkeyCode task execution interface",
-      mockInput: "Start with a requirement. Use it for free without quota limits, without preparing environments, installing tools, or connecting a local development machine first.",
-      mockOutput: "AI coding, terminal operations, file changes, and Git collaboration all return to one online workspace instead of being scattered across tools.",
+      mockAlt: "DevLoom task execution interface",
+      mockInput: "Describe the task and select a repository, model, and development environment. Available choices depend on this instance's configuration.",
+      mockOutput: "Task results, terminal activity, and file changes are shown together. Developers must still review code, tests, and security impact before merging.",
     },
     sdd: {
-      title: "Three keywords that capture what MonkeyCode should highlight most",
-      description: "The homepage does not need to pile on concepts. Explain what it is, why it is easy to start, and why it is trustworthy; that converts better than vague slogans.",
+      title: "Three core capabilities",
+      description: "DevLoom focuses on task orchestration, remote development environments, and open-source self-hosting. Actual capabilities depend on deployment configuration.",
       modules: {
         online: {
-          title: "Online AI coding platform",
-          description: "MonkeyCode is not centered on a chat box or local plugin. It is an online AI coding entry point that can be used for free without quota limits, where you can create tasks directly and keep them moving.",
+          title: "Task-oriented AI development",
+          description: "Organize conversations, tool calls, file changes, and execution records around repositories and tasks for review and collaboration.",
         },
         cloud: {
-          title: "Cloud development environment ready to use",
-          description: "Tasks run in the development environment provided by the platform. Terminal, files, and preview capabilities are already prepared, so users do not need to rely on their own local development machines.",
+          title: "Remote development environments",
+          description: "After an administrator connects development hosts and images, tasks can use terminals, file management, and port previews.",
         },
         open: {
-          title: "Open and transparent, with private deployment options",
-          description: "You can start quickly online while still having access to the open source repository and offline deployment path. For developers, this builds trust more effectively than only promoting model capabilities.",
+          title: "Open source and self-hosting",
+          description: "The source is provided under AGPL-3.0 for review and deployment on your own infrastructure. Operators remain responsible for operations and compliance.",
         },
       },
     },
     highlights: {
-      title: "Lower the starting barrier first, then let AI truly participate in coding",
-      description: "For developers, many AI tools are not blocked by code generation itself, but by having to buy quota, prepare environments, connect local machines, and switch between tools before starting. MonkeyCode pulls those upfront costs into the platform.",
+      title: "Connect AI tasks to existing engineering workflows",
+      description: "DevLoom connects tasks, repositories, models, and runtimes, but does not replace code review, testing, security assessment, or release approval.",
       items: {
         free: {
-          title: "Free use without quota limits, try it before deciding",
-          description: "This is one of the most important points to make visible on the homepage. Users can validate MonkeyCode on real tasks before quotas and trial limits get in the way.",
+          title: "Operator-defined resource policy",
+          description: "The open-source repository does not promise model quotas, concurrency, storage, or billing. Refer to the current instance configuration.",
         },
         cloud: {
-          title: "Built-in cloud development environment, ready when opened",
-          description: "Terminal, file management, port previews, and task execution all live in the platform, so users do not need to assemble local environments, model settings, and runtime workflows first.",
+          title: "Centralized development environments",
+          description: "After development hosts are configured, the workspace can expose terminal, file, port-preview, and task-execution features.",
         },
         noLocal: {
-          title: "Develop online without connecting a local development machine",
-          description: "MonkeyCode feels like an always-available online development entry point. For quick validation, remote collaboration, or demos, you do not need to occupy your own local machine first.",
+          title: "Remote task execution",
+          description: "Tasks can run on operator-managed development hosts. Administrators must configure network access, permissions, and resource isolation correctly.",
         },
       },
     },
     gitBot: {
       title: "Not just online coding in a webpage, but a path back to real collaboration",
-      description: "MonkeyCode is valuable not only for generating code online, but also for Git review, open source transparency, remote collaboration, and private deployment paths. These are the parts developers care about over the long term.",
+      description: "DevLoom is valuable not only for generating code online, but also for Git review, open source transparency, remote collaboration, and private deployment paths. These are the parts developers care about over the long term.",
       streamHint: "Bring AI back into the real PR workflow",
       mockPrTitle: "feat: add automatic session refresh",
       mockPrSummary: "xiaomakuaipao wants to merge 3 commits into main from feat/auto-refresh",
@@ -2031,7 +2034,7 @@ const en = {
         blankScreen: "Fix blank screen after token expiration",
         tests: "Add related unit tests",
       },
-      typewriterText: "@monkeycode-ai hi, please review this PR",
+      typewriterText: "@devloom hi, please review this PR",
       proofs: {
         repo: {
           title: "Visible open source repository",
@@ -2047,10 +2050,10 @@ const en = {
         },
         private: {
           title: "Private deployment path available",
-          description: "If a team cares more about data boundaries and intranet deployment, MonkeyCode also keeps offline and private deployment paths available.",
+          description: "If a team cares more about data boundaries and intranet deployment, DevLoom also keeps offline and private deployment paths available.",
         },
       },
-      closing: "If what you really care about is repository integration, collaboration, and offline deployment, MonkeyCode offers a concrete product path rather than abstract concepts.",
+      closing: "If what you really care about is repository integration, collaboration, and offline deployment, DevLoom offers a concrete product path rather than abstract concepts.",
       platformTags: {
         github: "GitHub",
         gitlab: "GitLab",
@@ -2064,9 +2067,9 @@ const en = {
       },
     },
     downloads: {
-      title: "Clients for every platform",
-      description: "Web, desktop, and mobile clients connect to the same AI development capabilities. When you switch devices, you do not need to rebuild your workflow.",
-      action: "Download",
+      title: "Clients and build artifacts",
+      description: "The repository includes web, desktop, and mobile code. Check GitHub Releases for available installable artifacts.",
+      action: "View releases",
       clients: {
         windows: "Windows client",
         macos: "macOS client",
@@ -2075,19 +2078,19 @@ const en = {
       },
     },
     finalCta: {
-      title: "Try it free without quota limits, then decide whether MonkeyCode fits you",
-      description: "It is first an online AI coding platform, and only then a bundle of concepts. Run a real task for free, use a cloud development environment once, then decide whether to bring it into daily development.",
+      title: "Start with documentation and deployment configuration",
+      description: "Confirm model, development host, storage, network, and permission settings, then validate the task workflow with a test repository.",
       actions: {
-        start: "Start for free",
+        start: "Open workspace",
         docs: "View docs",
-        pricing: "View plans",
+        pricing: "View deployment guide",
       },
     },
   },
   terminalNative: {
     hero: {
       tagline: "Online AI development platform",
-      description: "Use it for free with no installation. MonkeyCode includes a cloud development environment and broad support for leading models. Whether you are building projects, researching, writing docs, analyzing data, or handling tasks, open the browser and let AI keep the work moving.",
+      description: "Connect repositories, model services, and remote development hosts, then organize tasks, terminals, file changes, and Git collaboration in the browser. Available capabilities depend on deployment configuration.",
     },
     actions: {
       start: "Get started",
@@ -2095,73 +2098,73 @@ const en = {
     },
     features: {
       title: "Features",
-      subtitle: "You do not need to assemble tools, set up environments, or switch between workflows. Hand the requirement to MonkeyCode and it carries the work from development to validation, turning AI coding into a sustainable workflow.",
+      subtitle: "Manage model calls, code changes, and execution records around one task. Generated output still requires human review, testing, and security assessment.",
     },
     featureItems: {
       free: {
-        title: "Free and ready to use",
-        body: "No client download and no environment setup. Open the browser, create an account, and start the first AI development task in seconds.",
+        title: "Browser workspace",
+        body: "Create and inspect tasks through the web console. Accounts, models, hosts, limits, and access policies are configured by the deployment operator.",
       },
       cloud: {
         title: "Cloud development environment",
-        body: "No dependency on your local machine. Every task runs behind a real server environment, with build, test, and preview all handled in the cloud.",
+        body: "After administrators connect Taskflow, runners, development hosts, and images, tasks can use terminals, builds, tests, and port previews.",
       },
       models: {
-        title: "Full mainstream model coverage",
-        body: "GLM, Kimi, MiniMax, Qwen, DeepSeek, and other major models are connected. Switch by task type or choose one manually.",
+        title: "Model service integration",
+        body: "Operators can configure supported model services and OpenAI-compatible APIs. Available models, costs, and data handling follow provider configuration.",
       },
       mobile: {
-        title: "Native mobile support",
-        body: "Deep support for iOS and Android, with real-time sync between desktop and mobile. Let the agent keep running tasks even while you are commuting.",
+        title: "Mobile client",
+        body: "The repository includes an Expo client for viewing tasks and continuing conversations. Installable builds and available features depend on Releases and backend configuration.",
       },
       openSource: {
-        title: "Fully open source",
-        body: "The core code is public on GitHub. Anyone can audit, fork, and extend it, with control over technical choices and security strategy.",
+        title: "AGPL-3.0 open source",
+        body: "This repository can be reviewed, forked, and modified under its license. Runners, Taskflow, preview services, and images must be supplied or implemented separately.",
       },
       selfHost: {
         title: "Private offline deployment",
-        body: "Teams with strict data privacy requirements can deploy MonkeyCode independently inside their own intranet so data stays local.",
+        body: "The console can run on your own network. Whether operation is fully offline and where data goes depend on models, Git, storage, logging, and runner configuration.",
       },
     },
     useCases: {
-      title: "What can you do with MonkeyCode?",
-      subtitle: "From serious projects to quick experiments, from daytime work to personal ideas at night, describe the goal clearly and MonkeyCode can help turn it into something real.",
+      title: "What can you do with DevLoom?",
+      subtitle: "These are examples of configurable task types. Output quality depends on the model, repository context, tool permissions, and runtime, and must be reviewed.",
     },
     useCaseItems: {
       game: {
         title: "Build a small game",
-        body: "Describe the gameplay in one sentence. AI helps scaffold the project, handle collision detection, add sound, and produce a playable version in an afternoon.",
+        body: "Use it to prototype gameplay, implement interactions, and run tests. Developers must verify asset licenses, performance, and release quality.",
         stack: ["HTML5 · Canvas", "TypeScript", "Zero dependencies"],
       },
       feature: {
         title: "Implement a feature",
-        body: "Drop in the requirement. AI reads your repository, understands project conventions, edits files, runs tests, and opens a PR.",
+        body: "It can read authorized repository context, modify files, and invoke tests. Review the diff and test results before opening or merging a PR.",
         stack: ["Understands code style", "Writes tests", "One-click PR"],
       },
       security: {
         title: "Security review",
-        body: "Run a health check before launch. AI scans common vulnerabilities, hardcoded secrets, and dependency risks, then outputs a fixable list.",
+        body: "It can assist with common vulnerability, hardcoded-secret, and dependency-risk checks, but does not replace a professional security audit.",
         stack: ["OWASP Top 10", "Dependency CVEs", "SAST rules"],
       },
       paper: {
         title: "Write a thesis",
-        body: "Let AI search papers, outline sections, add experiment code, run data, draw charts, and format LaTeX from topic selection to final draft.",
+        body: "It can help organize public sources and draft experiment code or LaTeX. Citations, facts, and academic requirements must be verified manually.",
         stack: ["Literature search", "Experiment scripts", "LaTeX formatting"],
       },
       data: {
         title: "Data analysis",
-        body: "Upload a CSV or Parquet file and describe the angle you want. AI cleans data, models it, draws charts, and writes readable conclusions.",
+        body: "It can process data in an authorized environment and generate analysis scripts and charts. Sensitive data and statistical conclusions require review.",
         stack: ["Pandas / Polars", "Matplotlib", "Auto-written conclusions"],
       },
       research: {
         title: "Product / technology research",
-        body: "AI gathers public information, runs benchmarks, and produces cited comparison reports for technical selection and product research.",
+        body: "It can summarize public sources and run benchmark scripts. Users must verify source quality, currency, and comparison methodology.",
         stack: ["Public-source aggregation", "Side-by-side comparison", "Cited references"],
       },
     },
     mobile: {
       title: "Mobile client",
-      subtitle: "Leaving your computer does not have to pause development. Check task progress, continue conversations, and receive results on your phone while the AI agent keeps working across contexts.",
+      subtitle: "The mobile client can connect to the same deployment to inspect tasks and continue conversations. Background execution depends on server and runner state.",
       items: {
         android: {
           cta: "Download Android APK",
@@ -2173,106 +2176,20 @@ const en = {
     },
     selfHosting: {
       title: "Private deployment",
-      subtitle: "When teams need AI development capabilities inside the corporate intranet, MonkeyCode can be deployed independently to manage developers, environments, and model configuration in one place.",
+      subtitle: "The console and backend can run on your own network to manage members, environments, and models. Complete task execution still requires external runtime components.",
       action: "View deployment guide",
-      cardTitle: "A controllable AI development platform for your team",
-      cardBody: "The private deployment edition is built for engineering teams to use inside an intranet. Admins can centrally configure models, environment hosts, and member permissions while developers start tasks in the browser.",
+      cardTitle: "An AI development console on your network",
+      cardBody: "Administrators can configure models, development hosts, and permissions. Before production use, supply Taskflow, runners, preview services, images, and an operational security plan.",
       advantages: {
-        dataBoundary: "Deploy inside the enterprise intranet so repositories, task records, and engineering data stay within your network boundary.",
+        dataBoundary: "Deploy inside an intranet, while accounting for data sent to connected model, Git, storage, logging, and update services.",
         governance: "Centrally manage team members, development environments, AI models, and task workflows for governance and auditability.",
         integration: "Connect existing enterprise models, Git platforms, and environment hosts to fit internal engineering infrastructure.",
         offline: "Install online or offline for teams with network isolation, compliance requirements, or local compute resources.",
       },
     },
-    compare: {
-      title: "How it differs from other coding tools",
-      subtitle: "Unlike tools that depend on a local IDE, CLI, or development environment, MonkeyCode lets you start in the browser and keep iterating, managing, and collaborating around the same project.",
-      dimension: "Dimension",
-      rows: {
-        online: "Online use",
-        localIde: "Local IDE",
-        localCli: "Local CLI",
-        specManagement: "Requirement and SPEC management",
-        cloudEnvironment: "Cloud development environment",
-        completion: "Code completion",
-        review: "PR / MR automated code review",
-        collaboration: "Team collaboration",
-        domesticModels: "Domestic model support",
-        selfHosting: "Private deployment",
-        openSource: "Open source",
-      },
-      partialTooltip: "Partially supported",
-      note: "Data is based on publicly available product capabilities. Issues and PRs are welcome if something is missing.",
-    },
-    testimonials: {
-      title: "Real user feedback",
-      subtitle: "Feedback from real users across development, operations, startups, and team collaboration scenarios.",
-      items: {
-        aiwenming: {
-          quote: "It feels like a mix of OpenCode and Coze. The best part is that it provides an isolated runtime environment, starts quickly, and can generate a public URL after the build finishes. You can configure your own models freely, while it also includes free and cost-effective built-in models. It comes with many useful skills, is easy to start with, and most importantly, it is open source and can grow with you.",
-          name: "aiwenming",
-          role: "Product management",
-        },
-        yitao: {
-          quote: "Vibe Coding is a new era. Leave the cramped cubicle and step into a wider space with freer air. Even on a business trip, I only need a light laptop or iPad. With MonkeyCode, complex coding work runs easily in the cloud.",
-          name: "Yitao",
-          role: "Hexu E-commerce · E-commerce operations",
-        },
-        full: {
-          quote: "MonkeyCode has an excellent cloud development environment. The agent can connect to the terminal, reason, and execute autonomously, making hands-off programming feel real. It offers free MiniMax and Qwen models with fast responses and no call limits, unlike the days of counting tokens near the end of the month.",
-          name: "Full",
-          role: "Security engineer",
-        },
-        liHongxi: {
-          quote: "MonkeyCode is a uniquely positioned AI programming platform. It is not just a code completion tool, but aims to become AI development infrastructure covering the full flow from requirements to design, development, and review. Its core value is using automation and cloud environments to change traditional engineering workflows, which is especially useful for traditional development companies like ours.",
-          name: "Li Hongxi",
-          role: "Lingshangjie Network Technology · General manager",
-        },
-        clever: {
-          quote: "I really like MonkeyCode's lightweight cloud development model. Development does not require opening a local IDE, and unfinished tasks can continue on the phone. It supports development anytime and anywhere, while built-in mainstream models, Skills, MCP, and more are available for developers to choose from. This feels like the future.",
-          name: "Clever",
-          role: "China Telecom · Full-stack engineer",
-        },
-        situBei: {
-          quote: "MonkeyCode is my first choice for daily projects and coursework. AI-assisted generation is efficient, environments start in seconds, and I do not need to fight local configuration. It is especially friendly for students; many complex features can be handled with drag-and-drop plus descriptions, saving a lot of documentation lookup time.",
-          name: "Situ Bei",
-          role: "Independent developer",
-        },
-        sinianLiu: {
-          quote: "Previously, I had to keep testing code written by other AI tools myself. Now I can let MonkeyCode connect to my server to write and test code automatically, then feed back based on the test results, saving a lot of manual time.",
-          name: "sinian-liu",
-          role: "37VPS · Founder",
-        },
-        timeTraveler: {
-          quote: "Setting up environments used to take a lot of time and felt inefficient and tedious. After using MonkeyCode, a lot of wasted effort disappeared. It works out of the box, lets me focus directly on business development, and makes the flow much smoother.",
-          name: "Time Traveler",
-          role: "Independent developer",
-        },
-        darkStreet: {
-          quote: "There is no starting barrier: register and use it, and it is free. No environment needs to be installed. Open the browser and code online, from requirements to development, testing, delivery, terminal debugging, and commits. A few rounds of conversation can handle everything, so I no longer need to carry a computer everywhere.",
-          name: "Dark Street",
-          role: "Technical lead",
-        },
-        xiaotantan: {
-          quote: "MonkeyCode is an AI-native development tool that provides practical AI + Dev capabilities across the full workflow. It not only helps me write code, but also understands projects, executes tasks, and assists with debugging, leaving more time and energy for creativity.",
-          name: "Xiao Tantan",
-          role: "OPC entrepreneur",
-        },
-        nanshan: {
-          quote: "When mentoring newcomers, the first step used to be spending half a day setting up environments. Now we hand the requirement and repository to MonkeyCode and move forward in the same cloud environment, avoiding a lot of meaningless setup and improving collaboration efficiency.",
-          name: "Nanshan",
-          role: "Alibaba · Technical lead",
-        },
-        ajie: {
-          quote: "What I value most is that it is device-agnostic. I use a computer at the office, a tablet at home, and a phone to check progress when I step out. Tasks keep running. For people who switch contexts often, that continuity feels great.",
-          name: "Ajie",
-          role: "Independent developer",
-        },
-      },
-    },
     pricing: {
-      title: "Plans and pricing",
-      subtitle: "Individual users can start for free. When you need higher quota or team capabilities, you can purchase a plan monthly or yearly.",
+      title: "Commercial features (optional)",
+      subtitle: "Shown only when an operator implements compatible subscription and payment services and enables them explicitly. Pricing, limits, and service terms are operator-defined.",
       recommended: "Recommended",
       billing: {
         monthly: "Monthly",
@@ -2281,43 +2198,43 @@ const en = {
       tiers: {
         free: {
           name: "Basic",
-          monthlyUnit: "Free forever",
-          yearlyUnit: "Free forever",
+          monthlyUnit: "/ month",
+          yearlyUnit: "/ year",
           yearlyDiscount: "",
-          desc: "Free to use, suitable for lightweight office work and simple development tasks.",
-          cta: "Start free",
+          desc: "Base configuration; capabilities and pricing are operator-defined.",
+          cta: "View configuration",
         },
         pro: {
           name: "Pro",
           monthlyUnit: "/ month",
           yearlyUnit: "/ year",
-          yearlyDiscount: "17% off",
-          desc: "For frequent daily usage.",
-          cta: "Subscribe to Pro",
+          yearlyDiscount: "",
+          desc: "Extended configuration; capabilities and pricing are operator-defined.",
+          cta: "View configuration",
         },
         ultra: {
           name: "Ultra",
           monthlyUnit: "/ month",
           yearlyUnit: "/ year",
-          yearlyDiscount: "17% off",
-          desc: "For professional developers and heavy users.",
-          cta: "Subscribe to Ultra",
+          yearlyDiscount: "",
+          desc: "Advanced configuration; capabilities and pricing are operator-defined.",
+          cta: "View configuration",
         },
       },
       features: {
-        concurrency1: "1 concurrent task",
-        concurrency3: "3 concurrent tasks",
-        cloud1c4g: "Cloud environment 1C / 4G",
-        cloud2c8g: "Cloud environment 2C / 8G",
-        dailyQuotaBasic: "Daily quota: 30M tokens/day",
-        dailyQuotaPro: "Daily quota: 100M tokens/day",
-        dailyQuotaUltra: "Daily quota: 300M tokens/day",
+        concurrency1: "Task concurrency is operator-configured",
+        concurrency3: "Task concurrency is operator-configured",
+        cloud1c4g: "Runtime resources are operator-configured",
+        cloud2c8g: "Runtime resources are operator-configured",
+        dailyQuotaBasic: "Model limits are operator-configured",
+        dailyQuotaPro: "Model limits are operator-configured",
+        dailyQuotaUltra: "Model limits are operator-configured",
         modelScopeBasic: "Model scope: Basic models",
         modelScopePro: "Model scope: Basic and Pro models",
         modelScopeUltra: "Model scope: Basic, Pro, and Ultra models",
-        noCredits: "No included credits",
-        credits10k: "10K credits included monthly",
-        credits100k: "100K credits included monthly",
+        noCredits: "Credit policy is operator-configured",
+        credits10k: "Credit policy is operator-configured",
+        credits100k: "Credit policy is operator-configured",
         thirdPartyModels: "More third-party models",
         enhancedCapabilities: "More enhanced capabilities",
       },
@@ -2327,19 +2244,19 @@ const en = {
         enhancedCapabilities: "Capabilities such as image recognition, document parsing, and web search consume credits when called.",
       },
       earn: {
-        title: "Earn free credits",
+        title: "Credit campaigns (operator-configured)",
         items: {
           invite: {
             label: "Invite one new user",
-            value: "+5000 credits",
+            value: "Operator-configured",
           },
           checkin: {
             label: "Daily check-in",
-            value: "100 credits per day",
+            value: "Operator-configured",
           },
           article: {
             label: "Article submission",
-            value: "10K - 100K credits",
+            value: "Operator-configured",
           },
           community: {
             label: "Other community events",
@@ -2348,23 +2265,24 @@ const en = {
         },
       },
       recharge: {
-        title: "Recharge credits",
+        title: "Recharge packages (operator-configured)",
+        operatorConfigured: "Operator-configured",
         items: {
           rmb10: {
-            points: "2,000 credits",
-            extra: "No discount",
+            points: "Credits are operator-configured",
+            extra: "Price is operator-configured",
           },
           rmb50: {
-            points: "15,000 credits",
-            extra: "33% off",
+            points: "Credits are operator-configured",
+            extra: "Price is operator-configured",
           },
           rmb250: {
-            points: "100,000 credits",
-            extra: "50% off",
+            points: "Credits are operator-configured",
+            extra: "Price is operator-configured",
           },
           rmb1000: {
-            points: "500,000 credits",
-            extra: "60% off",
+            points: "Credits are operator-configured",
+            extra: "Price is operator-configured",
           },
         },
       },
@@ -2383,38 +2301,38 @@ const en = {
       subtitle: "For questions not covered here, you can continue in the community or documentation.",
       items: {
         free: {
-          question: "Is it really free? How do you make money?",
-          answer: "The personal Free tier is available long term. We mainly make money through Pro subscriptions and commercial support for enterprise self-hosting, while the platform absorbs core inference costs.",
+          question: "What is included in the open-source edition?",
+          answer: "This repository provides source under AGPL-3.0 and does not include plan purchase, recharge, or payment APIs. Models, compute, storage, and connected services may incur operator-managed costs.",
         },
         training: {
           question: "Will my code be used to train models?",
-          answer: "No by default. Your repositories, prompts, and outputs do not enter any model training process by default. Self-hosted data also stays inside your network.",
+          answer: "The project cannot make one promise for every operator or model provider. Review the instance's model, logging, analytics, and storage configuration and each third party's privacy terms.",
         },
         models: {
           question: "Which models are supported?",
-          answer: "The platform has connected GPT, Claude, GLM, Kimi, MiniMax, Qwen, DeepSeek, and other mainstream models, and also supports third-party compatible APIs.",
+          answer: "Models are configured by the operator. The backend supports model management and compatible APIs, but a specific model still depends on credentials, network access, and provider terms.",
         },
         offline: {
           question: "Can it work offline?",
-          answer: "The main site relies on cloud compute and requires network access. The self-hosted edition can be deployed inside an intranet, and models can run through local Ollama or vLLM.",
+          answer: "The console can run inside an intranet. Fully offline execution also requires local models, Taskflow, runners, images, Git, and storage to be available locally.",
         },
         difference: {
           question: "How is it different from Cursor / Copilot / Codex?",
-          answer: "Those tools lean toward local IDE plugins or CLI workflows, where you still maintain the environment yourself. MonkeyCode is a cloud agent plus cloud runtime, so you only need a browser.",
+          answer: "DevLoom centers workflows on tasks, repositories, and remote runtimes. It requires server-side runtime components, does not replace local tools, and makes no claim about competing products.",
         },
         production: {
           question: "Can I use it on production projects?",
-          answer: "Yes. All changes can return to the Git PR workflow, where you keep full review, audit, and rollback capabilities.",
+          answer: "It can assist with production projects, but generated code must pass code review, tests, security assessment, and your organization's release process. Validate it in isolation first.",
         },
       },
     },
     finalCta: {
       titlePrefix: "Start now,",
       titleHighlight: "turn ideas into real products",
-      description: "No local environment and no complex configuration. Open the browser and you can start your first AI development task immediately.",
+      description: "Configure models, runners, development hosts, storage, and permissions first, then validate the complete task flow with a test repository.",
     },
     heroTerminal: {
-      title: "MonkeyCode · Build a web Minecraft-style game",
+      title: "DevLoom · Build a web Minecraft-style game",
       planTitle: "The plan has 3 steps:",
       steps: {
         terrain: {
@@ -2445,12 +2363,12 @@ const en = {
     hero: {
       eyebrow: "SELF HOSTING",
       title: "Private deployment",
-      subtitle: "Built for engineering teams that need intranet deployment, clear data boundaries, and centralized governance. MonkeyCode can run on your own infrastructure to manage members, model access, development environments, and AI task workflows.",
+      subtitle: "Built for engineering teams that need intranet deployment, clear data boundaries, and centralized governance. DevLoom can run on your own infrastructure to manage members, model access, development environments, and AI task workflows.",
     },
     actions: {
-      docs: "Deploy for free",
+      docs: "View deployment notes",
       github: "View GitHub",
-      contact: "Discuss paid plans",
+      contact: "Contact the deployment provider",
       backHome: "Back home",
     },
     sections: {
@@ -2478,13 +2396,13 @@ const en = {
       },
       deploymentFlow: {
         title: "Deployment flow",
-        description: "Prepare resources, install the console and host, then complete the first configuration through a single 6-step path.",
+        description: "Use these steps to assess the deployment path. This repository does not include Taskflow, runners, preview services, development images, or host installers.",
         stepperLabel: "Deployment steps",
         steps: {
           prepareResources: {
             title: "Prepare resources",
             body: "Select the expected parallel task count, and the page will estimate the recommended console and development host configuration.",
-            note: "Prepare two Linux x86 servers. ubuntu24.04 is recommended; the minimum configuration supports 8 parallel tasks.",
+            note: "These values are planning estimates, not capacity guarantees. Load-test with your models, images, repositories, and task profiles before sizing production.",
             calculatorTitle: "Select parallel tasks",
             taskCountOption: "Run {{taskCount}} tasks concurrently",
             servers: {
@@ -2503,28 +2421,28 @@ const en = {
             },
           },
           installConsole: {
-            title: "Install the console",
-            body: "The console supports both online and offline installation. Use online installation when the server can access the internet.",
+            title: "Obtain the console source",
+            body: "Obtain this repository, then use the README to configure the database, Redis, object storage, and external runtime components. These commands do not complete a deployment.",
             methodTabLabel: "Console installation method",
             methods: {
               online: {
-                title: "Online install",
+                title: "Online source checkout",
                 recommendedBadge: "Recommended",
-                description: "For internet-connected servers. Run the command below to install the console.",
+                description: "For environments that can reach GitHub. This command only clones source; prepare the listed external images and services before deployment.",
               },
               offline: {
-                title: "Offline install",
-                description: "When the server is offline, download the offline package from an internet-connected environment, upload it to the target server, extract it, and run the install script.",
+                title: "Offline source transfer",
+                description: "Download the source archive from GitHub Releases in a connected environment, then transfer it to the target network. It does not include runners, development images, or installers.",
               },
             },
           },
           installHost: {
             title: "Install the host",
-            body: "After the console is installed, bind the host that will execute AI development tasks. The host binding command is generated by the control panel.",
+            body: "First supply a compatible host installer and runner, configure static_files, and then bind the host that will execute AI development tasks.",
             hostSteps: {
               login: "Log in to the control panel with an administrator account.",
               bind: "Open the development environment page and click bind host. The control panel will generate a binding command.",
-              run: "Run the generated command on the target host to install and bind the host.",
+              run: "Verify that the command references a trusted installer, then run it on an isolated test host and validate the binding.",
             },
           },
           configureModels: {
@@ -2544,23 +2462,21 @@ const en = {
     },
     final: {
       label: "GET STARTED",
-      title: "Detailed documentation",
-      description: "The guide covers environment preparation, installation, and key configuration. For intranet, model access, or offline deployment planning, the team can help validate the path.",
+      title: "Repository deployment notes",
+      description: "The README and branding guide list console configuration and external dependencies. Validate capacity, security, licensing, and recovery before production deployment.",
     },
   },
   legalPages: {
     privacy: {
       eyebrow: "PRIVACY POLICY",
       title: "Privacy Policy",
-      subtitle: "We value your personal information and data security. This page explains how MonkeyCode collects, uses, stores, shares, and protects information related to you while providing products and services, and how you can manage that information.",
-      tags: ["Applies to the official website and console services", "We recommend checking for updates regularly"],
+      subtitle: "DevLoom is open-source software. The organization or person operating this deployment is responsible for personal-data processing. This page describes default software behavior and must be adapted before public operation.",
+      tags: ["Default open-source notice", "Operator details must be added"],
       contact: {
         prefix: "Official channels: ",
-        chaitin: "Chaitin Tech website",
+        repository: "DevLoom GitHub Repository",
         or: " or ",
-        baizhi: "Chaitin Baizhi Cloud website",
-        cyberserval: "CyberServal website",
-        safelineWaf: "SafeLine WAF",
+        support: "DevLoom Issues and Support",
         suffix: ".",
       },
       sections: [
@@ -2568,86 +2484,86 @@ const en = {
           id: "collection",
           title: "Information We May Collect",
           content: [
-            "To provide account registration, sign-in authentication, task collaboration, project management, payment settlement, message notifications, customer support, and related services, we may collect necessary information related to you.",
+            "When the operator enables accounts, tasks, projects, notifications, and support features, DevLoom may process necessary information about you. The actual scope depends on deployment configuration.",
           ],
           items: [
             "Account information: nickname, email address, avatar, team affiliation, login status, and similar information.",
             "Authentication information: password hashes, linked third-party identity information, captcha verification results, and similar information.",
             "Usage information: access times, operation logs, device information, browser information, IP addresses, error logs, and similar information.",
             "Business data: projects, tasks, repository connection information, model selections, configuration items, and content you actively submit.",
-            "Customer support and feedback information: information you submit through tickets, emails, communities, or feedback forms.",
+            "Support and feedback information: information you submit to the deployment operator or project community.",
           ],
         },
         {
           id: "usage",
           title: "How We Use This Information",
           items: [
-            "To create, maintain, and verify your platform account and team identity.",
-            "To provide core capabilities such as AI development, task execution, collaboration management, and notifications.",
-            "To keep the service stable and secure, including risk identification, troubleshooting, audit tracing, and exception handling.",
-            "To improve the product experience, including analytics, performance optimization, feature iteration, and service quality improvements.",
-            "To fulfill compliance obligations or respond to regulatory requirements where required by applicable laws and regulations.",
+            "To let the operator create, maintain, and verify accounts and team identities.",
+            "To run enabled AI development, task execution, collaboration, and notification features.",
+            "To let the operator troubleshoot incidents, audit activity, restore backups, and handle exceptions.",
+            "To analyze performance and usage only when the operator enables analytics.",
+            "To meet legal obligations applicable to the deployment operator.",
           ],
-          note: "We process personal information only to the extent necessary for the purposes above, and we try to reduce risk through de-identification, permission isolation, and least-privilege access.",
+          note: "Operators should apply purpose limitation, data minimization, and least-privilege access, and disclose the processing activities they actually enable.",
         },
         {
           id: "sharing",
           title: "Information Sharing, Transfer, and Public Disclosure",
           content: [
-            "Unless otherwise required by laws and regulations, or necessary to provide the service, we will not sell your personal information to unrelated third parties.",
+            "DevLoom maintainers do not receive business data from self-hosted instances. Any sharing by an operator depends on its configuration and applicable law.",
           ],
           items: [
-            "After your authorization or active choice, we may exchange necessary data with third-party platforms or service providers.",
-            "To complete payments, send emails, schedule cloud resources, authenticate identities, and support other basic capabilities, entrusted service providers may provide assistance.",
-            "We may disclose information when legally required by laws and regulations, judicial authorities, or regulators.",
+            "Model providers, Git platforms, identity providers, email, object storage, logging, and cloud services may receive data needed to complete requests.",
+            "Operators should review third-party terms, data locations, retention periods, and cross-border transfer requirements.",
+            "Operators may disclose information where required by applicable law or competent authorities.",
           ],
         },
         {
           id: "storage",
           title: "Information Storage and Security",
           items: [
-            "We take reasonable security measures such as access control, transmission encryption, log auditing, backup, and recovery to protect data.",
-            "Your information will be retained for the shortest period necessary to achieve business purposes, and will be deleted or anonymized according to rules after that period.",
-            "If a security incident occurs, we will assess its impact and take remedial measures in a timely manner as required by laws and regulations.",
+            "Operators should configure access controls, encryption in transit, audit logs, backup and recovery, and key management.",
+            "Data location and retention depend on the operator, database, object storage, and connected third-party services.",
+            "The operator is responsible for incident response, notification, and remediation under applicable law.",
           ],
         },
         {
           id: "rights",
           title: "Your Rights",
-          content: ["To the extent permitted by laws and regulations, you may exercise the following rights through platform features or by contacting us:"],
+          content: ["Where permitted by applicable law, use instance features or contact the deployment operator to exercise the following rights:"],
           items: [
             "Query, access, and correct your account profile.",
             "Bind, modify, or delete certain account and identity information.",
             "Cancel your account, or request deletion of related personal information where permitted by law.",
-            "Submit comments, requests for explanation, complaints, or suggestions about our information processing rules.",
+            "Ask the operator for explanations, object, complain, or withdraw consent where applicable.",
           ],
         },
         {
           id: "cookies",
           title: "Cookies, Sessions, and Log Information",
           content: [
-            "To maintain sign-in status, improve access efficiency, and analyze service operation, we may use cookies, local storage, session identifiers, and service logs. You can control these through your browser settings, but some features may not work properly as a result.",
+            "The software may use cookies, local storage, and session identifiers to maintain sign-in state, and may record service logs according to operator configuration. Disabling required storage can break sign-in or console features.",
           ],
         },
         {
           id: "children",
           title: "Protection of Minors",
           content: [
-            "This platform is primarily intended for users and enterprise development teams with corresponding civil capacity. If you are a minor, please read this policy with your guardian before deciding whether to use the services.",
+            "The software is primarily intended for development professionals and teams. Before serving minors, operators must implement any age checks and guardian-consent controls required by applicable law.",
           ],
         },
         {
           id: "updates",
           title: "Policy Updates",
           content: [
-            "We may revise this Privacy Policy from time to time based on business changes, product upgrades, or legal and regulatory requirements. Updated versions will be published on this page and take effect from the publication date. If changes involve your major rights and interests, we will provide notice in a reasonable manner.",
+            "The project may update this default notice as software behavior changes. Operators must maintain their published policy and provide legally required notice of material changes.",
           ],
         },
         {
           id: "contact",
           title: "Contact Us",
           content: [
-            "If you have any questions, comments, complaints, or suggestions about this Privacy Policy or personal information processing, you can contact us through official channels.",
+            "Send personal-data requests to the actual deployment operator. Report software defects or default-behavior concerns through the project channels.",
           ],
         },
       ],
@@ -2655,15 +2571,13 @@ const en = {
     userAgreement: {
       eyebrow: "USER AGREEMENT",
       title: "User Agreement",
-      subtitle: "This agreement explains the rules you must follow when using MonkeyCode and related services, as well as the rights and obligations between you and the platform. Please read it carefully before using the service.",
-      tags: ["Applies to the official website and console services", "Using the service means you agree to this agreement"],
+      subtitle: "DevLoom is open-source software released under AGPL-3.0. This agreement is a default usage template; deployment operators must add their identity, service scope, and applicable law before publishing it.",
+      tags: ["Default open-source terms", "Operators must adapt before use"],
       contact: {
         prefix: "Official channels: ",
-        chaitin: "Chaitin Tech website",
+        repository: "DevLoom GitHub Repository",
         or: " or ",
-        baizhi: "Chaitin Baizhi Cloud website",
-        cyberserval: "CyberServal website",
-        safelineWaf: "SafeLine WAF",
+        support: "DevLoom Issues and Support",
         suffix: ".",
       },
       sections: [
@@ -2671,8 +2585,8 @@ const en = {
           id: "scope",
           title: "Scope of Agreement",
           content: [
-            "This agreement applies to all actions in which you access, register for, sign in to, or use the MonkeyCode AI development platform and its related websites, console, tools, and services.",
-            "Before using the platform, you should carefully read and understand this agreement. By starting to use the platform, you are deemed to have read and agreed to be bound by this agreement.",
+            "This agreement applies to your use of the current deployment's website, console, clients, and related tools.",
+            "The software is licensed under AGPL-3.0. The actual operator is responsible for the hosted instance, accounts, and services.",
           ],
         },
         {
@@ -2681,9 +2595,9 @@ const en = {
           items: [
             "You should provide true, accurate, and complete registration information and keep it up to date.",
             "You should properly safeguard your account, password, and sign-in credentials, and you are responsible for actions under your account.",
-            "Without written permission from the platform, you may not rent, lend, transfer, or sell your account.",
-            "If you discover account abnormalities, theft, or security risks, you should notify the platform promptly.",
-            "Accounts may only be used within a legal, compliant, and platform-authorized scope. If an account is used for violations, abuse, attacks, traffic manipulation, or other malicious purposes, the platform may restrict, freeze, or ban the account.",
+            "Without operator permission, you may not rent, lend, transfer, or sell an account.",
+            "Notify the operator promptly if you discover account theft, anomalies, or security risks.",
+            "Accounts must be used lawfully. Operators may address abuse, attacks, or malicious calls under their published rules.",
           ],
         },
         {
@@ -2691,8 +2605,8 @@ const en = {
           title: "Service Content and Changes",
           items: [
             "The platform provides AI development, task execution, project collaboration, code review, and related auxiliary features.",
-            "The platform may adjust service content, pricing policies, feature paths, or technical solutions based on business development, compliance requirements, or product upgrades.",
-            "The platform will make reasonable efforts to keep services continuous and stable, but is not liable for short interruptions caused by maintenance, upgrades, network fluctuations, or force majeure.",
+            "Available features depend on the operator's models, runners, storage, network, and connected services.",
+            "The open-source project does not promise a particular service level, performance, or continued operation; the operator must publish any service commitments separately.",
           ],
         },
         {
@@ -2705,10 +2619,10 @@ const en = {
             "Attack, interfere with, bypass, or disrupt platform systems, interfaces, security mechanisms, or service stability.",
             "Use the platform for unauthorized data scraping, traffic manipulation, malicious calls, or other improper activities.",
             "Infringe others' intellectual property, trade secrets, personal information, or other legitimate rights and interests.",
-            "Use MonkeyCode to create, distribute, or assist in developing software, scripts, or tools with cyberattack, intrusion, sabotage, malicious control, or vulnerability exploitation characteristics.",
-            "Directly use MonkeyCode, or content generated with platform assistance, to launch cyberattacks, penetration damage, malicious scans, bulk vulnerability exploitation, denial-of-service attacks, or other activities that endanger network and information system security.",
-            "Use MonkeyCode API tokens, account capabilities, or platform resources through theft, impersonation, resale, sharing, restriction bypassing, or other unauthorized means, and provide them to other AI tools, scripts, services, or third parties for continued use.",
-            "Obtain, steal, or fraudulently claim invitation registration credits, campaign rewards, subsidies, or other platform benefits through bulk registration, identity forgery, invitation abuse, scripts, abnormal devices, or other malicious methods.",
+            "Use DevLoom to create, distribute, or assist in developing software, scripts, or tools with cyberattack, intrusion, sabotage, malicious control, or vulnerability exploitation characteristics.",
+            "Directly use DevLoom, or content generated with platform assistance, to launch cyberattacks, penetration damage, malicious scans, bulk vulnerability exploitation, denial-of-service attacks, or other activities that endanger network and information system security.",
+            "Use DevLoom API tokens, account capabilities, or platform resources through theft, impersonation, resale, sharing, restriction bypassing, or other unauthorized means, and provide them to other AI tools, scripts, services, or third parties for continued use.",
+            "Use bulk registration, forged identities, scripts, or abnormal devices to bypass operator access controls or resource limits.",
           ],
         },
         {
@@ -2717,23 +2631,23 @@ const en = {
           items: [
             "You legally own corresponding rights to content you upload, submit, input, or publish, and you should ensure the source is lawful.",
             "To provide services to you, you authorize the platform to store, process, transmit, and display related content within the necessary scope.",
-            "The intellectual property rights of the platform and its related marks, page designs, code, documentation, and service capabilities belong to the platform or the relevant rights holders.",
-            "Without authorization, no one may copy, modify, reverse engineer, distribute, or commercially exploit platform content.",
+            "DevLoom source code is licensed under AGPL-3.0. Third-party dependencies, models, fonts, icons, and other assets retain their respective licenses.",
+            "The project name, marks, and third-party trademarks are not automatically licensed as trademarks by the open-source license.",
           ],
         },
         {
           id: "fees",
-          title: "Fees and Settlement",
+          title: "Third-party Services and Costs",
           content: [
-            "If some platform services involve paid features, you should complete purchase, recharge, settlement, or renewal according to the rules displayed on the page or agreed by both parties.",
-            "Unless otherwise required by laws and regulations or expressly stated by the platform, paid fees are generally not refundable without cause.",
+            "The open-source repository does not provide plan purchase, recharge, or payment settlement APIs. Models, cloud resources, Git, email, or other connected services may incur charges.",
+            "The operator or third-party provider must state pricing, settlement, and refund terms. DevLoom maintainers are not parties to those transactions.",
           ],
         },
         {
           id: "liability",
           title: "Limitation of Liability",
           items: [
-            "The platform will make reasonable efforts to ensure service availability and result quality, but AI-generated content may contain deviations, omissions, or inaccuracies, and you should independently judge and review it.",
+            "The software is provided as-is without warranties of error-free operation, availability, or fitness for a particular purpose. AI output may contain errors or omissions and must be reviewed.",
             "The platform is not liable for losses caused by your violation of this agreement, inaccurate information, incorrect operations, or third-party causes.",
             "To the extent permitted by law, the platform is not liable for indirect losses, lost expected benefits, or incidental data losses.",
           ],
@@ -2747,15 +2661,15 @@ const en = {
           items: [
             "If you violate this agreement or related rules, the platform may issue warnings, restrict features, suspend services, or ban accounts depending on the circumstances.",
             "You may stop using related services through paths provided by the platform. After account cancellation, the platform will process related data according to rules.",
-            "If the platform determines that you have engaged in violations, abuse, fraud, attacks, resource theft, or other conduct that harms the security or rights and interests of the platform, users, or third parties, the platform may, without prior notice, temporarily restrict or permanently ban related accounts, freeze benefits, clear abnormal rewards, terminate services, and reserve the right to pursue legal responsibility.",
-            "The conduct that may lead to account bans or other measures includes but is not limited to: using MonkeyCode to create software with cyberattack characteristics, directly using MonkeyCode to launch cyberattacks, stealing or impersonating MonkeyCode API tokens for continued use by other AI tools, and maliciously stealing invitation registration credits or other platform benefits through bulk registration, invitation abuse, scripts, or similar methods.",
+            "Operators may apply temporary restrictions, account bans, or termination under published rules for abuse, attacks, or resource theft.",
+            "Conduct that may trigger action includes launching cyberattacks, stealing credentials, bypassing access controls, maliciously consuming resources, or infringing third-party rights.",
           ],
         },
         {
           id: "contact",
           title: "Contact Us",
           content: [
-            "If you have any questions, suggestions, or complaints about this agreement, you can contact us through official channels.",
+            "Contact the actual operator for account or service disputes. Use project channels for software licensing, code, or default-behavior questions.",
           ],
         },
       ],
@@ -3767,7 +3681,7 @@ const en = {
     },
   },
   consoleTasks: {
-    title: "MonkeyCode AI Tasks",
+    title: "DevLoom AI Tasks",
     hover: {
       taskName: "Task name",
       taskContent: "Task content",
@@ -3818,7 +3732,7 @@ const en = {
   },
   taskWorkflow: {
     input: {
-      placeholder: "What do you want MonkeyCode to do? For example: build a small game, implement a feature, analyze data, research a technical topic, write a thesis, and more...",
+      placeholder: "What do you want DevLoom to do? For example: build a small game, implement a feature, analyze data, research a technical topic, write a thesis, and more...",
       code: "Code",
       clearSelection: "Clear selection",
       zipFile: "ZIP file",
@@ -3910,6 +3824,8 @@ const en = {
       team: "Team model",
       paid: "Paid model",
       paidUsage: "Uses credits",
+      public: "Public model",
+      operatorConfigured: "Operator-configured",
       mine: "My models",
       recommended: "Recommended",
       select: "Select model",
@@ -3918,6 +3834,7 @@ const en = {
       basic: "Basic",
       pro: "Pro",
       ultra: "Ultra",
+      openSource: "Open-source edition",
     },
     skill: {
       all: "All",
@@ -4023,7 +3940,7 @@ const en = {
         publishWebsite: {
           button: "Publish",
           title: "Publish web app",
-          description: "This will package the web app from the current task and publish it to the MonkeyCode portfolio. It will be publicly accessible after publishing.",
+          description: "This will package the web app from the current task and publish it to the DevLoom portfolio. It will be publicly accessible after publishing.",
           confirm: "Confirm publish",
         },
       },

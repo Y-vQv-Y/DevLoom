@@ -11,16 +11,16 @@ import (
 	"github.com/GoYoko/web"
 	"github.com/samber/do"
 
-	"github.com/chaitin/MonkeyCode/backend/biz/notify/usecase"
-	"github.com/chaitin/MonkeyCode/backend/domain"
-	"github.com/chaitin/MonkeyCode/backend/pkg/msgpush"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/notify/usecase"
+	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/msgpush"
 )
 
 // 微信回调的默认回复文案。usecase 返回非空文本时优先用 usecase 的；为空时回退到这里。
 const (
-	defaultReplySubscribe = `🎉 感谢关注，欢迎体验 MonkeyCode AI！
-🔗 官方网站：https://monkeycode-ai.com
-🌟 帮助文档：https://monkeycode.docs.baizhi.cloud`
+	defaultReplySubscribe = `🎉 感谢关注，欢迎体验 DevLoom AI！
+🔗 项目主页：https://github.com/Y-vQv-Y/DevLoom
+🌟 问题与支持：https://github.com/Y-vQv-Y/DevLoom/issues`
 	defaultReplyScan  = "扫码成功"
 	defaultReplyClick = "收到点击事件"
 )

@@ -10,6 +10,7 @@ import { IconReport, IconUsersGroup } from "@tabler/icons-react"
 import { Blocks, FolderGit2, KeyRound, LayoutDashboard, ListTodo, MessagesSquare, Settings, Sparkles } from "lucide-react"
 import { IS_OFFLINE_EDITION } from "@/utils/edition"
 import { useTranslation } from "react-i18next"
+import { ENTERPRISE_LICENSE_ENABLED } from "@/config/features"
 
 export default function NavTeams() {
   const location = useLocation()
@@ -106,7 +107,7 @@ export default function NavTeams() {
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
-        {IS_OFFLINE_EDITION ? (
+        {ENTERPRISE_LICENSE_ENABLED && IS_OFFLINE_EDITION ? (
           <SidebarMenuItem>
             <SidebarMenuButton
               isActive={location.pathname === "/manager/license"}

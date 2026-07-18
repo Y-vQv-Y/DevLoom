@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 
-	"github.com/chaitin/MonkeyCode/backend/biz/mcphub/repo"
+	"github.com/Y-vQv-Y/DevLoom/backend/biz/mcphub/repo"
 )
 
 const PublishedSnapshotKey = "mcphub:published:tools"

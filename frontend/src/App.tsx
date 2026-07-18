@@ -35,7 +35,7 @@ import SelfHostingPage from "./pages/self-hosting"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { IS_OFFLINE_EDITION } from "@/utils/edition"
 import { SiteRegionPrompt } from "@/components/site-region-prompt"
-import { MatomoConsoleTracker } from "@/components/matomo-console-tracker"
+import { COMMUNITY_PLAYGROUND_ENABLED, ENTERPRISE_LICENSE_ENABLED } from "@/config/features"
 
 function TaskDetailRoute() {
   const { taskId } = useParams()
@@ -44,15 +44,14 @@ function TaskDetailRoute() {
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="system" storageKey="monkeycode-theme">
+    <ThemeProvider defaultTheme="system" storageKey="devloom-theme">
       <TooltipProvider>
         <BrowserRouter>
           <ThemePathListener />
-          <MatomoConsoleTracker />
           <Routes>
             <Route path="/" element={IS_OFFLINE_EDITION ? <Navigate to="/login" replace /> : <WelcomePage />} />
-            <Route path="/playground" element={<PlaygroundPage />} />
-            <Route path="/playground/create" element={<PostCreatePage />} />
+            <Route path="/playground" element={COMMUNITY_PLAYGROUND_ENABLED ? <PlaygroundPage /> : <Navigate to="/" replace />} />
+            <Route path="/playground/create" element={COMMUNITY_PLAYGROUND_ENABLED ? <PostCreatePage /> : <Navigate to="/" replace />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/user-agreement" element={<UserAgreementPage />} />
             <Route path="/self-hosting" element={<SelfHostingPage />} />
@@ -91,7 +90,7 @@ function App() {
               <Route
                 path="license"
                 element={
-                  IS_OFFLINE_EDITION ? (
+                  ENTERPRISE_LICENSE_ENABLED && IS_OFFLINE_EDITION ? (
                     <TeamManagerLicense />
                   ) : (
                     <Navigate to="/manager/overview" replace />

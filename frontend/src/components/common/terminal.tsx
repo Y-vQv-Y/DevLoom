@@ -69,7 +69,7 @@ export default function Terminal({
     if (savedTheme && savedTheme in themes) {
       return savedTheme;
     }
-    return 'MonkeyCode';
+    return 'DevLoom';
   }, [theme]);
 
   const terminalDiv = React.useRef(null);

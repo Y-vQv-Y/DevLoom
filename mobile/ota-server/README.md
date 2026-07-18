@@ -1,4 +1,4 @@
-# MonkeyCode 自建 OTA 服务端（expo-updates，非 EAS）
+# DevLoom 自建 OTA 服务端（expo-updates，非 EAS）
 
 零依赖 Node 服务，把 `expo export` 的 `dist/` 按 Expo Updates 协议 v1 下发。
 只更新 JS bundle + assets；原生改动（加原生模块 / 升 SDK / 改权限图标）仍需重新出整包。
@@ -26,7 +26,7 @@ node ota-server/server.js                           # 默认 :4747，读 ../dist
 ## 二点五、检查更新的逻辑（原生优先，对用户不暴露"热更新"）
 
 客户端「检查更新」是一条统一、按优先级的流程：
-1. 先查**有没有更新的原生版本** —— `GET /app-version/<platform>.json`（生产路径如 `https://release.monkeycode-ai.com/public/mobile/app-version/android.json`，返回 `{ version, url }`）。`version` 必须是可比较的数字版本（如日期 `26070603`），`url` 必须是 `http(s)` 下载/商店地址。客户端用 path 而非 query,所以**可直接当静态文件托管在 OSS/CDN**(每个平台一个 JSON)。本地 server 从 `ota-server/native-release.json` 生成这两个响应;放 OSS 时就上传两个静态文件。若 `version` > 已装的 `Constants.nativeAppVersion` → 提示"发现新版本 vX，去更新" → 打开下载/商店链接（**OTA 推不动原生，必须装新包**）。
+1. 先查**有没有更新的原生版本** —— `GET /app-version/<platform>.json`（生产地址由 `EXPO_PUBLIC_UPDATES_SERVER` 指定，返回 `{ version, url }`）。`version` 必须是可比较的数字版本（如日期 `26070603`），`url` 必须是 `http(s)` 下载/商店地址。客户端使用 path 而非 query，因此可以直接作为静态文件托管。本地 server 从 `ota-server/native-release.json` 生成响应。若 `version` 高于已安装版本，则提示用户安装新包。
 2. 原生已是最新 → 再查 **OTA**，有就提示"是否立即更新" → 下载并重启。
 3. 都没有 → "已是最新"。
 

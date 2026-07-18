@@ -5,31 +5,57 @@ export type CreditRechargePackage = {
   credits: number;
   labelKey: string;
   discountKey: string;
-  amounts: Record<PricingRegion, number>;
+  amounts: Record<PricingRegion, number | null>;
 };
+
+type ConfiguredAmount = number | null;
+
+function configuredAmount(name: string): ConfiguredAmount {
+  const raw = import.meta.env[name]?.trim();
+  if (!raw) {
+    return null;
+  }
+
+  const amount = Number(raw);
+  return Number.isFinite(amount) && amount >= 0 ? amount : null;
+}
 
 const SUBSCRIPTION_PRICES: Record<
   PricingRegion,
-  Record<SubscriptionPlanPriceId, Record<SubscriptionBillingPeriod, number>>
+  Record<SubscriptionPlanPriceId, Record<SubscriptionBillingPeriod, ConfiguredAmount>>
 > = {
   cn: {
-    basic: { monthly: 0, yearly: 0 },
-    pro: { monthly: 99, yearly: 999 },
-    ultra: { monthly: 499, yearly: 4999 },
+    basic: { monthly: configuredAmount("VITE_PRICE_CN_BASIC_MONTHLY"), yearly: configuredAmount("VITE_PRICE_CN_BASIC_YEARLY") },
+    pro: { monthly: configuredAmount("VITE_PRICE_CN_PRO_MONTHLY"), yearly: configuredAmount("VITE_PRICE_CN_PRO_YEARLY") },
+    ultra: { monthly: configuredAmount("VITE_PRICE_CN_ULTRA_MONTHLY"), yearly: configuredAmount("VITE_PRICE_CN_ULTRA_YEARLY") },
   },
   global: {
-    basic: { monthly: 0, yearly: 0 },
-    pro: { monthly: 15, yearly: 150 },
-    ultra: { monthly: 60, yearly: 600 },
+    basic: { monthly: configuredAmount("VITE_PRICE_GLOBAL_BASIC_MONTHLY"), yearly: configuredAmount("VITE_PRICE_GLOBAL_BASIC_YEARLY") },
+    pro: { monthly: configuredAmount("VITE_PRICE_GLOBAL_PRO_MONTHLY"), yearly: configuredAmount("VITE_PRICE_GLOBAL_PRO_YEARLY") },
+    ultra: { monthly: configuredAmount("VITE_PRICE_GLOBAL_ULTRA_MONTHLY"), yearly: configuredAmount("VITE_PRICE_GLOBAL_ULTRA_YEARLY") },
   },
 };
 
-export const CREDIT_RECHARGE_PACKAGES: CreditRechargePackage[] = [
-  { credits: 2000, labelKey: "rmb10", discountKey: "none", amounts: { cn: 10, global: 1 } },
-  { credits: 15000, labelKey: "rmb50", discountKey: "sixSeven", amounts: { cn: 50, global: 5 } },
-  { credits: 100000, labelKey: "rmb250", discountKey: "five", amounts: { cn: 250, global: 25 } },
-  { credits: 500000, labelKey: "rmb1000", discountKey: "four", amounts: { cn: 1000, global: 100 } },
-];
+function configuredCreditPackage(index: number): CreditRechargePackage | null {
+  const credits = configuredAmount(`VITE_CREDIT_PACKAGE_${index}_CREDITS`);
+  const cn = configuredAmount(`VITE_CREDIT_PACKAGE_${index}_CN_AMOUNT`);
+  const global = configuredAmount(`VITE_CREDIT_PACKAGE_${index}_GLOBAL_AMOUNT`);
+
+  if (!credits || (cn === null && global === null)) {
+    return null;
+  }
+
+  return {
+    credits,
+    labelKey: `package${index}`,
+    discountKey: "configured",
+    amounts: { cn, global },
+  };
+}
+
+export const CREDIT_RECHARGE_PACKAGES: CreditRechargePackage[] = [1, 2, 3, 4]
+  .map(configuredCreditPackage)
+  .filter((item): item is CreditRechargePackage => item !== null);
 
 export function getPricingRegion(region?: string | null): PricingRegion {
   return region === "global" ? "global" : "cn";
@@ -47,6 +73,9 @@ export function getCreditRechargeAmount(region: PricingRegion, rechargePackage: 
   return rechargePackage.amounts[region];
 }
 
-export function formatRegionCurrency(amount: number, region: PricingRegion) {
+export function formatRegionCurrency(amount: ConfiguredAmount, region: PricingRegion) {
+  if (amount === null) {
+    return region === "global" ? "Operator-defined" : "由部署方配置";
+  }
   return `${region === "global" ? "$" : "¥"}${amount}`;
 }

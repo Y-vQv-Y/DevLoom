@@ -28,6 +28,7 @@ import { IS_OFFLINE_EDITION } from "@/utils/edition"
 import { ModeToggle } from "@/components/mode-toggle"
 import { useTranslation } from "react-i18next"
 import { SettingsDialogContext } from "./settings-dialog-context"
+import { COMMERCIAL_BILLING_ENABLED } from "@/config/features"
 
 function UserConsoleContent() {
   const { t } = useTranslation()
@@ -92,7 +93,7 @@ function UserConsoleContent() {
                       href="/console"
                       className="whitespace-nowrap"
                     >
-                      MonkeyCode AI
+                      DevLoom AI
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                   {breadcrumbSegments.map((segment, index) => {
@@ -129,7 +130,7 @@ function UserConsoleContent() {
               </Breadcrumb>
             </div>
             <div className="ml-auto flex shrink-0 items-center gap-2 px-4">
-              {!IS_OFFLINE_EDITION && <FreeModelUsageIndicator />}
+              {COMMERCIAL_BILLING_ENABLED && !IS_OFFLINE_EDITION && <FreeModelUsageIndicator />}
               <Button
                 variant="ghost"
                 size="sm"
@@ -155,7 +156,7 @@ function UserConsoleContent() {
           onOpenChange={setBalanceOpen}
           initialSection="account"
         />
-        <WalletDialog />
+        {COMMERCIAL_BILLING_ENABLED && <WalletDialog />}
         <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
       </SidebarProvider>
       </SettingsDialogContext.Provider>

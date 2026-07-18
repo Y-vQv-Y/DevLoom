@@ -10,7 +10,7 @@ import (
 	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
 
-	"github.com/chaitin/MonkeyCode/backend/ent/types"
+	"github.com/Y-vQv-Y/DevLoom/backend/ent/types"
 )
 
 // AgentSyncJob holds the schema definition for the agent_sync_jobs entity.
