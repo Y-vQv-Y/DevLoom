@@ -30,6 +30,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { useCommonData } from "../data-provider"
 import { useTranslation } from "react-i18next"
+import { IS_OFFLINE_EDITION } from "@/utils/edition"
 
 interface VmAddDialogProps {
   open: boolean
@@ -112,7 +113,9 @@ export default function VmAddDialog({
   useEffect(() => {
     if (!open) return
 
-    setSelectedHostId(selectHost(hosts, true))
+    setSelectedHostId(IS_OFFLINE_EDITION
+      ? (hosts.find((host) => host.id && host.status === ConstsHostStatus.HostStatusOnline)?.id || "")
+      : selectHost(hosts, true))
     setSelectedImageId(selectImage(images, true))
     setSelectedModelId(selectPreferredTaskModel(models, subscription))
     setCpu("1")
@@ -123,11 +126,13 @@ export default function VmAddDialog({
   useEffect(() => {
     if (!open) return
 
-    const hostIsValid = selectedHostId === "public_host"
+    const hostIsValid = (!IS_OFFLINE_EDITION && selectedHostId === "public_host")
       || hosts.some((host) => host.id === selectedHostId && host.status === ConstsHostStatus.HostStatusOnline)
 
     if (!hostIsValid) {
-      setSelectedHostId(selectHost(hosts, true))
+      setSelectedHostId(IS_OFFLINE_EDITION
+        ? (hosts.find((host) => host.id && host.status === ConstsHostStatus.HostStatusOnline)?.id || "")
+        : selectHost(hosts, true))
     }
   }, [hosts, open, selectedHostId])
 
@@ -266,12 +271,14 @@ export default function VmAddDialog({
                     <SelectValue placeholder={t("consoleSettings.vms.add.placeholders.host")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value={"public_host"}>
-                      <div className="flex items-center gap-2">
-                        <span>DevLoom</span>
-                        <Badge variant="outline">{t("consoleSettings.vms.add.platformBuiltIn")}</Badge>
-                      </div>
-                    </SelectItem>
+                    {!IS_OFFLINE_EDITION && (
+                      <SelectItem value={"public_host"}>
+                        <div className="flex items-center gap-2">
+                          <span>DevLoom</span>
+                          <Badge variant="outline">{t("consoleSettings.vms.add.platformBuiltIn")}</Badge>
+                        </div>
+                      </SelectItem>
+                    )}
                     {hosts.map((host) => {
                       return (
                         <SelectItem key={host.id} value={host.id!} disabled={host.status !== ConstsHostStatus.HostStatusOnline}>

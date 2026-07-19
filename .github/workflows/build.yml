@@ -38,6 +38,7 @@ env:
   VITE_PRICE_GLOBAL_ULTRA_MONTHLY: ${{ vars.VITE_PRICE_GLOBAL_ULTRA_MONTHLY }}
   VITE_PRICE_GLOBAL_ULTRA_YEARLY: ${{ vars.VITE_PRICE_GLOBAL_ULTRA_YEARLY }}
   VITE_ENABLE_AUTO_REVIEW: ${{ vars.VITE_ENABLE_AUTO_REVIEW || 'false' }}
+  VITE_DEFAULT_SKILL_IDS: ${{ vars.VITE_DEFAULT_SKILL_IDS }}
   VITE_CREDIT_PACKAGE_1_CREDITS: ${{ vars.VITE_CREDIT_PACKAGE_1_CREDITS }}
   VITE_CREDIT_PACKAGE_1_CN_AMOUNT: ${{ vars.VITE_CREDIT_PACKAGE_1_CN_AMOUNT }}
   VITE_CREDIT_PACKAGE_1_GLOBAL_AMOUNT: ${{ vars.VITE_CREDIT_PACKAGE_1_GLOBAL_AMOUNT }}
@@ -125,7 +126,7 @@ jobs:
             artifacts/frontend-offline
 
   mobile:
-    name: Expo configuration and export
+    name: Mobile configuration and web export
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -135,6 +136,7 @@ jobs:
       EXPO_PUBLIC_ENABLE_COMMERCIAL_BILLING: ${{ vars.EXPO_PUBLIC_ENABLE_COMMERCIAL_BILLING || 'false' }}
       EXPO_PUBLIC_ENABLE_APPLE_AUTH: ${{ vars.EXPO_PUBLIC_ENABLE_APPLE_AUTH || 'false' }}
       EXPO_PUBLIC_ENABLE_GIT_IDENTITY_OAUTH: ${{ vars.EXPO_PUBLIC_ENABLE_GIT_IDENTITY_OAUTH || 'false' }}
+      EXPO_PUBLIC_DEFAULT_SKILL_IDS: ${{ vars.EXPO_PUBLIC_DEFAULT_SKILL_IDS }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

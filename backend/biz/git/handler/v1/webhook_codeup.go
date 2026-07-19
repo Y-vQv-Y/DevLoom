@@ -15,7 +15,6 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"
 
-	"github.com/Y-vQv-Y/DevLoom/backend/config"
 	"github.com/Y-vQv-Y/DevLoom/backend/consts"
 	"github.com/Y-vQv-Y/DevLoom/backend/domain"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/taskflow"
@@ -23,22 +22,18 @@ import (
 
 // CodeupWebhookHandler 云效 Codeup Webhook 处理器
 type CodeupWebhookHandler struct {
-	cfg            *config.Config
 	logger         *slog.Logger
 	redis          *redis.Client
 	gitbotUsecase  domain.GitBotUsecase
-	pubhost        domain.PublicHostUsecase
 	gitTaskUsecase domain.GitTaskUsecase
 }
 
 // NewCodeupWebhookHandler 创建 Codeup Webhook 处理器
 func NewCodeupWebhookHandler(i *do.Injector) (*CodeupWebhookHandler, error) {
 	h := &CodeupWebhookHandler{
-		cfg:            do.MustInvoke[*config.Config](i),
 		logger:         do.MustInvoke[*slog.Logger](i).With("module", "CodeupWebhookHandler"),
 		redis:          do.MustInvoke[*redis.Client](i),
 		gitbotUsecase:  do.MustInvoke[domain.GitBotUsecase](i),
-		pubhost:        do.MustInvoke[domain.PublicHostUsecase](i),
 		gitTaskUsecase: do.MustInvoke[domain.GitTaskUsecase](i),
 	}
 
@@ -177,16 +172,15 @@ func (h *CodeupWebhookHandler) handlePullRequest(ctx context.Context, bot *domai
 		return
 	}
 
-	host, err := h.pubhost.PickHost(ctx)
+	hostID, err := webhookRuntime(bot)
 	if err != nil {
-		h.logger.With("error", err).ErrorContext(ctx, "failed to pick host")
+		h.logger.With("error", err).ErrorContext(ctx, "codeup webhook runtime is not configured")
 		return
 	}
 
 	branch := mr.SourceBranch
 	if _, err := h.gitTaskUsecase.Create(ctx, domain.CreateGitTaskReq{
-		HostID:  host.ID,
-		ImageID: uuid.MustParse(h.cfg.Task.ImageID),
+		HostID:  hostID,
 		Prompt:  key,
 		Git:     taskflow.Git{Token: bot.Token},
 		Subject: domain.Subject{

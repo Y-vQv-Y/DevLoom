@@ -1,5 +1,5 @@
 /**
- * 自建 OTA（expo-updates，非 EAS）。
+ * 自建 OTA（expo-updates）。
  *  - 只更新 JS bundle + assets，原生改动仍需重新出包；runtimeVersion 不匹配的旧包收不到。
  *  - 开发模式 / 未启用 updates 时全部空操作（__DEV__ 下 expo-updates 关闭）。
  */

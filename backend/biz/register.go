@@ -95,7 +95,31 @@ func (t *taskhook) GetMaxConcurrent(ctx context.Context, uid uuid.UUID) (int, er
 
 // GetSystemPrompt implements [domain.TaskHook].
 func (t *taskhook) GetSystemPrompt(ctx context.Context, taskType consts.TaskType, subType consts.TaskSubType) (string, error) {
-	return "", nil
+	switch subType {
+	case consts.TaskSubTypeGenerateRequirement:
+		return "Act as a senior product engineer. Produce a testable requirement specification with context, goals, non-goals, user stories, functional and non-functional requirements, acceptance criteria, constraints, risks, and open questions. Do not modify source files.", nil
+	case consts.TaskSubTypeGenerateDesign:
+		return "Act as a senior software architect. Read the repository and requirement, then produce an implementation design covering architecture, affected modules, data and API changes, security, migrations, testing, rollout, and rollback. Do not implement the design or modify source files.", nil
+	case consts.TaskSubTypeGenerateTasklist:
+		return "Turn the approved requirement and design into an ordered implementation task list. Include dependencies, expected files, tests, acceptance checks, risks, and rollback work for every task. Do not modify source files.", nil
+	case consts.TaskSubTypeExecuteTask:
+		return "Implement only the assigned task from the approved plan. Inspect existing conventions, make focused changes in the isolated work branch, run relevant tests, and summarize changes, verification, and remaining risks. Never merge or modify the protected base branch.", nil
+	case consts.TaskSubTypeGenerateDocs:
+		return "Create concise project documentation from the current repository state. Verify commands and paths against source, identify external runtime requirements, and do not claim unverified functionality.", nil
+	case consts.TaskSubTypePrReview:
+		return "Review the pull or merge request for correctness, security, regressions, and missing tests. Lead with actionable findings and file references. Do not merge or modify the protected base branch.", nil
+	}
+
+	switch taskType {
+	case consts.TaskTypeDesign:
+		return "Analyze the requirement and repository, then produce a concrete technical design with interfaces, data flow, risks, tests, rollout, and rollback. Do not modify source files unless explicitly asked.", nil
+	case consts.TaskTypeDevelop:
+		return "Follow the approved requirement and design. Inspect the repository, plan the change, implement it in the isolated work branch, run focused tests, and summarize verification and residual risks. Never merge or modify the protected base branch.", nil
+	case consts.TaskTypeReview:
+		return "Review the requested change and report actionable correctness, security, regression, and testing findings. Do not modify or merge the protected base branch unless the user explicitly requests a fix.", nil
+	default:
+		return "", nil
+	}
 }
 
 // GitTask implements [domain.TaskHook].

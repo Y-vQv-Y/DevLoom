@@ -65,7 +65,8 @@ func (u *GitIdentityUsecase) gitClienter(identity *db.GitIdentity) domain.GitCli
 	case consts.GitPlatformGithub:
 		inner = github.NewGithub(u.logger, u.cfg)
 	case consts.GitPlatformGitLab:
-		inner = gitlab.NewGitlabForBaseURL(identity.BaseURL, u.logger)
+		inner = gitlab.NewGitlabForBaseURL(identity.BaseURL, u.logger,
+			gitlab.WithTLSInsecureSkipVerify(u.cfg.GitlabTLSInsecureSkipVerifyForURL(identity.BaseURL)))
 	case consts.GitPlatformGitea:
 		inner = gitea.NewGitea(u.logger, identity.BaseURL)
 	case consts.GitPlatformGitee:
@@ -277,7 +278,8 @@ func (u *GitIdentityUsecase) ListBranches(ctx context.Context, uid uuid.UUID, id
 	case consts.GitPlatformGithub:
 		client = github.NewGithub(u.logger, u.cfg)
 	case consts.GitPlatformGitLab:
-		client = gitlab.NewGitlabForBaseURL(identity.BaseURL, u.logger)
+		client = gitlab.NewGitlabForBaseURL(identity.BaseURL, u.logger,
+			gitlab.WithTLSInsecureSkipVerify(u.cfg.GitlabTLSInsecureSkipVerifyForURL(identity.BaseURL)))
 	case consts.GitPlatformGitea:
 		client = gitea.NewGitea(u.logger, identity.BaseURL)
 	case consts.GitPlatformGitee:

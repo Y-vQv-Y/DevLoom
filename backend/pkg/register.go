@@ -1,7 +1,9 @@
 package pkg
 
 import (
+	"fmt"
 	"log/slog"
+	"os"
 
 	"github.com/GoYoko/web"
 	"github.com/google/uuid"
@@ -40,6 +42,10 @@ import (
 
 // RegisterInfra 注册基础设施依赖
 func RegisterInfra(i *do.Injector, w ...*web.Web) error {
+	if err := taskflow.ValidateServer(os.Getenv("TASKFLOW_SERVER")); err != nil {
+		return fmt.Errorf("configure external development runtime: %w", err)
+	}
+
 	// Logger
 	do.Provide(i, func(i *do.Injector) (*slog.Logger, error) {
 		cfg := do.MustInvoke[*config.Config](i)
@@ -107,7 +113,15 @@ func RegisterInfra(i *do.Injector, w ...*web.Web) error {
 	do.Provide(i, func(i *do.Injector) (taskflow.Clienter, error) {
 		cfg := do.MustInvoke[*config.Config](i)
 		l := do.MustInvoke[*slog.Logger](i)
-		return taskflow.NewClient(taskflow.WithDebug(cfg.Debug), taskflow.WithLogger(l)), nil
+		client, err := taskflow.NewClientForServer(
+			os.Getenv("TASKFLOW_SERVER"),
+			taskflow.WithDebug(cfg.Debug),
+			taskflow.WithLogger(l),
+		)
+		if err != nil {
+			return nil, fmt.Errorf("configure external development runtime: %w", err)
+		}
+		return client, nil
 	})
 
 	// Tasker（任务状态机）

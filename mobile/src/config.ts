@@ -1,13 +1,11 @@
 import type { Image, Model, Skill } from '@/api/types';
 import { COMMERCIAL_BILLING_ENABLED } from '@/features';
 
-/** 默认技能 ID（与 Web 端 src/utils/config.tsx 一致），始终勾选、不可取消。 */
-export const DEFAULT_SKILL_IDS = [
-  'DevLoomOfficialPlugins/main/skills/feature-design',
-  'DevLoomOfficialPlugins/main/skills/project-wiki',
-  'DevLoomOfficialPlugins/main/skills/feature-implementer',
-  'DevLoomOfficialPlugins/main/skills/implementation-planner',
-];
+/** Comma-separated IDs must match skills installed in this deployment. */
+export const DEFAULT_SKILL_IDS = (process.env.EXPO_PUBLIC_DEFAULT_SKILL_IDS || '')
+  .split(',')
+  .map((skillId) => skillId.trim())
+  .filter(Boolean);
 
 const BUILTIN_META = new Set(['devloom-basic', 'devloom-pro', 'devloom-ultra']);
 
@@ -175,6 +173,6 @@ export function skillTags(skills: Skill[]): string[] {
 /** 运行参数（与 Web TaskInput 一致）。 */
 export const TASK_DEFAULTS = {
   cliName: 'opencode',
-  hostId: 'public_host',
+  hostId: '',
   resource: { core: 2, memory: 8 * 1024 * 1024 * 1024, life: 3 * 60 * 60 },
 } as const;

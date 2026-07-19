@@ -3,10 +3,10 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ApiError, createTask, getSubscription, listImages, listModels, listProjects } from '@/api/client';
+import { ApiError, createTask, getSubscription, listHosts, listImages, listModels, listProjects } from '@/api/client';
 import { pickZipFile, uploadFileWithPresignedUrl, type PickedFile } from '@/api/upload';
 import { AiConsentModal, useAiConsent } from '@/components/AiConsent';
-import type { Model, Project } from '@/api/types';
+import type { Host, Model, Project } from '@/api/types';
 import { ConcurrentLimitModal } from '@/components/ConcurrentLimitModal';
 import { Icons, providerIconForUrl } from '@/components/Icons';
 import { MicButton } from '@/components/MicButton';
@@ -15,6 +15,10 @@ import { Card, DevLoomLogo, IconButton, PickerSheet, PrimaryButton, type PickerO
 import { useSpeechToText } from '@/speech/useSpeechToText';
 import { DEFAULT_SKILL_IDS, modelLabel, pickDefaultImage, pickDefaultModel, TASK_DEFAULTS } from '@/config';
 import { spacing, useTheme, type Theme } from '@/theme';
+
+function isPrivateHost(host: Host) {
+  return Boolean(host.id) && !host.id!.startsWith('public_host');
+}
 
 const SUGGESTIONS = ['修复一个线上 bug', '为这个仓库写单元测试', '重构这个模块', '解释这段代码做了什么'];
 
@@ -57,12 +61,14 @@ export default function NewTaskScreen() {
   const [models, setModels] = useState<Model[]>([]);
   const [plan, setPlan] = useState<string | undefined>(undefined);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [hosts, setHosts] = useState<Host[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
 
   const [content, setContent] = useState('');
   const [modelId, setModelId] = useState('');
   const [imageId, setImageId] = useState('');
+  const [hostId, setHostId] = useState('');
   const [repoKey, setRepoKey] = useState<string>(params.projectId || ''); // '' = 不关联仓库；project.id = 选中项目；MANUAL_REPO_KEY = 手动输入
   const [manualRepo, setManualRepo] = useState(''); // 手动输入的 Git 仓库地址
   const [zipFile, setZipFile] = useState<PickedFile | null>(null); // 本地上传的 zip 包
@@ -70,7 +76,7 @@ export default function NewTaskScreen() {
   const zipPickAfterDismissRef = useRef(false);
   const zipPickFallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const [picking, setPicking] = useState<'repo' | 'model' | null>(null);
+  const [picking, setPicking] = useState<'repo' | 'model' | 'host' | null>(null);
   const [manualOpen, setManualOpen] = useState(false); // 手动输入仓库地址对话框
   const [limitOpen, setLimitOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -90,17 +96,22 @@ export default function NewTaskScreen() {
   useEffect(() => {
     (async () => {
       try {
-        const [m, imgs, projRes, sub] = await Promise.all([
+        const [m, imgs, projRes, sub, hostsRes] = await Promise.all([
           listModels(),
           listImages(),
           listProjects({ limit: 50 }).catch(() => ({ projects: [] as Project[], hasMore: false })),
           getSubscription().catch(() => null),
+          listHosts(),
         ]);
         setModels(m);
         setPlan(sub?.plan);
         setModelId(pickDefaultModel(m, sub?.plan));
         setImageId(pickDefaultImage(imgs));
         setProjects(projRes.projects);
+        setHosts(hostsRes);
+        const defaultHost = hostsRes.find((h) => isPrivateHost(h) && h.status === 'online' && (h.is_default || h.default))
+          ?? hostsRes.find((h) => isPrivateHost(h) && h.status === 'online');
+        setHostId(defaultHost?.id || '');
       } catch (e) {
         setLoadError(e instanceof ApiError ? e.message : '加载配置失败');
       } finally {
@@ -111,6 +122,7 @@ export default function NewTaskScreen() {
 
   const selectedModel = useMemo(() => models.find((m) => m.id === modelId), [models, modelId]);
   const selectedProject = useMemo(() => projects.find((p) => p.id === repoKey), [projects, repoKey]);
+  const selectedHost = useMemo(() => hosts.find((h) => h.id === hostId), [hosts, hostId]);
 
   const repoOptions: PickerOption[] = [
     { key: '', title: '快速开始', sub: '不关联仓库', icon: 'sparkle' },
@@ -118,6 +130,13 @@ export default function NewTaskScreen() {
     { key: MANUAL_REPO_KEY, title: '手动输入仓库地址', sub: manualRepo || '填写 Git 仓库地址', icon: manualRepo ? providerIconForUrl(manualRepo) : 'git' },
     ...projects.map((p, i) => ({ key: p.id || `p${i}`, title: p.name || p.full_name || '项目', sub: p.repo_url, icon: providerIconForUrl(p.repo_url) })),
   ];
+  const hostOptions: PickerOption[] = hosts.filter(isPrivateHost).map((h, i) => ({
+    key: h.id || `host-${i}`,
+    title: h.name || h.id || '开发主机',
+    sub: h.status === 'online' ? `${h.os || 'Linux'} · 在线` : `${h.os || 'Linux'} · 离线`,
+    icon: h.status === 'online' ? 'server' : 'circle',
+    disabled: h.status !== 'online',
+  }));
 
   const selectZip = useCallback(async () => {
     if (zipPickingRef.current) return;
@@ -165,6 +184,7 @@ export default function NewTaskScreen() {
     if (!content.trim()) { setError('请描述你想让 AI 做什么'); return; }
     if (!modelId) { setError('请选择模型'); return; }
     if (repoKey === ZIP_REPO_KEY && !zipFile) { setError('请选择 zip 文件'); return; }
+    if (!selectedHost || !isPrivateHost(selectedHost) || selectedHost.status !== 'online') { setError('请选择在线开发主机'); return; }
     setSubmitting(true);
     try {
       // zip 上传优先；否则手动输入仓库地址；再否则用所选项目；都没有则不关联仓库（快速开始）
@@ -182,7 +202,7 @@ export default function NewTaskScreen() {
         content: content.trim(),
         cli_name: TASK_DEFAULTS.cliName,
         model_id: modelId,
-        host_id: TASK_DEFAULTS.hostId,
+        host_id: hostId,
         image_id: imageId,
         task_type: 'develop',
         repo,
@@ -197,7 +217,7 @@ export default function NewTaskScreen() {
     } finally {
       setSubmitting(false);
     }
-  }, [content, imageId, modelId, router, selectedProject, repoKey, manualRepo, zipFile]);
+  }, [content, hostId, imageId, modelId, router, selectedHost, selectedProject, repoKey, manualRepo, zipFile]);
 
   // 仓库行只展示一处信息，避免「快速开始 / 不关联仓库」「名字 / 同名仓库路径」这种左右重复。
   const repoValue = repoKey === ZIP_REPO_KEY
@@ -234,6 +254,7 @@ export default function NewTaskScreen() {
           <Card style={{ overflow: 'hidden', marginBottom: 14 }}>
             <ConfigRow icon={repoKey === ZIP_REPO_KEY ? 'file' : 'folder'} label="代码仓库" value={repoValue} onPress={() => setPicking('repo')} t={t} />
             <ConfigRow icon="cube" label="模型" value={selectedModel ? modelLabel(selectedModel) : '选择模型'} divider onPress={() => setPicking('model')} t={t} />
+            <ConfigRow icon="server" label="开发主机" value={selectedHost?.name || '选择在线主机'} sub={selectedHost?.status} divider onPress={() => setPicking('host')} t={t} />
           </Card>
 
           {/* describe */}
@@ -287,6 +308,8 @@ export default function NewTaskScreen() {
         onClose={() => setManualOpen(false)} />
       <ModelSheet visible={picking === 'model'} models={models} selectedId={modelId} plan={plan}
         onPick={(k) => { setModelId(k); setPicking(null); }} onClose={() => setPicking(null)} />
+      <PickerSheet visible={picking === 'host'} title="选择开发主机" options={hostOptions} selected={hostId}
+        onPick={(k) => { setHostId(k); setPicking(null); }} onClose={() => setPicking(null)} />
       <ConcurrentLimitModal visible={limitOpen} onClose={() => setLimitOpen(false)} onStopped={() => { setLimitOpen(false); setTimeout(() => submit(), 400); }} />
 
       {/* AI 数据处理同意：新建任务会把内容发给 AI，未同意则退出 */}

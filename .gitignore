@@ -17,6 +17,7 @@ frontend/.vite/
 desktop/release/
 desktop/release-full/
 frontend/release/
+mobile/release/
 
 # tar
 *.tar

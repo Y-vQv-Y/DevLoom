@@ -43,6 +43,8 @@ function RootNav() {
       <Stack.Screen name="login" />
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="task/[id]" />
+      <Stack.Screen name="environments" />
+      <Stack.Screen name="environment-terminal" />
       <Stack.Screen name="project/[id]" />
       <Stack.Screen name="new-task" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
       {/* push 屏（非 modal）：因为它内部会进一步 push 出「管理账号 / 编辑账号」等用 GlassNav 的页面，

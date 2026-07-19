@@ -18,6 +18,7 @@ import (
 	"github.com/Y-vQv-Y/DevLoom/backend/config"
 	"github.com/Y-vQv-Y/DevLoom/backend/consts"
 	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/gitreview"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/taskflow"
 )
 
@@ -70,9 +71,12 @@ func (h *GitlabWebhookHandler) Webhook(c *web.Context) error {
 		return err
 	}
 
-	event := c.Request().Header.Get("X-Gitlab-Event")
-	if strings.Contains(event, "Merge Request Hook") {
+	event := strings.ToLower(strings.TrimSpace(c.Request().Header.Get("X-Gitlab-Event")))
+	switch event {
+	case "merge request hook":
 		h.handleMergeRequest(ctx, bot, body)
+	case "note hook":
+		h.handleNote(ctx, bot, body)
 	}
 
 	return c.String(http.StatusOK, "ok")
@@ -94,8 +98,10 @@ func (h *GitlabWebhookHandler) handleMergeRequest(ctx context.Context, bot *doma
 			Name              string `json:"name"`
 			PathWithNamespace string `json:"path_with_namespace"`
 			WebURL            string `json:"web_url"`
+			GitHTTPURL         string `json:"git_http_url"`
 			Description       string `json:"description"`
-			Visibility        string `json:"visibility_level"`
+			Visibility        string `json:"visibility"`
+			VisibilityLevel   any    `json:"visibility_level"`
 		} `json:"project"`
 		User *struct {
 			Username  string `json:"username"`
@@ -116,7 +122,7 @@ func (h *GitlabWebhookHandler) handleMergeRequest(ctx context.Context, bot *doma
 		return
 	}
 
-	if mr.State != "opened" && mr.State != "reopened" {
+	if mr.State != "open" && mr.State != "opened" && mr.State != "reopened" {
 		return
 	}
 	switch mr.Action {
@@ -128,12 +134,16 @@ func (h *GitlabWebhookHandler) handleMergeRequest(ctx context.Context, bot *doma
 	if !dedup(ctx, h.redis, mr.URL, h.logger) {
 		return
 	}
+	hostID, err := webhookRuntime(bot)
+	if err != nil {
+		h.logger.With("error", err).ErrorContext(ctx, "gitlab webhook runtime is not configured")
+		return
+	}
 
 	branch := mr.SourceBranch
-	isPrivate := proj.Visibility == "private"
-	h.gitTaskUsecase.Create(ctx, domain.CreateGitTaskReq{
-		HostID:  bot.Host.ID,
-		ImageID: uuid.MustParse(h.cfg.Task.ImageID),
+	isPrivate := gitlabProjectIsPrivate(proj.Visibility, proj.VisibilityLevel)
+	if _, err := h.gitTaskUsecase.Create(ctx, domain.CreateGitTaskReq{
+		HostID:  hostID,
 		Prompt:  mr.URL,
 		Git:     taskflow.Git{Token: bot.Token},
 		Subject: domain.Subject{
@@ -142,7 +152,7 @@ func (h *GitlabWebhookHandler) handleMergeRequest(ctx context.Context, bot *doma
 		},
 		Repo: domain.Repo{
 			ID: fmt.Sprintf("%d", proj.ID), Name: proj.Name,
-			FullName: proj.PathWithNamespace, URL: proj.WebURL,
+			FullName: proj.PathWithNamespace, URL: firstNonEmpty(proj.GitHTTPURL, proj.WebURL),
 			Desc: proj.Description, IsPrivate: isPrivate, Branch: &branch,
 		},
 		Platform: consts.GitPlatformGitLab,
@@ -151,5 +161,136 @@ func (h *GitlabWebhookHandler) handleMergeRequest(ctx context.Context, bot *doma
 		Time:     time.Now(),
 		Env:      map[string]string{"GITLAB_TOKEN": bot.Token},
 		Bot:      bot,
-	})
+	}); err != nil {
+		h.logger.With("error", err).ErrorContext(ctx, "failed to create gitlab merge request task")
+	}
+}
+
+type gitlabNoteEvent struct {
+	ObjectAttributes *struct {
+		ID           int    `json:"id"`
+		Note         string `json:"note"`
+		NoteableType string `json:"noteable_type"`
+		URL          string `json:"url"`
+	} `json:"object_attributes"`
+	MergeRequest *struct {
+		ID           int    `json:"id"`
+		IID          int    `json:"iid"`
+		Title        string `json:"title"`
+		Description  string `json:"description"`
+		State        string `json:"state"`
+		URL          string `json:"url"`
+		SourceBranch string `json:"source_branch"`
+	} `json:"merge_request"`
+	Project *struct {
+		ID                int    `json:"id"`
+		Name              string `json:"name"`
+		PathWithNamespace string `json:"path_with_namespace"`
+		WebURL            string `json:"web_url"`
+		GitHTTPURL         string `json:"git_http_url"`
+		Description       string `json:"description"`
+		Visibility        string `json:"visibility"`
+		VisibilityLevel   any    `json:"visibility_level"`
+	} `json:"project"`
+	User *struct {
+		Username  string `json:"username"`
+		Name      string `json:"name"`
+		Email     string `json:"email"`
+		AvatarURL string `json:"avatar_url"`
+	} `json:"user"`
+}
+
+func (h *GitlabWebhookHandler) handleNote(ctx context.Context, bot *domain.GitBot, payload []byte) {
+	req, dedupKey, ok, err := buildGitlabNoteTask(bot, h.cfg, payload)
+	if err != nil {
+		h.logger.With("error", err).WarnContext(ctx, "invalid gitlab note webhook")
+		return
+	}
+	if !ok || !dedup(ctx, h.redis, dedupKey, h.logger) {
+		return
+	}
+	if _, err := h.gitTaskUsecase.Create(ctx, req); err != nil {
+		h.logger.With("error", err).ErrorContext(ctx, "failed to create gitlab note task")
+	}
+}
+
+func buildGitlabNoteTask(bot *domain.GitBot, cfg *config.Config, payload []byte) (domain.CreateGitTaskReq, string, bool, error) {
+	var ev gitlabNoteEvent
+	if err := json.Unmarshal(payload, &ev); err != nil {
+		return domain.CreateGitTaskReq{}, "", false, fmt.Errorf("decode note payload: %w", err)
+	}
+	if ev.ObjectAttributes == nil || ev.MergeRequest == nil || ev.Project == nil || ev.User == nil {
+		return domain.CreateGitTaskReq{}, "", false, nil
+	}
+	note := ev.ObjectAttributes
+	mr := ev.MergeRequest
+	if !strings.EqualFold(note.NoteableType, "MergeRequest") ||
+		(mr.State != "open" && mr.State != "opened" && mr.State != "reopened") {
+		return domain.CreateGitTaskReq{}, "", false, nil
+	}
+	keyword := strings.TrimSpace(cfg.Task.AtKeyword)
+	command, prompt, mentioned := gitreview.ParseMention(note.Note, keyword)
+	if !mentioned {
+		return domain.CreateGitTaskReq{}, "", false, nil
+	}
+
+	hostID, err := webhookRuntime(bot)
+	if err != nil {
+		return domain.CreateGitTaskReq{}, "", false, err
+	}
+	mrURL := strings.TrimSpace(mr.URL)
+	if mrURL == "" && ev.Project.WebURL != "" && mr.IID > 0 {
+		mrURL = fmt.Sprintf("%s/-/merge_requests/%d", strings.TrimSuffix(ev.Project.WebURL, "/"), mr.IID)
+	}
+	branch := mr.SourceBranch
+	subjectID := mr.ID
+	if subjectID == 0 {
+		subjectID = mr.IID
+	}
+	dedupKey := fmt.Sprintf("gitlab:note:%d:%d", ev.Project.ID, note.ID)
+
+	return domain.CreateGitTaskReq{
+		HostID:  hostID,
+		Prompt:  prompt,
+		Command: string(command),
+		Git:     taskflow.Git{Token: bot.Token},
+		Subject: domain.Subject{
+			ID: fmt.Sprintf("%d", subjectID), Type: "MergeRequest",
+			Title: mr.Title, URL: mrURL, Number: mr.IID,
+		},
+		Repo: domain.Repo{
+			ID: fmt.Sprintf("%d", ev.Project.ID), Name: ev.Project.Name,
+			FullName: ev.Project.PathWithNamespace,
+			URL: firstNonEmpty(ev.Project.GitHTTPURL, ev.Project.WebURL),
+			Desc: ev.Project.Description,
+			IsPrivate: gitlabProjectIsPrivate(ev.Project.Visibility, ev.Project.VisibilityLevel), Branch: &branch,
+		},
+		Platform: consts.GitPlatformGitLab,
+		User: domain.User{
+			Name: firstNonEmpty(ev.User.Name, ev.User.Username),
+			AvatarURL: ev.User.AvatarURL, Email: ev.User.Email,
+		},
+		Body: note.Note,
+		Time: time.Now(),
+		Env: map[string]string{
+			"GITLAB_TOKEN":           bot.Token,
+			"DEVLOOM_REVIEW_COMMAND": string(command),
+		},
+		Bot:  bot,
+	}, dedupKey, true, nil
+}
+
+func gitlabProjectIsPrivate(visibility string, visibilityLevel any) bool {
+	if strings.EqualFold(strings.TrimSpace(visibility), "private") {
+		return true
+	}
+	switch value := visibilityLevel.(type) {
+	case float64:
+		return value == 0
+	case string:
+		value = strings.TrimSpace(value)
+		return value == "0" || strings.EqualFold(value, "private")
+	default:
+		return false
+	}
 }

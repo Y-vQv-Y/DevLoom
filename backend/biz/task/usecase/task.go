@@ -35,6 +35,7 @@ import (
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/notify/dispatcher"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/taskflow"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/vmstatus"
+	workspacepolicy "github.com/Y-vQv-Y/DevLoom/backend/pkg/workspace"
 	"github.com/Y-vQv-Y/DevLoom/backend/templates"
 )
 
@@ -587,6 +588,8 @@ func (a *TaskUsecase) Create(ctx context.Context, user *domain.User, req domain.
 	if err != nil {
 		return nil, err
 	}
+	workspacePolicy := workspacepolicy.Policy(a.cfg.Workspace, git.Branch, t.ID, "develop")
+	env = append(env, workspacepolicy.Environ(workspacePolicy)...)
 
 	createdVm, err := a.taskflow.VirtualMachiner().Create(ctx, &taskflow.CreateVirtualMachineReq{
 		ID:       vmID,
@@ -604,10 +607,11 @@ func (a *TaskUsecase) Create(ctx context.Context, user *domain.User, req domain.
 			BaseURL:  m.BaseURL,
 			Model:    m.Model,
 		},
-		Cores:    "2",
-		Memory:   8 << 30,
-		Envs:     env,
-		LogStore: normalizeTaskLogStore(t.LogStore),
+		Cores:     "2",
+		Memory:    8 << 30,
+		Envs:      env,
+		Workspace: &workspacePolicy,
+		LogStore:  normalizeTaskLogStore(t.LogStore),
 	})
 	if err != nil {
 		return nil, err
@@ -651,7 +655,7 @@ func (a *TaskUsecase) Create(ctx context.Context, user *domain.User, req domain.
 		VMID:         createdVm.ID,
 		Text:         req.Content,
 		Attachments:  attachments,
-		SystemPrompt: req.SystemPrompt,
+		SystemPrompt: workspacepolicy.AppendSystemPrompt(req.SystemPrompt, workspacePolicy),
 		CodingAgent:  coding,
 		LLM: taskflow.LLM{
 			ApiKey:  m.APIKey,
@@ -661,6 +665,8 @@ func (a *TaskUsecase) Create(ctx context.Context, user *domain.User, req domain.
 		},
 		Configs:        configs,
 		McpConfigs:     mcps,
+		Env:            workspacepolicy.Env(workspacePolicy),
+		Workspace:      &workspacePolicy,
 		LogStore:       normalizeTaskLogStore(t.LogStore),
 		AgentResources: agentRes,
 	}

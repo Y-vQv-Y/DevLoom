@@ -17,6 +17,6 @@ export const COMMUNITY_PLAYGROUND_ENABLED = enabled("VITE_ENABLE_COMMUNITY_PLAYG
 // external GitHub Apps. Manual access-token identities remain available.
 export const GIT_IDENTITY_OAUTH_ENABLED = enabled("VITE_ENABLE_GIT_IDENTITY_OAUTH")
 
-// Automatic project review requires an external Git review service. The
-// open-source backend exposes no auto-review route.
+// Automatic project review is opt-in because it creates repository webhooks
+// and consumes a configured development host for each review task.
 export const AUTO_REVIEW_ENABLED = enabled("VITE_ENABLE_AUTO_REVIEW")

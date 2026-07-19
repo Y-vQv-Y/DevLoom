@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge"
 import { useCommonData } from "../data-provider"
 import { getHostBadges } from "@/utils/common"
 import { useTranslation } from "react-i18next"
+import { IS_OFFLINE_EDITION } from "@/utils/edition"
 
 interface EditGitBotDialogProps {
   open: boolean
@@ -49,13 +50,13 @@ export function EditGitBotDialog({ open, onOpenChange, bot, onSuccess }: EditGit
         setName(bot.name || "")
         setToken(bot.token || "")
         setPlatform(bot.platform || ConstsGitPlatform.GitPlatformGitLab)
-        setSelectedHostId(bot.host?.id || "public_host")
+        setSelectedHostId(bot.host?.id || (IS_OFFLINE_EDITION ? "" : "public_host"))
       })
     }
   }, [open, bot])
 
   const handleSubmit = async () => {
-    if (!bot?.id) {
+    if (!bot?.id || !selectedHostId) {
       toast.error(t("consoleGitBot.toast.incompleteBot"))
       return
     }
@@ -111,12 +112,14 @@ export function EditGitBotDialog({ open, onOpenChange, bot, onSuccess }: EditGit
                 <SelectValue placeholder={t("consoleGitBot.placeholders.host")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={"public_host"}>
-                  <div className="flex items-center gap-2">
-                    <span>DevLoom</span>
-                    <Badge variant="outline">{t("consoleGitBot.fields.builtin")}</Badge>
-                  </div>
-                </SelectItem>
+                {!IS_OFFLINE_EDITION && (
+                  <SelectItem value={"public_host"}>
+                    <div className="flex items-center gap-2">
+                      <span>DevLoom</span>
+                      <Badge variant="outline">{t("consoleGitBot.fields.builtin")}</Badge>
+                    </div>
+                  </SelectItem>
+                )}
                 {hosts.map((host) => {
                   return (
                     <SelectItem key={host.id} value={host.id!} disabled={host.status !== ConstsHostStatus.HostStatusOnline}>

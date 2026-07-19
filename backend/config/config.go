@@ -47,6 +47,7 @@ type Config struct {
 	Proxies    []string      `mapstructure:"proxies"`
 
 	TaskFlow      TaskFlow            `mapstructure:"taskflow"`
+	Workspace     WorkspaceConfig     `mapstructure:"workspace"`
 	MCPHub        MCPHub              `mapstructure:"mcp_hub"`
 	PublicHost    PublicHost          `mapstructure:"public_host"`
 	Task          Task                `mapstructure:"task"`
@@ -96,6 +97,15 @@ type Config struct {
 type ReviewAgent struct {
 	ModelID string `mapstructure:"model_id"`
 	Image   string `mapstructure:"image"`
+}
+
+// WorkspaceConfig controls the isolation contract sent to Taskflow and
+// compatible OpenHands/Coder/Eclipse Che adapters.
+type WorkspaceConfig struct {
+	Isolated          bool   `mapstructure:"isolated"`
+	BranchPrefix      string `mapstructure:"branch_prefix"`
+	PushMode          string `mapstructure:"push_mode"`
+	OpenHandsWorktree bool   `mapstructure:"openhands_worktree"`
 }
 
 type OAuthLoginConfig struct {
@@ -236,7 +246,7 @@ type Task struct {
 	LogLimit            int    `mapstructure:"log_limit"`              // Loki tail 日志 limit
 	TaskerTTLSeconds    int    `mapstructure:"tasker_ttl_seconds"`     // Tasker 状态机 TTL（秒）
 	CreateReqTTLSeconds int    `mapstructure:"create_req_ttl_seconds"` // 创建任务请求 Redis TTL（秒）
-	ImageID             string `mapstructure:"image_id"`               // 默认镜像 ID
+	AtKeyword           string `mapstructure:"at_keyword"`             // Git 平台评论触发关键字
 	Core                int    `mapstructure:"core"`                   // VM CPU 核数
 	Memory              uint64 `mapstructure:"memory"`                 // VM 内存（字节）
 }
@@ -363,8 +373,13 @@ func Init(dir string) (*Config, error) {
 	v.SetDefault("init_team.image", "")
 	v.SetDefault("init_team.extension_package_dir", "/app/extensions/packages")
 	v.SetDefault("taskflow.grpc_url", "")
-	v.SetDefault("task.at_keyword", "")
-	v.SetDefault("task.host_ids", []string{})
+	v.SetDefault("workspace.isolated", true)
+	v.SetDefault("workspace.branch_prefix", "devloom")
+	v.SetDefault("workspace.push_mode", "pull_request")
+	v.SetDefault("workspace.openhands_worktree", true)
+	v.SetDefault("task.at_keyword", "@devloom")
+	v.SetDefault("task.core", 2)
+	v.SetDefault("task.memory", uint64(8*1024*1024*1024))
 	v.SetDefault("task.create_req_ttl_seconds", 600)
 	v.SetDefault("mcp_hub.enabled", false)
 	v.SetDefault("mcp_hub.url", "")
@@ -506,10 +521,11 @@ type GitlabConfig struct {
 
 // GitlabInstance GitLab 实例配置
 type GitlabInstance struct {
-	Token   string            `mapstructure:"token"`
-	BaseURL string            `mapstructure:"base_url"`
-	Enabled bool              `mapstructure:"enabled"`
-	OAuth   GitlabOAuthConfig `mapstructure:"oauth"`
+	Token                  string            `mapstructure:"token"`
+	BaseURL                string            `mapstructure:"base_url"`
+	Enabled                bool              `mapstructure:"enabled"`
+	TLSInsecureSkipVerify  bool              `mapstructure:"tls_insecure_skip_verify"`
+	OAuth                  GitlabOAuthConfig `mapstructure:"oauth"`
 }
 
 // GitlabOAuthConfig GitLab OAuth 配置
@@ -624,6 +640,25 @@ func (c *Config) GetGitlabBaseURL(instanceName string) string {
 		return ""
 	}
 	return instance.BaseURL
+}
+
+// GetGitlabTLSInsecureSkipVerify reports whether certificate verification is
+// explicitly disabled for a configured GitLab instance.
+func (c *Config) GetGitlabTLSInsecureSkipVerify(instanceName string) bool {
+	instance, exists := c.Gitlab.Instances[instanceName]
+	return exists && instance.TLSInsecureSkipVerify
+}
+
+// GitlabTLSInsecureSkipVerifyForURL applies an instance's TLS policy to
+// dynamic Git identities that use the same base URL.
+func (c *Config) GitlabTLSInsecureSkipVerifyForURL(baseURL string) bool {
+	baseURL = strings.TrimSuffix(strings.TrimSpace(baseURL), "/")
+	for _, instance := range c.Gitlab.Instances {
+		if strings.TrimSuffix(strings.TrimSpace(instance.BaseURL), "/") == baseURL {
+			return instance.TLSInsecureSkipVerify
+		}
+	}
+	return false
 }
 
 // IsGitlabInstanceEnabled 检查指定 GitLab 实例是否启用

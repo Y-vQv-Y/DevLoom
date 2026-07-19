@@ -17,6 +17,7 @@ import (
 	"github.com/Y-vQv-Y/DevLoom/backend/db/projectcollaborator"
 	"github.com/Y-vQv-Y/DevLoom/backend/db/projectissue"
 	"github.com/Y-vQv-Y/DevLoom/backend/db/projectissuecomment"
+	"github.com/Y-vQv-Y/DevLoom/backend/db/projectgitbot"
 	"github.com/Y-vQv-Y/DevLoom/backend/db/projecttask"
 	"github.com/Y-vQv-Y/DevLoom/backend/db/task"
 	"github.com/Y-vQv-Y/DevLoom/backend/db/teammember"
@@ -72,6 +73,55 @@ func (r *ProjectRepo) GetByID(ctx context.Context, id uuid.UUID) (*db.Project, e
 		Where(project.IDEQ(id)).
 		WithImage().
 		First(ctx)
+}
+
+// LinkGitBot enables automatic review for a project the user can edit.
+func (r *ProjectRepo) LinkGitBot(ctx context.Context, uid, projectID, botID uuid.UUID) error {
+	if _, err := r.db.Project.Query().
+		Where(project.ID(projectID), r.getProjectQuery(uid)).
+		Only(ctx); err != nil {
+		if db.IsNotFound(err) {
+			return errcode.ErrNotFound
+		}
+		return errcode.ErrDatabaseQuery.Wrap(err)
+	}
+
+	exists, err := r.db.ProjectGitBot.Query().
+		Where(projectgitbot.ProjectID(projectID), projectgitbot.GitBotID(botID)).
+		Exist(ctx)
+	if err != nil {
+		return errcode.ErrDatabaseQuery.Wrap(err)
+	}
+	if exists {
+		return nil
+	}
+	_, err = r.db.ProjectGitBot.Create().
+		SetProjectID(projectID).
+		SetGitBotID(botID).
+		Save(ctx)
+	if err != nil {
+		return errcode.ErrDatabaseOperation.Wrap(err)
+	}
+	return nil
+}
+
+// UnlinkGitBot disables automatic review without deleting a reusable bot.
+func (r *ProjectRepo) UnlinkGitBot(ctx context.Context, uid, projectID, botID uuid.UUID) error {
+	if _, err := r.db.Project.Query().
+		Where(project.ID(projectID), r.getProjectQuery(uid)).
+		Only(ctx); err != nil {
+		if db.IsNotFound(err) {
+			return errcode.ErrNotFound
+		}
+		return errcode.ErrDatabaseQuery.Wrap(err)
+	}
+	_, err := r.db.ProjectGitBot.Delete().
+		Where(projectgitbot.ProjectID(projectID), projectgitbot.GitBotID(botID)).
+		Exec(ctx)
+	if err != nil {
+		return errcode.ErrDatabaseOperation.Wrap(err)
+	}
+	return nil
 }
 
 // List 列出用户的所有项目
@@ -584,6 +634,13 @@ func (r *ProjectRepo) CreateIssueComment(ctx context.Context, uid uuid.UUID, req
 
 // HasReadWritePerm 判断用户是否有读写权限
 func (r *ProjectRepo) HasReadWritePerm(ctx context.Context, uid uuid.UUID, projectID uuid.UUID) bool {
+	owned, err := r.db.Project.Query().
+		Where(project.IDEQ(projectID), project.UserIDEQ(uid)).
+		Exist(ctx)
+	if err == nil && owned {
+		return true
+	}
+
 	collaborator, err := r.db.ProjectCollaborator.Query().
 		Where(projectcollaborator.ProjectIDEQ(projectID), projectcollaborator.UserIDEQ(uid)).
 		First(ctx)

@@ -18,41 +18,49 @@ import (
 type Gitlab struct {
 	*gitlab.Client
 
-	logger  *slog.Logger
-	baseURL string
-	token   string
+	logger                  *slog.Logger
+	baseURL                 string
+	token                   string
+	tlsInsecureSkipVerify   bool
+}
+
+// Option configures a GitLab client.
+type Option func(*Gitlab)
+
+// WithTLSInsecureSkipVerify allows an explicitly configured private GitLab
+// instance with an untrusted certificate. Prefer installing the internal CA.
+func WithTLSInsecureSkipVerify(enabled bool) Option {
+	return func(g *Gitlab) {
+		g.tlsInsecureSkipVerify = enabled
+	}
 }
 
 // NewGitlab 根据 baseURL 和 token 创建 GitLab 客户端
-func NewGitlab(baseURL, token string, logger *slog.Logger) *Gitlab {
+func NewGitlab(baseURL, token string, logger *slog.Logger, opts ...Option) *Gitlab {
 	baseURL = strings.TrimSuffix(baseURL, "/")
 	if baseURL == "" {
 		return nil
 	}
-	c := &http.Client{
-		Transport: &http.Transport{
-			Proxy: http.ProxyFromEnvironment,
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true,
-			},
-		},
-	}
-	gitlabClient, err := gitlab.NewClient(token, gitlab.WithBaseURL(baseURL), gitlab.WithHTTPClient(c))
-	if err != nil {
-		logger.Error("Failed to create GitLab client", "error", err, "base_url", baseURL)
-		return nil
-	}
-	return &Gitlab{
-		Client:  gitlabClient,
+	g := &Gitlab{
 		logger:  logger.With("module", "gitlab"),
 		baseURL: baseURL,
 		token:   token,
 	}
+	for _, opt := range opts {
+		opt(g)
+	}
+	gitlabClient, err := g.newClientWithToken(token, false)
+	if err != nil {
+		logger.Error("Failed to create GitLab client", "error", err, "base_url", baseURL)
+		return nil
+	}
+	g.Client = gitlabClient
+	return g
 }
 
 // NewGitlabForBaseURL 根据任意 base_url 创建 GitLab 客户端（无默认 token）
-func NewGitlabForBaseURL(baseURL string, logger *slog.Logger) *Gitlab {
-	return NewGitlab(baseURL, "", logger)
+func NewGitlabForBaseURL(baseURL string, logger *slog.Logger, opts ...Option) *Gitlab {
+	return NewGitlab(baseURL, "", logger, opts...)
 }
 
 // BaseURL 返回 GitLab base URL
@@ -71,7 +79,8 @@ func (g *Gitlab) newClientWithToken(token string, isOAuth bool) (*gitlab.Client,
 		Transport: &http.Transport{
 			Proxy: http.ProxyFromEnvironment,
 			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true,
+				MinVersion:         tls.VersionTLS12,
+				InsecureSkipVerify: g.tlsInsecureSkipVerify, // #nosec G402 -- explicit per-instance escape hatch
 			},
 		},
 	}
@@ -87,7 +96,7 @@ func (g *Gitlab) GetRepoInfoByPAT(ctx context.Context, token string, repoURL str
 	if err != nil {
 		return nil, err
 	}
-	client, err := gitlab.NewClient(token, gitlab.WithBaseURL(g.baseURL))
+	client, err := g.newClientWithToken(token, false)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +143,7 @@ func (g *Gitlab) CheckPAT(ctx context.Context, token string, repoURL string) (bo
 
 // GetUserInfoByPAT 根据 PAT 获取用户信息
 func (g *Gitlab) GetUserInfoByPAT(ctx context.Context, token string) (*domain.PlatformUserInfo, error) {
-	client, err := gitlab.NewClient(token, gitlab.WithBaseURL(g.baseURL))
+	client, err := g.newClientWithToken(token, false)
 	if err != nil {
 		return nil, fmt.Errorf("create gitlab client: %w", err)
 	}

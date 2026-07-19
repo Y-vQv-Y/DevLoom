@@ -1,117 +1,83 @@
-# GitHub Actions 编译与发布手册
+# GitHub Actions Build and Release Guide
 
-## 工作流说明
+This repository builds on GitHub-hosted runners. The mobile workflow uses Expo Prebuild only to generate native projects, then calls Gradle and Xcode directly. It does not use Expo cloud builds or an Expo project ID.
 
-仓库提供两份可直接运行的工作流：
+## Workflows
 
-- `.github/workflows/build.yml`：在 Pull Request、推送到 `main` 或手动触发时执行 CI。
-- `.github/workflows/electron-release.yml`：在推送 `v*` 标签或手动触发时构建发布产物。
-
-CI 使用 Node.js 22、pnpm 9 和 Go 1.25.x。无需在本地编译。
-
-## 首次启用
-
-1. 将代码推送到 `https://github.com/Y-vQv-Y/DevLoom` 的 `main` 分支。
-2. 打开仓库的 `Settings > Actions > General`，允许 GitHub Actions 运行。
-3. 确认工作流可以使用 `GITHUB_TOKEN`；发布工作流已声明 `contents: write` 和 `packages: write`。
-4. 打开 `Actions > CI > Run workflow`，首次手动运行 CI。
-
-普通 CI 不要求任何 Secrets。商业、企业授权、广场、Git OAuth、自动审查和 Apple 登录默认关闭。
+- `build.yml` runs tests, static checks, web builds, and Docker build checks.
+- `electron-release.yml` runs for `v*` tags or from `Actions > Release > Run workflow`.
+- Set `publish=true` for a manual run to publish GHCR images and a GitHub Release. `publish=false` keeps the generated artifacts in Actions only.
+- Set `mobile=true` for a manual run, or set the repository variable `ENABLE_MOBILE_RELEASE=true` to include mobile jobs in tag releases. When disabled, both mobile jobs are `skipped` and the rest of the release continues.
 
 ## Repository Variables
 
-在 `Settings > Secrets and variables > Actions > Variables` 中按需配置：
+Keep the existing web variables documented in the workflow. Mobile builds use these optional variables:
 
-| 变量 | 默认值 | 用途 |
+Commercial, enterprise-license, community-playground, Git OAuth, and Apple-authentication flags default to `false`. `VITE_ENABLE_AUTO_REVIEW` also defaults to `false`; enable it only after configuring the backend review model, image, runtime host, and repository webhook permissions.
+
+| Variable | Default | Purpose |
 |---|---|---|
-| `VITE_ENABLE_COMMERCIAL_BILLING` | `false` | Web 套餐、钱包、充值与积分入口 |
-| `EXPO_PUBLIC_ENABLE_COMMERCIAL_BILLING` | `false` | 移动端商业入口 |
-| `VITE_ENABLE_ENTERPRISE_LICENSE` | `false` | 外部企业许可证接口 |
-| `VITE_ENABLE_COMMUNITY_PLAYGROUND` | `false` | 外部广场列表与发布接口 |
-| `VITE_ENABLE_GIT_IDENTITY_OAUTH` | `false` | Git 身份 OAuth 快捷绑定 |
-| `VITE_ENABLE_AUTO_REVIEW` | `false` | 外部 Git 审查服务的项目自动审查入口 |
-| `VITE_GITHUB_APP_INSTALL_URL` | 空 | GitHub App 安装地址 |
-| `VITE_GLOBAL_GITHUB_APP_INSTALL_URL` | 空 | 国际区域 GitHub App 安装地址 |
-| `VITE_DOCS_URL` | 仓库 README | 文档入口 |
-| `VITE_PUBLIC_SITE_URL` | GitHub 仓库 | 官网入口 |
-| `VITE_ANNOUNCEMENT_URL` | GitHub Releases | 公告入口 |
-| `VITE_FORUM_URL` | GitHub Issues | 论坛入口 |
-| `VITE_CONSULTATION_URL` | 新建 GitHub Issue | 咨询入口 |
-| `VITE_COMPANY_URL` | GitHub 账号主页 | 公司入口 |
-| `VITE_COMMUNITY_URL` | GitHub Issues | 社区入口 |
-| `VITE_SUPPORT_URL` | GitHub Issues | 支持入口 |
-| `ENABLE_MOBILE_RELEASE` | `false` | 每次 Release 自动执行 EAS |
-| `EXPO_PROJECT_ID` | 无 | EAS 项目 ID，移动构建必填 |
-| `EXPO_OWNER` | 无 | Expo 账号或组织 |
-| `DEVLOOM_MOBILE_API_URL` | 无 | 移动端生产 API 地址 |
-| `DEVLOOM_EXPO_UPDATES_URL` | 空 | Expo Updates 地址 |
-| `DEVLOOM_UPDATES_SERVER` | 空 | 应用内更新服务地址 |
-| `IOS_BUNDLE_ID` | `io.github.yvqvy.devloom` | iOS Bundle Identifier |
-| `ANDROID_PACKAGE` | `io.github.yvqvy.devloom` | Android Application ID |
-| `EXPO_PUBLIC_ENABLE_APPLE_AUTH` | `false` | Apple 登录与账号注销扩展 |
-| `EXPO_PUBLIC_ENABLE_GIT_IDENTITY_OAUTH` | `false` | 移动端 Git 身份 OAuth 快捷绑定 |
+| `ENABLE_MOBILE_RELEASE` | `false` | Include Android and iOS jobs in releases |
+| `DEVLOOM_MOBILE_API_URL` | empty | API URL compiled into the mobile app |
+| `DEVLOOM_EXPO_UPDATES_URL` | empty | Self-hosted Expo Updates manifest URL |
+| `DEVLOOM_UPDATES_SERVER` | empty | Application update service metadata URL |
+| `VITE_DEFAULT_SKILL_IDS` | empty | Comma-separated default Web skill IDs installed in this deployment |
+| `EXPO_PUBLIC_DEFAULT_SKILL_IDS` | empty | Comma-separated default mobile skill IDs installed in this deployment |
+| `ANDROID_PACKAGE` | `io.github.yvqvy.devloom` | Android application ID |
+| `IOS_BUNDLE_ID` | `io.github.yvqvy.devloom` | iOS bundle identifier |
+| `IOS_TEAM_ID` | empty | Apple Developer Team ID |
+| `IOS_EXPORT_METHOD` | `ad-hoc` | Xcode export method for a device IPA |
 
-不要在缺少对应后端接口时开启上述扩展功能开关。手动 Git Access Token 绑定不依赖 Git OAuth。
-
-商业扩展启用后，套餐金额可通过 `VITE_PRICE_<CN|GLOBAL>_<BASIC|PRO|ULTRA>_<MONTHLY|YEARLY>` 配置；充值包使用 `VITE_CREDIT_PACKAGE_<1-4>_<CREDITS|CN_AMOUNT|GLOBAL_AMOUNT>`。这些值为空时不显示具体金额或充值包，且不会自行提供支付后端。
+`IOS_EXPORT_METHOD=ad-hoc` requires a profile containing the target device UDIDs. Use `app-store-connect` for an App Store/TestFlight distribution profile when appropriate.
 
 ## Repository Secrets
 
-| Secret | 是否必需 | 用途 |
-|---|---|---|
-| `VITE_TLDRAW_LICENSE_KEY` | 按分发场景 | tldraw 生产许可证 |
-| `EXPO_TOKEN` | EAS 必需 | Expo/EAS 非交互认证 |
-| `IOS_TEAM_ID` | 按凭据配置 | Apple Developer Team ID |
+Android signing is optional. If any Android signing secret is present, all four are required:
 
-GHCR 使用工作流自带的 `GITHUB_TOKEN`，不需要额外 Docker 密码。Electron 当前输出未签名产物；正式分发前需要另行配置 Windows 代码签名和 macOS 签名、公证凭据。
+| Secret | Purpose |
+|---|---|
+| `ANDROID_KEYSTORE_BASE64` | Base64 encoded upload keystore |
+| `ANDROID_KEYSTORE_PASSWORD` | Keystore password |
+| `ANDROID_KEY_ALIAS` | Upload key alias |
+| `ANDROID_KEY_PASSWORD` | Upload key password |
 
-## 运行 CI
+With these secrets, the job publishes a signed APK and AAB. Without them, it publishes only a clearly named Debug APK.
 
-CI 自动执行：
+iOS device builds require all of the following:
 
-- `go test ./...` 并生成 Linux AMD64 服务端二进制。
-- Web ESLint、Node 回归测试、在线版和离线版 Vite 构建。
-- Mobile ESLint、Jest、Expo 配置检查和 Web 导出。
-- Ent 与 Swagger 再生成一致性检查。
-- Frontend、Backend、Ingress Docker 镜像构建检查，不推送镜像。
+| Secret | Purpose |
+|---|---|
+| `IOS_CERTIFICATE_P12_BASE64` | Base64 encoded Apple distribution certificate |
+| `IOS_CERTIFICATE_PASSWORD` | P12 export password |
+| `IOS_PROVISIONING_PROFILE_BASE64` | Base64 encoded device distribution profile |
+| `IOS_TEAM_ID` | Optional fallback if not stored as a repository variable |
 
-成功后可在本次 Actions Run 的 `Artifacts` 下载：
+The workflow imports these files into a temporary keychain, archives the generated Xcode project, exports an IPA, and deletes the keychain and profile before finishing. Apple Developer signing is mandatory for a physical iPhone; a simulator app cannot be installed on a phone.
 
-```text
-backend-linux-amd64
-frontend-builds
-mobile-web
-regenerated-backend-api
-```
+## Preparing Signing Files
 
-`frontend/src/api/Api.ts` 同时包含开源接口和可选外部扩展契约，因此 CI 通过 Web 构建进行类型检查，但不会用较小的开源 Swagger 覆盖该文件。
-
-## 构建正式版本
-
-推荐通过 SemVer 标签发布：
+Generate an Android upload key once and keep it backed up:
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+keytool -genkeypair -v -keystore devloom-upload.keystore -alias devloom \
+  -keyalg RSA -keysize 2048 -validity 10000
+base64 -w 0 devloom-upload.keystore
 ```
 
-标签必须符合 `v1.2.3` 或 `v1.2.3-beta.1`。标签触发后会自动：
+Export the Apple distribution certificate as a password-protected `.p12` from Keychain Access. Download the matching Ad Hoc provisioning profile from the Apple Developer portal. Encode both files without changing their contents:
 
-- 构建 Linux AMD64/ARM64、Windows AMD64、macOS AMD64/ARM64 Go 二进制。
-- 构建 Web 在线版和离线版压缩包。
-- 构建 Windows Portable/NSIS 和 macOS DMG。
-- 构建并推送 `ghcr.io/y-vqv-y/devloom-{frontend,backend,ingress}` 多架构镜像。
-- 打包 `devloom-source.tar.gz` 并创建 GitHub Release。
+```bash
+base64 -w 0 certificate.p12
+base64 -w 0 DevLoom.mobileprovision
+```
 
-也可在 `Actions > Release > Run workflow` 手动运行：
+On PowerShell, use `[Convert]::ToBase64String([IO.File]::ReadAllBytes('file'))` instead. Store the resulting strings only as GitHub Actions Secrets.
 
-- `publish=false`：仅构建并保留 Actions Artifacts，不发布 GHCR 或 GitHub Release。
-- `publish=true`：使用 `0.0.<run_number>` 作为版本并发布。
-- `mobile=true`：在 EAS 配置完整时启动 Android 和 iOS production 构建；缺少 Token 或 Project ID 时会警告并跳过，不阻断其他发布产物。
+## CI and Release Artifacts
 
-## Release 产物
+The `CI` workflow validates and uploads the Linux backend binary, online/offline frontend builds, mobile Web export, and regenerated backend API artifacts. It also builds the frontend, backend, and ingress containers without pushing them.
 
-发布工作流会生成：
+The `Release` workflow produces these non-mobile assets:
 
 ```text
 devloom-server-linux-amd64
@@ -121,25 +87,38 @@ devloom-server-darwin-amd64
 devloom-server-darwin-arm64
 devloom-frontend-online.tar.gz
 devloom-frontend-offline.tar.gz
-Windows Electron portable / NSIS
-macOS Electron DMG (x64 / arm64)
+Windows portable/NSIS packages
+macOS x64/arm64 DMG packages
 devloom-source.tar.gz
 ```
 
-移动端产物保存在 EAS 项目中，不会直接上传到 GitHub Release。`mobile/app.config.js` 会将 Actions 中的 Expo Project ID、Owner、更新地址、Bundle ID、Package 和 Apple 登录开关写入 EAS 配置。
+When `publish=true` or a valid `v*` tag is pushed, the workflow also publishes `devloom-{frontend,backend,ingress}` images to `ghcr.io/y-vqv-y/`.
 
-要获得真实 Android/iOS 安装产物，必须同时配置 Secret `EXPO_TOKEN` 和 Variable `EXPO_PROJECT_ID`。如果暂时不构建移动端，请将 `ENABLE_MOBILE_RELEASE` 删除或设为 `false`，手动运行 Release 时保持 `mobile=false`。
+Successful mobile jobs upload `mobile-android` and `mobile-ios` artifacts. The release job downloads them and includes them in GitHub Release assets:
 
-## 部署边界
+```text
+devloom-android-<version>.apk
+devloom-android-<version>.aab
+devloom-android-debug-<version>.apk   # when Android signing is absent
+devloom-ios-<version>.ipa
+```
 
-Actions 只构建本仓库包含的服务。完整 AI 任务仍需要外部 Taskflow、runner/host、preview、开发镜像和宿主机安装包；Release 不会生成 `TASKFLOW_IMAGE` 或 `PREVIEW_IMAGE`。详细边界见 `docs/OPEN_SOURCE_BOUNDARIES.md`。
+Create a release with:
 
-## 常见失败
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
 
-- `frozen-lockfile` 或 `npm ci` 失败：依赖声明与对应锁文件不一致，需要更新并提交锁文件。
-- `Validate generated diff` 失败：Ent 或 Swagger 源文件变化后未提交生成结果。
-- Electron 无产物：检查 `desktop/release/`、图标文件和 electron-builder 配置。
-- GHCR 返回权限错误：检查仓库或组织是否限制 `GITHUB_TOKEN` 写入 Packages。
-- EAS 被跳过：配置 Secret `EXPO_TOKEN` 和 Variable `EXPO_PROJECT_ID`；两者任一为空都会主动跳过。
-- EAS 提示未认证：检查 Token 是否过期、`EXPO_OWNER`、Project ID 和项目访问权限。
-- iOS/Android 构建失败：在 EAS 项目中检查证书、Provisioning Profile、Keystore、Bundle ID 和 Package 是否一致。
+Do not commit generated `mobile/android` or `mobile/ios` directories, certificates, profiles, keystores, passwords, or service-account files. Review `mobile/app.config.js` and this workflow together when changing bundle IDs, package IDs, permissions, or native plugins.
+
+## Troubleshooting
+
+- `IOS_CERTIFICATE_P12_BASE64` or profile errors mean the corresponding GitHub Secret is missing or invalid.
+- A provisioning error usually means the profile bundle ID, Team ID, export method, certificate type, or registered iPhone UDID does not match.
+- Android release signing errors usually mean one of the four Android secrets is wrong or the alias is not present in the keystore.
+- Any workflow requesting Expo cloud credentials is stale and should be removed.
+
+## Backend Runtime Check
+
+The GitHub build validates source and packages artifacts; it does not provide the runtime service. A deployment must set `TASKFLOW_SERVER` to an absolute internal `http://` or `https://` endpoint before starting the Go backend. If it is missing, startup fails with a clear external-runtime configuration error rather than starting a partially working server. For private deployments, install Taskflow/runner and its host agent on the internal network, then register the host and images from the web or mobile client.

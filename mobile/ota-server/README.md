@@ -1,4 +1,4 @@
-# DevLoom 自建 OTA 服务端（expo-updates，非 EAS）
+# DevLoom 自建 OTA 服务端（expo-updates）
 
 零依赖 Node 服务，把 `expo export` 的 `dist/` 按 Expo Updates 协议 v1 下发。
 只更新 JS bundle + assets；原生改动（加原生模块 / 升 SDK / 改权限图标）仍需重新出整包。

@@ -163,7 +163,9 @@ export default function CreateDefaultTaskDialog({
       return
     }
 
-    setSelectedHostId(selectHost(hosts, false))
+    setSelectedHostId(IS_OFFLINE_EDITION
+      ? (hosts.find((host) => host.id && host.status === ConstsHostStatus.HostStatusOnline)?.id || "")
+      : selectHost(hosts, false))
   }, [hosts, images, models, subscription, user.role])
 
   useEffect(() => {
@@ -315,6 +317,11 @@ export default function CreateDefaultTaskDialog({
 
     if (!selectedImageId) {
       toast.error(t("taskWorkflow.toast.missingImage"))
+      return
+    }
+
+    if (!selectedHostId) {
+      toast.error(t("taskWorkflow.toast.missingHost"))
       return
     }
 

@@ -214,6 +214,47 @@ export interface Image {
   owner?: { id?: string; name?: string; type?: OwnerType };
 }
 
+export type HostStatus = 'online' | 'offline';
+
+export interface VirtualMachine {
+  id?: string;
+  environment_id?: string;
+  hostname?: string;
+  os?: string;
+  cores?: number;
+  memory?: number;
+  status?: string;
+  name?: string;
+  life_time_seconds?: number;
+  version?: string;
+  created_at?: number;
+  host?: Host;
+  ports?: VMPort[];
+}
+
+export interface Host {
+  id?: string;
+  name?: string;
+  os?: string;
+  arch?: string;
+  cores?: number;
+  memory?: number;
+  status?: HostStatus | string;
+  is_default?: boolean;
+  default?: boolean;
+  virtualmachines?: VirtualMachine[];
+  remark?: string;
+}
+
+export interface VMPort {
+  port?: number;
+  status?: string;
+  preview_url?: string | null;
+  forward_id?: string | null;
+  white_list?: string[];
+  error_message?: string;
+}
+
 export interface Skill {
   id?: string;
   skill_id?: string;
@@ -297,4 +338,14 @@ export interface CreateTaskReq {
   resource: { core: number; memory: number; life: number };
   extra?: { skill_ids?: string[]; project_id?: string; issue_id?: string };
   git_identity_id?: string;
+}
+
+export interface CreateVirtualMachineReq {
+  host_id: string;
+  name: string;
+  image_id: string;
+  model_id: string;
+  life: number;
+  resource: { cpu: number; memory: number };
+  install_coding_agents?: boolean;
 }

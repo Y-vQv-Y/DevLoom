@@ -3788,6 +3788,7 @@ const cn = {
       missingContent: "请输入任务内容",
       missingModel: "请选择大模型",
       missingImage: "请选择系统镜像",
+      missingHost: "请选择在线开发主机",
       builtinModelHostOnly: "内置模型只能在内置宿主机上使用",
       taskStarted: "任务启动成功",
       taskStartFailed: "任务启动失败",

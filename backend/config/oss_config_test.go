@@ -47,6 +47,18 @@ func TestObjectStorageDefaults(t *testing.T) {
 	if cfg.Task.CreateReqTTLSeconds != 600 {
 		t.Fatalf("task.create_req_ttl_seconds = %d, want 600", cfg.Task.CreateReqTTLSeconds)
 	}
+	if !cfg.Workspace.Isolated {
+		t.Fatal("workspace.isolated default = false, want true")
+	}
+	if cfg.Workspace.BranchPrefix != "devloom" {
+		t.Fatalf("workspace.branch_prefix = %q, want devloom", cfg.Workspace.BranchPrefix)
+	}
+	if cfg.Workspace.PushMode != "pull_request" {
+		t.Fatalf("workspace.push_mode = %q, want pull_request", cfg.Workspace.PushMode)
+	}
+	if !cfg.Workspace.OpenHandsWorktree {
+		t.Fatal("workspace.openhands_worktree default = false, want true")
+	}
 	if cfg.InitTeam.ExtensionPackageDir != "/app/extensions/packages" {
 		t.Fatalf("init_team.extension_package_dir = %q", cfg.InitTeam.ExtensionPackageDir)
 	}

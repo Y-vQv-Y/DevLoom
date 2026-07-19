@@ -1,8 +1,6 @@
 const buildConfig = require('../../app.config');
 
 const ENV_KEYS = [
-  'EXPO_PROJECT_ID',
-  'EXPO_OWNER',
   'EXPO_UPDATES_URL',
   'EXPO_PUBLIC_UPDATES_SERVER',
   'EXPO_PUBLIC_ENABLE_APPLE_AUTH',
@@ -21,9 +19,7 @@ afterEach(() => {
   }
 });
 
-test('maps EAS and update environment variables into Expo config', () => {
-  process.env.EXPO_PROJECT_ID = 'project-id';
-  process.env.EXPO_OWNER = 'owner';
+test('maps native build and update environment variables into Expo config', () => {
   process.env.EXPO_UPDATES_URL = 'https://updates.example.test/manifest';
   process.env.EXPO_PUBLIC_UPDATES_SERVER = 'https://updates.example.test';
   process.env.EXPO_PUBLIC_ENABLE_APPLE_AUTH = 'true';
@@ -33,8 +29,6 @@ test('maps EAS and update environment variables into Expo config', () => {
 
   const config = buildConfig();
 
-  expect(config.owner).toBe('owner');
-  expect(config.extra.eas.projectId).toBe('project-id');
   expect(config.extra.updatesServer).toBe('https://updates.example.test');
   expect(config.updates).toMatchObject({ enabled: true, url: 'https://updates.example.test/manifest' });
   expect(config.ios).toMatchObject({

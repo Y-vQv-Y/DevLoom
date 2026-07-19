@@ -24,7 +24,6 @@ type GitTaskRepoInterface interface {
 // CreateGitTaskReq 创建 GitTask 请求
 type CreateGitTaskReq struct {
 	HostID               string             `json:"host_id"`
-	ImageID              uuid.UUID          `json:"image_id"`
 	Subject              Subject            `json:"subject"`
 	Repo                 Repo               `json:"repo"`
 	User                 User               `json:"user"`
@@ -32,6 +31,7 @@ type CreateGitTaskReq struct {
 	Body                 string             `json:"body"`
 	Time                 time.Time          `json:"time"`
 	Prompt               string             `json:"prompt"`
+	Command              string             `json:"command,omitempty"`
 	PromptID             string             `json:"prompt_id"`
 	GithubInstallationID int64              `json:"github_installation_id"`
 	Env                  map[string]string  `json:"env"`

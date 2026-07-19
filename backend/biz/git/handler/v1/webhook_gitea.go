@@ -15,7 +15,6 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"
 
-	"github.com/Y-vQv-Y/DevLoom/backend/config"
 	"github.com/Y-vQv-Y/DevLoom/backend/consts"
 	"github.com/Y-vQv-Y/DevLoom/backend/domain"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/taskflow"
@@ -23,7 +22,6 @@ import (
 
 // GiteaWebhookHandler Gitea Webhook 处理器
 type GiteaWebhookHandler struct {
-	cfg            *config.Config
 	logger         *slog.Logger
 	redis          *redis.Client
 	gitbotUsecase  domain.GitBotUsecase
@@ -33,7 +31,6 @@ type GiteaWebhookHandler struct {
 // NewGiteaWebhookHandler 创建 Gitea Webhook 处理器
 func NewGiteaWebhookHandler(i *do.Injector) (*GiteaWebhookHandler, error) {
 	h := &GiteaWebhookHandler{
-		cfg:            do.MustInvoke[*config.Config](i),
 		logger:         do.MustInvoke[*slog.Logger](i).With("module", "GiteaWebhookHandler"),
 		redis:          do.MustInvoke[*redis.Client](i),
 		gitbotUsecase:  do.MustInvoke[domain.GitBotUsecase](i),
@@ -131,11 +128,15 @@ func (h *GiteaWebhookHandler) handlePullRequest(ctx context.Context, bot *domain
 	if !dedup(ctx, h.redis, key, h.logger) {
 		return
 	}
+	hostID, err := webhookRuntime(bot)
+	if err != nil {
+		h.logger.With("error", err).ErrorContext(ctx, "gitea webhook runtime is not configured")
+		return
+	}
 
 	branch := pr.Head.Ref
-	h.gitTaskUsecase.Create(ctx, domain.CreateGitTaskReq{
-		HostID:  bot.Host.ID,
-		ImageID: uuid.MustParse(h.cfg.Task.ImageID),
+	if _, err := h.gitTaskUsecase.Create(ctx, domain.CreateGitTaskReq{
+		HostID:  hostID,
 		Prompt:  key,
 		Git:     taskflow.Git{Token: bot.Token},
 		Subject: domain.Subject{
@@ -153,5 +154,7 @@ func (h *GiteaWebhookHandler) handlePullRequest(ctx context.Context, bot *domain
 		Time:     time.Now(),
 		Env:      map[string]string{"GITEA_TOKEN": bot.Token},
 		Bot:      bot,
-	})
+	}); err != nil {
+		h.logger.With("error", err).ErrorContext(ctx, "failed to create gitea pull request task")
+	}
 }

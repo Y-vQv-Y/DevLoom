@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge"
 import { useCommonData } from "../data-provider"
 import { getHostBadges } from "@/utils/common"
 import { useTranslation } from "react-i18next"
+import { IS_OFFLINE_EDITION } from "@/utils/edition"
 
 interface CreateGitBotDialogProps {
   open: boolean
@@ -53,7 +54,7 @@ export function CreateGitBotDialog({ open, onOpenChange, onSuccess }: CreateGitB
       if (defaultHost?.id) {
         setSelectedHostId(defaultHost?.id)
       } else {
-        setSelectedHostId("public_host")
+        setSelectedHostId(IS_OFFLINE_EDITION ? "" : "public_host")
       }
     }
   }, [open, hosts])
@@ -61,6 +62,10 @@ export function CreateGitBotDialog({ open, onOpenChange, onSuccess }: CreateGitB
   const handleSubmit = async () => {
     if (!accessToken) {
       toast.error(t("consoleGitBot.toast.missingAccessToken"))
+      return
+    }
+    if (!selectedHostId) {
+      toast.error(t("consoleGitBot.toast.incompleteBot"))
       return
     }
     
@@ -129,12 +134,14 @@ export function CreateGitBotDialog({ open, onOpenChange, onSuccess }: CreateGitB
                   <SelectValue placeholder={t("consoleGitBot.placeholders.host")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={"public_host"}>
-                    <div className="flex items-center gap-2">
-                      <span>DevLoom</span>
-                      <Badge variant="outline">{t("consoleGitBot.fields.builtin")}</Badge>
-                    </div>
-                  </SelectItem>
+                  {!IS_OFFLINE_EDITION && (
+                    <SelectItem value={"public_host"}>
+                      <div className="flex items-center gap-2">
+                        <span>DevLoom</span>
+                        <Badge variant="outline">{t("consoleGitBot.fields.builtin")}</Badge>
+                      </div>
+                    </SelectItem>
+                  )}
                   {hosts.map((host) => {
                     return (
                       <SelectItem key={host.id} value={host.id!} disabled={host.status !== ConstsHostStatus.HostStatusOnline}>
@@ -198,7 +205,7 @@ export function CreateGitBotDialog({ open, onOpenChange, onSuccess }: CreateGitB
           <Button variant="outline" onClick={handleCancel} disabled={loading}>
             {t("consoleGitBot.actions.cancel")}
           </Button>
-          <Button onClick={handleSubmit} disabled={loading}>
+          <Button onClick={handleSubmit} disabled={loading || !selectedHostId}>
             {loading ? t("consoleGitBot.actions.creating") : t("consoleGitBot.actions.createShort")}
           </Button>
         </DialogFooter>

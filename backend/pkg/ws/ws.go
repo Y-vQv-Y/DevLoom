@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"os"
+	"strings"
 	"sync"
 
 	"github.com/coder/websocket"
@@ -19,9 +21,11 @@ type WebsocketManager struct {
 
 // Accept 从 HTTP 请求升级到 WebSocket 连接
 func Accept(w http.ResponseWriter, r *http.Request) (*WebsocketManager, error) {
-	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
-		InsecureSkipVerify: true,
-	})
+	options := &websocket.AcceptOptions{}
+	if strings.EqualFold(strings.TrimSpace(os.Getenv("DEVLOOM_WS_INSECURE_SKIP_VERIFY")), "true") {
+		options.InsecureSkipVerify = true
+	}
+	conn, err := websocket.Accept(w, r, options)
 	if err != nil {
 		return nil, err
 	}

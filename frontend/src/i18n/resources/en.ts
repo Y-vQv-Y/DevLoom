@@ -3788,6 +3788,7 @@ const en = {
       missingContent: "Please enter task content",
       missingModel: "Please select a model",
       missingImage: "Please select a system image",
+      missingHost: "Please select an online development host",
       builtinModelHostOnly: "Built-in models can only run on the built-in host",
       taskStarted: "Task started",
       taskStartFailed: "Failed to start task",

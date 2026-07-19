@@ -43,6 +43,7 @@ type GitBot struct {
 	Name        string             `json:"name"`
 	Token       string             `json:"token"`
 	SecretToken string             `json:"secret_token"`
+	HostID      string             `json:"-"`
 	Host        *Host              `json:"host"`
 	WebhookURL  string             `json:"webhook_url"`
 	Users       []*User            `json:"users"`
@@ -59,6 +60,7 @@ func (g *GitBot) From(src *db.GitBot) *GitBot {
 	g.Name = src.Name
 	g.Token = src.Token
 	g.SecretToken = src.SecretToken
+	g.HostID = src.HostID
 	g.Host = cvt.From(src.Edges.Host, &Host{})
 	g.Users = cvt.Iter(src.Edges.Users, func(_ int, u *db.User) *User {
 		return cvt.From(u, &User{})

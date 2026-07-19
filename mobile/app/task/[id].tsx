@@ -536,6 +536,11 @@ export default function TaskDetailScreen() {
             <Text numberOfLines={1} style={{ width: '100%', textAlign: 'center', fontSize: 16, fontWeight: '700', color: t.tx }}>{title}</Text>
           </Pressable>
           <View style={{ flex: 1 }} />
+          {task?.virtualmachine?.id ? (
+            <Pressable onPress={() => router.push(`/environment-terminal?id=${encodeURIComponent(task.virtualmachine?.id || '')}`)} hitSlop={6} style={{ padding: 8 }}>
+              <Icons.terminal size={21} color={t.tx2} sw={1.9} />
+            </Pressable>
+          ) : null}
           {(interactive || fileChanges.length > 0) ? (
             <Pressable onPress={() => { setFilesOpen(true); refreshChanges(); }} hitSlop={6} style={{ padding: 8 }}>
               {/* 代码文件（文件 / 变动）；有改动时高亮。预览是 composer 上方的独立入口 */}

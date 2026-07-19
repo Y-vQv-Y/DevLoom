@@ -104,7 +104,36 @@ oauth_login:
     redirect_url: ""
 
 task:
+  # Git webhook review task resource defaults
+  core: 2
+  memory: 8589934592
+  # GitLab Note Hook 评论触发关键字，例如在合并请求评论中输入 @devloom
+  at_keyword: "@devloom"
   create_req_ttl_seconds: 600
+
+workspace:
+  # 每个任务在独立 clone/worktree 和唯一工作分支中运行；兼容运行时必须执行该策略。
+  isolated: true
+  branch_prefix: "devloom"
+  # pull_request 只允许推送任务工作分支并创建 PR/MR；disabled 禁止任何推送。
+  push_mode: "pull_request"
+  # OpenHands Agent Server 创建 conversation 时传递 worktree=true。
+  openhands_worktree: true
+
+review_agent:
+  # UUID of the model record used by Git webhook review tasks
+  model_id: ""
+  # Taskflow development image reference used by Git webhook review tasks
+  image: ""
+
+gitlab:
+  # 支持 domestic / international 或任意自定义实例名
+  instances:
+    # internal:
+    #   enabled: true
+    #   base_url: "https://gitlab.intranet.example"
+    #   token: ""
+    #   tls_insecure_skip_verify: false
 
 clickhouse:
   addr: ""

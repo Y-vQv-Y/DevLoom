@@ -13,6 +13,8 @@
 <p align="center">
   <a href="https://github.com/Y-vQv-Y/DevLoom">Project Home</a> ·
   <a href="#self-hosted-deployment">Self-Hosted Deployment</a> ·
+  <a href="./docs/DEPLOYMENT_CN.md">Deployment Guide</a> ·
+  <a href="./docs/USER_GUIDE_CN.md">User Guide</a> ·
   <a href="https://github.com/Y-vQv-Y/DevLoom/issues">Support</a> ·
   <a href="./readme.cn.md">中文</a>
 </p>
@@ -23,7 +25,7 @@ DevLoom is an AGPL-3.0 AI development control plane for repositories, models, pr
 
 The repository is not a complete standalone runtime. Full AI task execution requires Taskflow, runner/host, preview, development-image, and installer artifacts that are referenced by configuration but are not built here. Supply compatible implementations or images before production deployment.
 
-Commercial billing, playground publishing, Git identity OAuth shortcuts, automatic project review, Apple authentication/account deletion, and enterprise-license UI are disabled by default because their APIs are not implemented by the open-source Go backend. Manual Git access-token identities and password-based accounts remain available.
+Commercial billing, playground publishing, Git identity OAuth shortcuts, Apple authentication/account deletion, and enterprise-license UI are disabled by default because their APIs are not implemented by the open-source Go backend. Manual Git access-token identities and password-based accounts remain available. Project automatic review is implemented in the open-source backend but remains opt-in and requires a configured development host, review model, and development image.
 
 ## Screenshots
 
@@ -72,6 +74,8 @@ Use the repository as the canonical project and documentation entry point:
 
 ### Self-Hosted Deployment
 
+For the complete Chinese deployment procedure, including Compose variables, TLS, offline assets, backups, upgrades, and troubleshooting, see [`docs/DEPLOYMENT_CN.md`](./docs/DEPLOYMENT_CN.md). End-user workflows are documented in [`docs/USER_GUIDE_CN.md`](./docs/USER_GUIDE_CN.md).
+
 Source checkout:
 
 ```bash
@@ -87,14 +91,15 @@ Plan, recharge, check-in, invitation, and payment APIs are not implemented by th
 
 The generated frontend client also retains license endpoints documented as implemented by an external enterprise extension. The open-source Go backend does not register them, so `VITE_ENABLE_ENTERPRISE_LICENSE=false` hides the license page and prevents seat-status calls by default.
 
-Playground publishing, Git identity OAuth shortcuts, automatic project review, and mobile Apple authentication/account deletion are also default-off. See [`docs/OPEN_SOURCE_BOUNDARIES.md`](./docs/OPEN_SOURCE_BOUNDARIES.md) for the route and runtime boundary audit.
+Playground publishing, Git identity OAuth shortcuts, and mobile Apple authentication/account deletion are also default-off. Project automatic review is controlled by `VITE_ENABLE_AUTO_REVIEW` and is documented in [`docs/OPEN_SOURCE_BOUNDARIES.md`](./docs/OPEN_SOURCE_BOUNDARIES.md).
 
 ### Build and Release
 
 Use GitHub Actions instead of local builds:
 
 - `.github/workflows/build.yml` tests and builds backend, frontend, mobile web, regenerated backend API artifacts, and Docker images.
-- `.github/workflows/electron-release.yml` builds release binaries, frontend archives, desktop packages, optional EAS mobile builds, and GHCR images.
+- `.github/workflows/electron-release.yml` builds release binaries, frontend archives, desktop packages, native Android/iOS packages, and GHCR images. Mobile builds run on GitHub-hosted runners and do not use Expo/EAS cloud builds.
+- [`docs/AGENT_INTEGRATION_CN.md`](./docs/AGENT_INTEGRATION_CN.md) documents the OpenHands, Taskflow, and isolated workspace contract.
 
 See [`docs/GITHUB_ACTIONS.md`](./docs/GITHUB_ACTIONS.md) for repository variables, secrets, artifacts, and release steps.
 

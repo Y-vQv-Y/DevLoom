@@ -134,8 +134,20 @@ type CreateVirtualMachineReq struct {
 	Cores               string         `json:"cores"`
 	Memory              uint64         `json:"memory"`
 	InstallCodingAgents bool           `json:"install_coding_agents"`
-	Envs                []string       `json:"envs,omitempty"`
-	LogStore            string         `json:"log_store,omitempty"`
+	Envs                []string         `json:"envs,omitempty"`
+	Workspace           *WorkspacePolicy `json:"workspace,omitempty"`
+	LogStore            string           `json:"log_store,omitempty"`
+}
+
+// WorkspacePolicy is enforced by compatible Taskflow, Coder, Eclipse Che, or
+// OpenHands adapters. BaseBranch is read-only; all changes belong to WorkBranch.
+type WorkspacePolicy struct {
+	Isolated          bool   `json:"isolated"`
+	BaseBranch        string `json:"base_branch"`
+	WorkBranch        string `json:"work_branch"`
+	PushMode          string `json:"push_mode"`
+	ProtectedBranch   bool   `json:"protected_branch"`
+	OpenHandsWorktree bool   `json:"openhands_worktree"`
 }
 
 // Git 仓库信息
@@ -634,6 +646,7 @@ type CreateTaskReq struct {
 	Configs        []ConfigFile      `json:"configs,omitzero"`
 	McpConfigs     []McpServerConfig `json:"mcp_configs,omitzero"`
 	Env            map[string]string `json:"env,omitempty"`
+	Workspace      *WorkspacePolicy  `json:"workspace,omitempty"`
 	LogStore       string            `json:"log_store,omitempty"`
 	AgentResources *AgentResources   `json:"agent_resources,omitempty"` // skill/plugin presigned URLs + rule content forwarded to devloom agent
 }

@@ -45,6 +45,8 @@ type ProjectUsecase struct {
 	glInternational *gitlab.Gitlab
 	tokenCache      *cache.Cache
 	tokenProvider   *gituc.TokenProvider
+	gitbotUsecase   domain.GitBotUsecase
+	hostUsecase     domain.HostUsecase
 }
 
 // NewProjectUsecase 创建项目业务逻辑层实例
@@ -54,11 +56,13 @@ func NewProjectUsecase(i *do.Injector) (domain.ProjectUsecase, error) {
 
 	var glDomestic *gitlab.Gitlab
 	if baseURL := cfg.GetGitlabBaseURL("domestic"); baseURL != "" {
-		glDomestic = gitlab.NewGitlab(baseURL, cfg.GetGitlabToken("domestic"), logger)
+		glDomestic = gitlab.NewGitlab(baseURL, cfg.GetGitlabToken("domestic"), logger,
+			gitlab.WithTLSInsecureSkipVerify(cfg.GetGitlabTLSInsecureSkipVerify("domestic")))
 	}
 	var glInternational *gitlab.Gitlab
 	if baseURL := cfg.GetGitlabBaseURL("international"); baseURL != "" {
-		glInternational = gitlab.NewGitlab(baseURL, cfg.GetGitlabToken("international"), logger)
+		glInternational = gitlab.NewGitlab(baseURL, cfg.GetGitlabToken("international"), logger,
+			gitlab.WithTLSInsecureSkipVerify(cfg.GetGitlabTLSInsecureSkipVerify("international")))
 	}
 
 	return &ProjectUsecase{
@@ -74,6 +78,8 @@ func NewProjectUsecase(i *do.Injector) (domain.ProjectUsecase, error) {
 		glInternational: glInternational,
 		tokenCache:      cache.New(repoTokenCacheTTL, 10*time.Minute),
 		tokenProvider:   do.MustInvoke[*gituc.TokenProvider](i),
+		gitbotUsecase:   do.MustInvoke[domain.GitBotUsecase](i),
+		hostUsecase:     do.MustInvoke[domain.HostUsecase](i),
 	}, nil
 }
 
@@ -86,7 +92,8 @@ func (u *ProjectUsecase) getGitlabClientByBaseURL(baseURL string) *gitlab.Gitlab
 	if u.glInternational != nil && strings.TrimSuffix(u.cfg.GetGitlabBaseURL("international"), "/") == baseURL {
 		return u.glInternational
 	}
-	return gitlab.NewGitlabForBaseURL(baseURL, u.logger)
+	return gitlab.NewGitlabForBaseURL(baseURL, u.logger,
+		gitlab.WithTLSInsecureSkipVerify(u.cfg.GitlabTLSInsecureSkipVerifyForURL(baseURL)))
 }
 
 // Get 获取项目
@@ -134,6 +141,190 @@ func (u *ProjectUsecase) Update(ctx context.Context, user *domain.User, req *dom
 // Delete 删除项目
 func (u *ProjectUsecase) Delete(ctx context.Context, uid, id uuid.UUID) error {
 	return u.repo.Delete(ctx, uid, id)
+}
+
+// EnableAutoReview creates a project bot and registers its repository webhook.
+func (u *ProjectUsecase) EnableAutoReview(ctx context.Context, uid, id uuid.UUID) (*domain.Project, error) {
+	if !u.repo.HasReadWritePerm(ctx, uid, id) {
+		return nil, errcode.ErrForbidden
+	}
+	p, err := u.repo.Get(ctx, uid, id)
+	if err != nil {
+		return nil, err
+	}
+	if len(p.Edges.GitBots) > 0 {
+		return cvt.From(p, &domain.Project{}), nil
+	}
+	if !supportsAutoReview(p.Platform) {
+		return nil, errcode.ErrGitOperation.Wrap(fmt.Errorf("automatic review is not supported for %s", p.Platform))
+	}
+	if p.Edges.GitIdentity == nil || p.GitIdentityID == uuid.Nil {
+		return nil, errcode.ErrGitOperation.Wrap(fmt.Errorf("project has no git identity"))
+	}
+	if err := u.validateAutoReviewConfig(p.Platform); err != nil {
+		return nil, errcode.ErrGitOperation.Wrap(err)
+	}
+
+	hostID, err := u.pickAutoReviewHost(ctx, uid)
+	if err != nil {
+		return nil, err
+	}
+	token, err := u.tokenProvider.GetToken(ctx, p.GitIdentityID)
+	if err != nil {
+		return nil, errcode.ErrGitOperation.Wrap(err)
+	}
+	bot, err := u.gitbotUsecase.Create(ctx, uid, domain.CreateGitBotReq{
+		Platform: p.Platform,
+		Name:     p.Name + " Review",
+		Token:    token,
+		HostID:   hostID,
+	})
+	if err != nil {
+		return nil, errcode.ErrDatabaseOperation.Wrap(err)
+	}
+
+	client, clientCtx, err := u.getClient(p)
+	if err == nil {
+		err = client.CreateWebhook(ctx, &domain.CreateWebhookOptions{
+			Token: token, RepoURL: p.RepoURL, WebhookURL: bot.WebhookURL,
+			SecretToken: bot.SecretToken, Events: autoReviewEvents(p.Platform), IsOAuth: clientCtx.IsOAuth,
+		})
+	}
+	if err != nil {
+		_ = u.gitbotUsecase.Delete(ctx, uid, bot.ID)
+		return nil, errcode.ErrGitOperation.Wrap(fmt.Errorf("register review webhook: %w", err))
+	}
+
+	if err := u.repo.LinkGitBot(ctx, uid, p.ID, bot.ID); err != nil {
+		_ = client.DeleteWebhook(ctx, &domain.WebhookOptions{
+			Token: token, RepoURL: p.RepoURL, WebhookURL: bot.WebhookURL, IsOAuth: clientCtx.IsOAuth,
+		})
+		_ = u.gitbotUsecase.Delete(ctx, uid, bot.ID)
+		return nil, err
+	}
+
+	updated, err := u.repo.Get(ctx, uid, id)
+	if err != nil {
+		return nil, err
+	}
+	return cvt.From(updated, &domain.Project{}), nil
+}
+
+// DisableAutoReview removes repository webhooks before clearing local links.
+func (u *ProjectUsecase) DisableAutoReview(ctx context.Context, uid, id uuid.UUID) error {
+	if !u.repo.HasReadWritePerm(ctx, uid, id) {
+		return errcode.ErrForbidden
+	}
+	p, err := u.repo.Get(ctx, uid, id)
+	if err != nil {
+		return err
+	}
+	if len(p.Edges.GitBots) == 0 {
+		return nil
+	}
+	client, clientCtx, err := u.getClient(p)
+	if err != nil {
+		return err
+	}
+	token, err := u.tokenProvider.GetToken(ctx, p.GitIdentityID)
+	if err != nil {
+		return errcode.ErrGitOperation.Wrap(err)
+	}
+
+	for _, storedBot := range p.Edges.GitBots {
+		bot, err := u.gitbotUsecase.GetByID(ctx, storedBot.ID)
+		if err != nil {
+			return err
+		}
+		if err := client.DeleteWebhook(ctx, &domain.WebhookOptions{
+			Token: token, RepoURL: p.RepoURL, WebhookURL: bot.WebhookURL, IsOAuth: clientCtx.IsOAuth,
+		}); err != nil {
+			return errcode.ErrGitOperation.Wrap(fmt.Errorf("delete review webhook: %w", err))
+		}
+		if err := u.repo.UnlinkGitBot(ctx, uid, p.ID, bot.ID); err != nil {
+			return err
+		}
+		if err := u.gitbotUsecase.Delete(ctx, storedBot.UserID, bot.ID); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (u *ProjectUsecase) pickAutoReviewHost(ctx context.Context, uid uuid.UUID) (string, error) {
+	resp, err := u.hostUsecase.List(ctx, uid)
+	if err != nil {
+		return "", err
+	}
+	if resp == nil {
+		return "", fmt.Errorf("automatic review requires a development host list")
+	}
+	var fallback string
+	for _, host := range resp.Hosts {
+		if host == nil || strings.HasPrefix(host.ID, consts.PUBLIC_HOST_ID) || host.Status != consts.HostStatusOnline {
+			continue
+		}
+		hostID := strings.TrimSpace(host.InternalID)
+		if hostID == "" {
+			hostID = strings.TrimSpace(host.ID)
+		}
+		if hostID == "" {
+			continue
+		}
+		if host.IsDefault {
+			return hostID, nil
+		}
+		if fallback == "" {
+			fallback = hostID
+		}
+	}
+	if fallback == "" {
+		return "", fmt.Errorf("automatic review requires an online development host")
+	}
+	return fallback, nil
+}
+
+func (u *ProjectUsecase) validateAutoReviewConfig(platform consts.GitPlatform) error {
+	modelID := strings.TrimSpace(u.cfg.ReviewAgent.ModelID)
+	if modelID == "" {
+		return fmt.Errorf("automatic review requires review_agent.model_id")
+	}
+	if _, err := uuid.Parse(modelID); err != nil {
+		return fmt.Errorf("review_agent.model_id must be a UUID: %w", err)
+	}
+	if strings.TrimSpace(u.cfg.ReviewAgent.Image) == "" {
+		return fmt.Errorf("automatic review requires review_agent.image")
+	}
+	if u.cfg.Task.Core <= 0 {
+		return fmt.Errorf("automatic review requires task.core greater than zero")
+	}
+	if u.cfg.Task.Memory == 0 {
+		return fmt.Errorf("automatic review requires task.memory greater than zero")
+	}
+	if (platform == consts.GitPlatformGithub || platform == consts.GitPlatformGitLab) && strings.TrimSpace(u.cfg.Task.AtKeyword) == "" {
+		return fmt.Errorf("%s mention review requires task.at_keyword", platform)
+	}
+	return nil
+}
+
+func supportsAutoReview(platform consts.GitPlatform) bool {
+	switch platform {
+	case consts.GitPlatformGithub, consts.GitPlatformGitLab, consts.GitPlatformGitea,
+		consts.GitPlatformGitee, consts.GitPlatformCodeup:
+		return true
+	default:
+		return false
+	}
+}
+
+func autoReviewEvents(platform consts.GitPlatform) []string {
+	if platform == consts.GitPlatformGithub {
+		return []string{"pull_request", "issue_comment"}
+	}
+	if platform == consts.GitPlatformGitea {
+		return []string{"pull_request"}
+	}
+	return []string{"merge_request", "note"}
 }
 
 // ListIssues 列出项目问题
@@ -293,7 +484,13 @@ func (u *ProjectUsecase) getClient(p *db.Project) (domain.GitClienter, *ClientCo
 
 	case consts.GitPlatformGitLab:
 		gl := u.getGitlabClientByBaseURL(gi.BaseURL)
-		projectPath, _ := gitlab.ParseProjectPath(p.RepoURL)
+		if gl == nil {
+			return nil, nil, errcode.ErrGitOperation.Wrap(fmt.Errorf("invalid GitLab base URL: %q", gi.BaseURL))
+		}
+		projectPath, err := gitlab.ParseProjectPath(p.RepoURL)
+		if err != nil {
+			return nil, nil, errcode.ErrGitOperation.Wrap(err)
+		}
 		return gl, &ClientContext{
 			Owner: projectPath, DefaultBranch: p.Branch, Token: token, IsOAuth: gi.OauthRefreshToken != "",
 		}, nil

@@ -541,7 +541,8 @@ export default function ProfileScreen() {
           {/* 代码仓库与模型管理入口 */}
           <Card style={{ paddingTop: 14, paddingBottom: 2 }}>
             <Text style={{ fontSize: 12, fontWeight: '700', color: t.tx3, letterSpacing: 0.5, paddingHorizontal: 16, marginBottom: 2 }}>集成</Text>
-            <Row icon="git" label="Git 账号" value="绑定代码仓库凭证" onPress={() => router.push('/git-identities')} />
+            <Row icon="server" label="开发环境" value="管理主机、镜像和远程终端" onPress={() => router.push('/environments')} />
+            <Row icon="git" label="Git 账号" value="绑定代码仓库凭证" divider onPress={() => router.push('/git-identities')} />
             <Row icon="brain" label="自定义模型" value="接入自己的大模型" divider onPress={() => router.push('/models')} />
           </Card>
 

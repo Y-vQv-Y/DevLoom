@@ -37,6 +37,8 @@ func NewProjectHandler(i *do.Injector) (*ProjectHandler, error) {
 	g.POST("", web.BindHandler(h.Create))
 	g.PUT("/:id", web.BindHandler(h.Update))
 	g.DELETE("/:id", web.BindHandler(h.Delete))
+	g.POST("/:id/auto-review", web.BindHandler(h.EnableAutoReview))
+	g.DELETE("/:id/auto-review", web.BindHandler(h.DisableAutoReview))
 
 	gi := w.Group("/api/v1/users/projects/:id/issues")
 	gi.Use(auth.Auth(), targetActive.TargetActive())
@@ -172,6 +174,51 @@ func (h *ProjectHandler) Update(c *web.Context, req domain.UpdateProjectReq) err
 func (h *ProjectHandler) Delete(c *web.Context, req domain.IDReq[uuid.UUID]) error {
 	user := middleware.GetUser(c)
 	if err := h.usecase.Delete(c.Request().Context(), user.ID, req.ID); err != nil {
+		return err
+	}
+	return c.Success(nil)
+}
+
+// EnableAutoReview 开启自动审查
+//
+//	@Summary		开启自动审查
+//	@Description	开启自动审查
+//	@Tags			【用户】项目管理
+//	@Accept			json
+//	@Produce		json
+//	@Security		DevLoomAIAuth
+//	@Param			id	path		string	true	"项目ID"
+//	@Success		200	{object}	web.Resp{data=domain.Project}	"成功"
+//	@Failure		400	{object}	web.Resp					"请求参数错误"
+//	@Failure		401	{object}	web.Resp					"未授权"
+//	@Failure		500	{object}	web.Resp					"服务器内部错误"
+//	@Router			/api/v1/users/projects/{id}/auto-review [post]
+func (h *ProjectHandler) EnableAutoReview(c *web.Context, req domain.IDReq[uuid.UUID]) error {
+	user := middleware.GetUser(c)
+	project, err := h.usecase.EnableAutoReview(c.Request().Context(), user.ID, req.ID)
+	if err != nil {
+		return err
+	}
+	return c.Success(project)
+}
+
+// DisableAutoReview 关闭自动审查
+//
+//	@Summary		关闭自动审查
+//	@Description	关闭自动审查
+//	@Tags			【用户】项目管理
+//	@Accept			json
+//	@Produce		json
+//	@Security		DevLoomAIAuth
+//	@Param			id	path		string	true	"项目ID"
+//	@Success		200	{object}	web.Resp	"成功"
+//	@Failure		400	{object}	web.Resp	"请求参数错误"
+//	@Failure		401	{object}	web.Resp	"未授权"
+//	@Failure		500	{object}	web.Resp	"服务器内部错误"
+//	@Router			/api/v1/users/projects/{id}/auto-review [delete]
+func (h *ProjectHandler) DisableAutoReview(c *web.Context, req domain.IDReq[uuid.UUID]) error {
+	user := middleware.GetUser(c)
+	if err := h.usecase.DisableAutoReview(c.Request().Context(), user.ID, req.ID); err != nil {
 		return err
 	}
 	return c.Success(nil)

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/request"
@@ -121,14 +122,18 @@ func WithDebug(debug bool) Opt {
 
 // NewClient 创建 taskflow 客户端
 func NewClient(opts ...Opt) Clienter {
-	server := os.Getenv("TASKFLOW_SERVER")
-	if server == "" {
-		panic(fmt.Errorf("TASKFLOW_SERVER must be set"))
-	}
-
-	u, err := url.Parse(server)
+	client, err := NewClientForServer(os.Getenv("TASKFLOW_SERVER"), opts...)
 	if err != nil {
-		panic(fmt.Errorf("TASKFLOW_SERVER is not a valid URL: %v", err))
+		panic(err)
+	}
+	return client
+}
+
+// NewClientForServer creates a client for an explicit Taskflow endpoint.
+func NewClientForServer(server string, opts ...Opt) (Clienter, error) {
+	u, err := parseServerURL(server)
+	if err != nil {
+		return nil, err
 	}
 
 	httpclient := &http.Client{
@@ -156,7 +161,25 @@ func NewClient(opts ...Opt) Clienter {
 	c.taskClient = newTaskClient(c.client)
 	c.portForwardClient = newPortForwardClient(c.client)
 
-	return c
+	return c, nil
+}
+
+// ValidateServer checks Taskflow configuration without opening a connection.
+func ValidateServer(server string) error {
+	_, err := parseServerURL(server)
+	return err
+}
+
+func parseServerURL(server string) (*url.URL, error) {
+	server = strings.TrimSpace(server)
+	if server == "" {
+		return nil, fmt.Errorf("TASKFLOW_SERVER must be set to the external Taskflow service URL")
+	}
+	u, err := url.Parse(server)
+	if err != nil || u.Host == "" || (u.Scheme != "http" && u.Scheme != "https") {
+		return nil, fmt.Errorf("TASKFLOW_SERVER must be an absolute HTTP(S) URL: %q", server)
+	}
+	return u, nil
 }
 
 func (c *Client) VirtualMachiner() VirtualMachiner { return c.vmclient }

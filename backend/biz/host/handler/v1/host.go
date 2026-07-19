@@ -288,6 +288,14 @@ func (h *HostHandler) JoinTerminal(c *web.Context, req domain.JoinTerminalReq) e
 						},
 					})
 
+				case domain.VMTerminalMessageTypePing:
+					if !writeTerminalMessage(ctx, cancel, wsConn, domain.VMTerminalMessage{
+						Type: domain.VMTerminalMessageTypePong,
+					}, h.logger) {
+						return
+					}
+				case domain.VMTerminalMessageTypePong:
+
 				default:
 					h.logger.WarnContext(ctx, "unknown control action", "action", msg.Type)
 				}
@@ -468,6 +476,14 @@ func (h *HostHandler) ConnectVMTerminal(c *web.Context, req domain.TerminalReq) 
 							Row: uint32(resizeData.Row),
 						},
 					})
+
+				case domain.VMTerminalMessageTypePing:
+					if !writeTerminalMessage(ctx, cancel, wsConn, domain.VMTerminalMessage{
+						Type: domain.VMTerminalMessageTypePong,
+					}, logger) {
+						return
+					}
+				case domain.VMTerminalMessageTypePong:
 
 				default:
 					logger.WarnContext(ctx, "unknown control action", "action", msg.Type, "vm_id", req.ID)

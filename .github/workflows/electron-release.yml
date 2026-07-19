@@ -10,7 +10,7 @@ on:
         type: boolean
         default: false
       mobile:
-        description: Start Android and iOS builds on EAS
+        description: Build Android and iOS packages on GitHub-hosted runners
         type: boolean
         default: false
 
@@ -48,6 +48,7 @@ env:
   VITE_PRICE_GLOBAL_ULTRA_MONTHLY: ${{ vars.VITE_PRICE_GLOBAL_ULTRA_MONTHLY }}
   VITE_PRICE_GLOBAL_ULTRA_YEARLY: ${{ vars.VITE_PRICE_GLOBAL_ULTRA_YEARLY }}
   VITE_ENABLE_AUTO_REVIEW: ${{ vars.VITE_ENABLE_AUTO_REVIEW || 'false' }}
+  VITE_DEFAULT_SKILL_IDS: ${{ vars.VITE_DEFAULT_SKILL_IDS }}
   VITE_CREDIT_PACKAGE_1_CREDITS: ${{ vars.VITE_CREDIT_PACKAGE_1_CREDITS }}
   VITE_CREDIT_PACKAGE_1_CN_AMOUNT: ${{ vars.VITE_CREDIT_PACKAGE_1_CN_AMOUNT }}
   VITE_CREDIT_PACKAGE_1_GLOBAL_AMOUNT: ${{ vars.VITE_CREDIT_PACKAGE_1_GLOBAL_AMOUNT }}
@@ -287,60 +288,226 @@ jobs:
             ghcr.io/y-vqv-y/devloom-ingress:${{ needs.metadata.outputs.version }}
             ghcr.io/y-vqv-y/devloom-ingress:latest
 
-  mobile_eas:
-    name: Mobile ${{ matrix.platform }} (EAS)
+  mobile_android:
+    name: Mobile Android (native)
     needs: metadata
     if: vars.ENABLE_MOBILE_RELEASE == 'true' || inputs.mobile == true
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [android, ios]
     runs-on: ubuntu-latest
     env:
-      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-      EXPO_PROJECT_ID: ${{ vars.EXPO_PROJECT_ID }}
-      EXPO_OWNER: ${{ vars.EXPO_OWNER }}
       EXPO_PUBLIC_API_URL: ${{ vars.DEVLOOM_MOBILE_API_URL }}
       EXPO_UPDATES_URL: ${{ vars.DEVLOOM_EXPO_UPDATES_URL }}
       EXPO_PUBLIC_UPDATES_SERVER: ${{ vars.DEVLOOM_UPDATES_SERVER }}
       EXPO_PUBLIC_ENABLE_COMMERCIAL_BILLING: ${{ vars.EXPO_PUBLIC_ENABLE_COMMERCIAL_BILLING || 'false' }}
       EXPO_PUBLIC_ENABLE_APPLE_AUTH: ${{ vars.EXPO_PUBLIC_ENABLE_APPLE_AUTH || 'false' }}
       EXPO_PUBLIC_ENABLE_GIT_IDENTITY_OAUTH: ${{ vars.EXPO_PUBLIC_ENABLE_GIT_IDENTITY_OAUTH || 'false' }}
-      IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID || 'io.github.yvqvy.devloom' }}
+      EXPO_PUBLIC_DEFAULT_SKILL_IDS: ${{ vars.EXPO_PUBLIC_DEFAULT_SKILL_IDS }}
       ANDROID_PACKAGE: ${{ vars.ANDROID_PACKAGE || 'io.github.yvqvy.devloom' }}
-      IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
     steps:
-      - name: Check EAS configuration
-        id: eas-config
-        shell: bash
-        run: |
-          if [[ -z "$EXPO_TOKEN" || -z "$EXPO_PROJECT_ID" ]]; then
-            echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "::warning title=Mobile build skipped::Configure the EXPO_TOKEN repository secret and EXPO_PROJECT_ID repository variable to build ${{ matrix.platform }}."
-          else
-            echo "configured=true" >> "$GITHUB_OUTPUT"
-          fi
       - uses: actions/checkout@v4
-        if: steps.eas-config.outputs.configured == 'true'
       - uses: actions/setup-node@v4
-        if: steps.eas-config.outputs.configured == 'true'
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: mobile/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
       - run: npm ci
-        if: steps.eas-config.outputs.configured == 'true'
         working-directory: mobile
-      - name: Build on EAS
-        if: steps.eas-config.outputs.configured == 'true'
+      - name: Generate Android project
         working-directory: mobile
         shell: bash
-        run: npx eas-cli@latest build --platform "${{ matrix.platform }}" --profile production --non-interactive --wait
+        run: CI=1 npx expo prebuild --platform android --clean --no-install
+      - name: Build Android packages
+        working-directory: mobile
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          chmod +x android/gradlew
+
+          if [[ -n "${ANDROID_KEYSTORE_BASE64:-}" || -n "${ANDROID_KEYSTORE_PASSWORD:-}" || -n "${ANDROID_KEY_ALIAS:-}" || -n "${ANDROID_KEY_PASSWORD:-}" ]]; then
+            : "${ANDROID_KEYSTORE_BASE64:?Configure all Android signing secrets}"
+            : "${ANDROID_KEYSTORE_PASSWORD:?Configure all Android signing secrets}"
+            : "${ANDROID_KEY_ALIAS:?Configure all Android signing secrets}"
+            : "${ANDROID_KEY_PASSWORD:?Configure all Android signing secrets}"
+            KEYSTORE_PATH="$RUNNER_TEMP/devloom-upload.keystore"
+            printf '%s' "$ANDROID_KEYSTORE_BASE64" | openssl base64 -d -A -out "$KEYSTORE_PATH"
+            ./android/gradlew --no-daemon assembleRelease bundleRelease \
+              -Pandroid.injected.signing.store.file="$KEYSTORE_PATH" \
+              -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \
+              -Pandroid.injected.signing.key.alias="$ANDROID_KEY_ALIAS" \
+              -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD"
+            cp android/app/build/outputs/apk/release/*.apk "release/devloom-android-${{ needs.metadata.outputs.version }}.apk"
+            cp android/app/build/outputs/bundle/release/*.aab "release/devloom-android-${{ needs.metadata.outputs.version }}.aab"
+          else
+            echo "::warning title=Unsigned Android package::Android signing secrets are not configured; building a Debug APK."
+            ./android/gradlew --no-daemon assembleDebug
+            cp android/app/build/outputs/apk/debug/app-debug.apk "release/devloom-android-debug-${{ needs.metadata.outputs.version }}.apk"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobile-android
+          path: mobile/release/*
+          if-no-files-found: error
+
+  mobile_ios:
+    name: Mobile iOS (native device IPA)
+    needs: metadata
+    if: vars.ENABLE_MOBILE_RELEASE == 'true' || inputs.mobile == true
+    runs-on: macos-latest
+    env:
+      EXPO_PUBLIC_API_URL: ${{ vars.DEVLOOM_MOBILE_API_URL }}
+      EXPO_UPDATES_URL: ${{ vars.DEVLOOM_EXPO_UPDATES_URL }}
+      EXPO_PUBLIC_UPDATES_SERVER: ${{ vars.DEVLOOM_UPDATES_SERVER }}
+      EXPO_PUBLIC_ENABLE_COMMERCIAL_BILLING: ${{ vars.EXPO_PUBLIC_ENABLE_COMMERCIAL_BILLING || 'false' }}
+      EXPO_PUBLIC_ENABLE_APPLE_AUTH: ${{ vars.EXPO_PUBLIC_ENABLE_APPLE_AUTH || 'false' }}
+      EXPO_PUBLIC_ENABLE_GIT_IDENTITY_OAUTH: ${{ vars.EXPO_PUBLIC_ENABLE_GIT_IDENTITY_OAUTH || 'false' }}
+      EXPO_PUBLIC_DEFAULT_SKILL_IDS: ${{ vars.EXPO_PUBLIC_DEFAULT_SKILL_IDS }}
+      IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID || 'io.github.yvqvy.devloom' }}
+      IOS_TEAM_ID: ${{ vars.IOS_TEAM_ID || secrets.IOS_TEAM_ID }}
+      IOS_EXPORT_METHOD: ${{ vars.IOS_EXPORT_METHOD || 'ad-hoc' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - name: Validate Apple signing inputs
+        env:
+          IOS_CERTIFICATE_P12_BASE64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${IOS_CERTIFICATE_P12_BASE64:?Configure IOS_CERTIFICATE_P12_BASE64}"
+          : "${IOS_CERTIFICATE_PASSWORD:?Configure IOS_CERTIFICATE_PASSWORD}"
+          : "${IOS_PROVISIONING_PROFILE_BASE64:?Configure IOS_PROVISIONING_PROFILE_BASE64}"
+          : "${IOS_TEAM_ID:?Configure the IOS_TEAM_ID repository variable or secret}"
+      - run: npm ci
+        working-directory: mobile
+      - name: Import Apple signing materials
+        id: signing
+        env:
+          IOS_CERTIFICATE_P12_BASE64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          KEYCHAIN_PATH="$RUNNER_TEMP/devloom-signing.keychain-db"
+          KEYCHAIN_PASSWORD="$(uuidgen)"
+          CERTIFICATE_PATH="$RUNNER_TEMP/devloom-signing.p12"
+          PROFILE_PATH="$RUNNER_TEMP/devloom.mobileprovision"
+          PROFILE_PLIST="$RUNNER_TEMP/devloom-profile.plist"
+          printf '%s' "$IOS_CERTIFICATE_P12_BASE64" | openssl base64 -d -A -out "$CERTIFICATE_PATH"
+          printf '%s' "$IOS_PROVISIONING_PROFILE_BASE64" | openssl base64 -d -A -out "$PROFILE_PATH"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$CERTIFICATE_PATH" -P "$IOS_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychains -d user -s "$KEYCHAIN_PATH"
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          security cms -D -i "$PROFILE_PATH" > "$PROFILE_PLIST"
+          PROFILE_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' "$PROFILE_PLIST")
+          PROFILE_NAME=$(/usr/libexec/PlistBuddy -c 'Print :Name' "$PROFILE_PLIST")
+          PROFILE_TEAM=$(/usr/libexec/PlistBuddy -c 'Print :TeamIdentifier:0' "$PROFILE_PLIST")
+          PROFILE_APP_ID=$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:application-identifier' "$PROFILE_PLIST")
+          PROFILE_BUNDLE_ID="${PROFILE_APP_ID#*.}"
+          [[ "$PROFILE_TEAM" == "$IOS_TEAM_ID" ]] || {
+            echo "Provisioning profile Team ID ($PROFILE_TEAM) does not match IOS_TEAM_ID ($IOS_TEAM_ID)." >&2
+            exit 1
+          }
+          [[ "$PROFILE_BUNDLE_ID" == "$IOS_BUNDLE_ID" || "$PROFILE_BUNDLE_ID" == "*" ]] || {
+            echo "Provisioning profile bundle ID ($PROFILE_BUNDLE_ID) does not match IOS_BUNDLE_ID ($IOS_BUNDLE_ID)." >&2
+            exit 1
+          }
+          cp "$PROFILE_PATH" "$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
+          SIGNING_IDENTITY=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" | sed -n 's/.*"\(.*\)"/\1/p' | head -1)
+          : "${SIGNING_IDENTITY:?No Apple code-signing identity found in the P12 certificate}"
+          echo "keychain=$KEYCHAIN_PATH" >> "$GITHUB_OUTPUT"
+          echo "profile_uuid=$PROFILE_UUID" >> "$GITHUB_OUTPUT"
+          echo "profile_name=$PROFILE_NAME" >> "$GITHUB_OUTPUT"
+          echo "profile_team=$PROFILE_TEAM" >> "$GITHUB_OUTPUT"
+          echo "signing_identity=$SIGNING_IDENTITY" >> "$GITHUB_OUTPUT"
+      - name: Generate iOS project
+        working-directory: mobile
+        shell: bash
+        run: CI=1 npx expo prebuild --platform ios --clean --no-install
+      - name: Install iOS dependencies
+        working-directory: mobile
+        shell: bash
+        run: pod install --project-directory=ios
+      - name: Archive and export iOS IPA
+        working-directory: mobile
+        env:
+          KEYCHAIN_PATH: ${{ steps.signing.outputs.keychain }}
+          PROFILE_NAME: ${{ steps.signing.outputs.profile_name }}
+          SIGNING_IDENTITY: ${{ steps.signing.outputs.signing_identity }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          case "$IOS_EXPORT_METHOD" in
+            ad-hoc|app-store-connect|development|enterprise|release-testing) ;;
+            *) echo "Unsupported IOS_EXPORT_METHOD: $IOS_EXPORT_METHOD" >&2; exit 1 ;;
+          esac
+          WORKSPACE=$(find ios -maxdepth 1 -name '*.xcworkspace' -print -quit)
+          : "${WORKSPACE:?Generated iOS workspace was not found}"
+          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list -json | jq -r '.workspace.schemes[0]')
+          : "${SCHEME:?Generated iOS scheme was not found}"
+          ARCHIVE_PATH="$RUNNER_TEMP/devloom.xcarchive"
+          EXPORT_PATH="$RUNNER_TEMP/devloom-export"
+          xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath "$ARCHIVE_PATH" clean archive \
+            CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY="$SIGNING_IDENTITY" \
+            DEVELOPMENT_TEAM="$IOS_TEAM_ID" PROVISIONING_PROFILE_SPECIFIER="$PROFILE_NAME" \
+            OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN_PATH"
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+          <key>method</key><string>${IOS_EXPORT_METHOD}</string>
+          <key>signingStyle</key><string>manual</string>
+          <key>teamID</key><string>${IOS_TEAM_ID}</string>
+          <key>provisioningProfiles</key><dict>
+          <key>${IOS_BUNDLE_ID}</key><string>${PROFILE_NAME}</string>
+          </dict>
+          <key>compileBitcode</key><false/>
+          </dict></plist>
+          PLIST
+          xcodebuild -exportArchive -archivePath "$ARCHIVE_PATH" -exportPath "$EXPORT_PATH" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist"
+          IPA_PATH=$(find "$EXPORT_PATH" -maxdepth 1 -name '*.ipa' -print -quit)
+          : "${IPA_PATH:?Xcode did not export an IPA}"
+          cp "$IPA_PATH" "release/devloom-ios-${{ needs.metadata.outputs.version }}.ipa"
+      - name: Remove Apple signing materials
+        if: always() && steps.signing.outputs.keychain != ''
+        shell: bash
+        run: |
+          security delete-keychain "${{ steps.signing.outputs.keychain }}" || true
+          rm -f "$RUNNER_TEMP/devloom-signing.p12" "$RUNNER_TEMP/devloom.mobileprovision" "$RUNNER_TEMP/devloom-profile.plist"
+          rm -rf "$HOME/Library/MobileDevice/Provisioning Profiles"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobile-ios
+          path: mobile/release/*
+          if-no-files-found: error
 
   release:
     name: GitHub Release
-    needs: [metadata, backend-binaries, frontend, desktop, docker, mobile_eas]
-    if: always() && needs.metadata.result == 'success' && needs.backend-binaries.result == 'success' && needs.frontend.result == 'success' && needs.desktop.result == 'success' && needs.docker.result == 'success' && (needs.mobile_eas.result == 'success' || needs.mobile_eas.result == 'skipped')
+    needs: [metadata, backend-binaries, frontend, desktop, docker, mobile_android, mobile_ios]
+    if: always() && needs.metadata.result == 'success' && needs.backend-binaries.result == 'success' && needs.frontend.result == 'success' && needs.desktop.result == 'success' && needs.docker.result == 'success' && (needs.mobile_android.result == 'success' || needs.mobile_android.result == 'skipped') && (needs.mobile_ios.result == 'success' || needs.mobile_ios.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -359,6 +526,18 @@ jobs:
           pattern: desktop-*
           path: release-artifacts
           merge-multiple: true
+      - name: Download Android package
+        if: needs.mobile_android.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: mobile-android
+          path: release-artifacts/mobile-android
+      - name: Download iOS package
+        if: needs.mobile_ios.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: mobile-ios
+          path: release-artifacts/mobile-ios
       - name: Create source archive
         run: |
           tar --exclude=.git --exclude=node_modules --exclude=release-artifacts --transform 's,^,DevLoom/,' -czf "$RUNNER_TEMP/devloom-source.tar.gz" .

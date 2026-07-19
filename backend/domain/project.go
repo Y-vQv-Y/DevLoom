@@ -18,6 +18,8 @@ type ProjectUsecase interface {
 	Create(ctx context.Context, uid uuid.UUID, req *CreateProjectReq) (*Project, error)
 	Update(ctx context.Context, user *User, req *UpdateProjectReq) (*Project, error)
 	Delete(ctx context.Context, uid, id uuid.UUID) error
+	EnableAutoReview(ctx context.Context, uid, id uuid.UUID) (*Project, error)
+	DisableAutoReview(ctx context.Context, uid, id uuid.UUID) error
 	ListIssues(ctx context.Context, uid uuid.UUID, req *ListIssuesReq) (*ListIssuesResp, error)
 	CreateIssue(ctx context.Context, uid uuid.UUID, req *CreateIssueReq) (*ProjectIssue, error)
 	UpdateIssue(ctx context.Context, uid uuid.UUID, req *UpdateIssueReq) (*ProjectIssue, error)
@@ -43,6 +45,8 @@ type ProjectRepo interface {
 	Create(ctx context.Context, uid uuid.UUID, req *CreateProjectReq) (*db.Project, error)
 	Update(ctx context.Context, user *User, req *UpdateProjectReq) (*db.Project, error)
 	Delete(ctx context.Context, uid, id uuid.UUID) error
+	LinkGitBot(ctx context.Context, uid, projectID, botID uuid.UUID) error
+	UnlinkGitBot(ctx context.Context, uid, projectID, botID uuid.UUID) error
 	ListIssues(ctx context.Context, uid uuid.UUID, req *ListIssuesReq) ([]*db.ProjectIssue, *db.Cursor, error)
 	CreateIssue(ctx context.Context, uid uuid.UUID, req *CreateIssueReq) (*db.ProjectIssue, error)
 	UpdateIssue(ctx context.Context, uid uuid.UUID, req *UpdateIssueReq) (*db.ProjectIssue, error)

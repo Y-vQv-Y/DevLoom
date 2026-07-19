@@ -1,6 +1,4 @@
-export const defaultSkills = [
-  "DevLoomOfficialPlugins/main/skills/feature-design",
-  "DevLoomOfficialPlugins/main/skills/project-wiki",
-  "DevLoomOfficialPlugins/main/skills/feature-implementer",
-  "DevLoomOfficialPlugins/main/skills/implementation-planner",
-];
+export const defaultSkills = (import.meta.env.VITE_DEFAULT_SKILL_IDS || "")
+  .split(",")
+  .map((skillId: string) => skillId.trim())
+  .filter(Boolean)

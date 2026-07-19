@@ -12,6 +12,8 @@ import type {
   CreateModelReq,
   CreateProjectReq,
   CreateTaskReq,
+  CreateVirtualMachineReq,
+  Host,
   GitIdentity,
   Image,
   InvitationListResp,
@@ -28,6 +30,7 @@ import type {
   UpdateGitIdentityReq,
   UpdateModelReq,
   UserStatus,
+  VirtualMachine,
   Wallet,
 } from './types';
 import { base64Encode } from '@/messages/base64';
@@ -384,6 +387,25 @@ export async function listProviderModels(params: { api_key: string; base_url: st
 export async function listImages(): Promise<Image[]> {
   const resp = await request<{ images?: Image[] }>('/api/v1/users/images');
   return resp.data?.images ?? [];
+}
+
+export async function listHosts(): Promise<Host[]> {
+  const resp = await request<{ hosts?: Host[] }>('/api/v1/users/hosts');
+  return resp.data?.hosts ?? [];
+}
+
+export async function createVirtualMachine(req: CreateVirtualMachineReq): Promise<VirtualMachine | null> {
+  const resp = await request<VirtualMachine>('/api/v1/users/hosts/vms', { method: 'POST', body: req });
+  return resp.data ?? null;
+}
+
+export async function getVirtualMachine(id: string): Promise<VirtualMachine | null> {
+  const resp = await request<VirtualMachine>(`/api/v1/users/hosts/vms/${id}`);
+  return resp.data ?? null;
+}
+
+export function deleteVirtualMachine(hostId: string, id: string) {
+  return request(`/api/v1/users/hosts/${encodeURIComponent(hostId)}/vms/${encodeURIComponent(id)}`, { method: 'DELETE' });
 }
 
 export async function listSkills(): Promise<Skill[]> {

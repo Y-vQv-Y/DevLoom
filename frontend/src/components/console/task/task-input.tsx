@@ -144,7 +144,9 @@ export function TaskInput({ repos, initialContent, onTaskCreated }: TaskInputPro
       return;
     }
 
-    setSelectedHostId(selectHost(hosts, false));
+    setSelectedHostId(IS_OFFLINE_EDITION
+      ? (hosts.find((host) => host.id && host.status === ConstsHostStatus.HostStatusOnline)?.id || "")
+      : selectHost(hosts, false));
   };
 
   const selectedModel = useMemo(
@@ -188,6 +190,11 @@ export function TaskInput({ repos, initialContent, onTaskCreated }: TaskInputPro
 
     if (!selectedImageId) {
       toast.error(t("taskWorkflow.toast.missingImage"));
+      return;
+    }
+
+    if (!selectedHostId) {
+      toast.error(t("taskWorkflow.toast.missingHost"));
       return;
     }
 

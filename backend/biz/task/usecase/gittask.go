@@ -16,8 +16,10 @@ import (
 	"github.com/Y-vQv-Y/DevLoom/backend/db"
 	"github.com/Y-vQv-Y/DevLoom/backend/domain"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/git/giturl"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/gitreview"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/lifecycle"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/taskflow"
+	workspacepolicy "github.com/Y-vQv-Y/DevLoom/backend/pkg/workspace"
 )
 
 // GitTaskUsecase GitTask 业务逻辑实现
@@ -54,11 +56,24 @@ func (g *GitTaskUsecase) Create(ctx context.Context, req domain.CreateGitTaskReq
 	if req.Env == nil {
 		req.Env = make(map[string]string)
 	}
+	req.Prompt = gitreview.Prompt(gitreview.Command(req.Command), req.Subject.URL, req.Prompt)
+	if req.Command == "" {
+		req.Command = string(gitreview.CommandReview)
+	}
+	req.Env["DEVLOOM_REVIEW_COMMAND"] = req.Command
+	workspaceConfig := g.cfg.Workspace
+	if req.Command != string(gitreview.CommandFix) {
+		workspaceConfig.PushMode = workspacepolicy.PushModeDisabled
+	}
 
 	tk, err := g.repo.Create(ctx, req, func(u *db.User, t *db.Task, m *db.Model) (*taskflow.VirtualMachine, error) {
 		branch := "master"
 		if req.Repo.Branch != nil {
 			branch = *req.Repo.Branch
+		}
+		workspacePolicy := workspacepolicy.Policy(workspaceConfig, branch, t.ID, "review")
+		for key, value := range workspacepolicy.Env(workspacePolicy) {
+			req.Env[key] = value
 		}
 
 		vm, err := g.taskflow.VirtualMachiner().Create(ctx, &taskflow.CreateVirtualMachineReq{
@@ -81,9 +96,11 @@ func (g *GitTaskUsecase) Create(ctx context.Context, req domain.CreateGitTaskReq
 				BaseURL:  m.BaseURL,
 				Model:    m.Model,
 			},
-			Cores:    fmt.Sprintf("%d", g.cfg.Task.Core),
-			Memory:   g.cfg.Task.Memory,
-			LogStore: normalizeTaskLogStore(t.LogStore),
+			Cores:     fmt.Sprintf("%d", g.cfg.Task.Core),
+			Memory:    g.cfg.Task.Memory,
+			Envs:      workspacepolicy.Environ(workspacePolicy),
+			Workspace: &workspacePolicy,
+			LogStore:  normalizeTaskLogStore(t.LogStore),
 		})
 		if err != nil {
 			return nil, err
@@ -107,17 +124,19 @@ func (g *GitTaskUsecase) Create(ctx context.Context, req domain.CreateGitTaskReq
 		req.Env["BASE_URL"] = g.cfg.Server.BaseURL
 		req.Env["TASK_ID"] = t.ID.String()
 		createTaskReq := &taskflow.CreateTaskReq{
-			ID:          t.ID,
-			VMID:        vm.ID,
-			Text:        req.Prompt,
-			CodingAgent: taskflow.CodingAgentDEVLOOMReview,
+			ID:           t.ID,
+			VMID:         vm.ID,
+			SystemPrompt: workspacepolicy.AppendSystemPrompt("", workspacePolicy),
+			Text:         req.Prompt,
+			CodingAgent:  taskflow.CodingAgentDEVLOOMReview,
 			LLM: taskflow.LLM{
 				ApiKey:  m.APIKey,
 				BaseURL: m.BaseURL,
 				Model:   m.Model,
 			},
-			Env:      req.Env,
-			LogStore: normalizeTaskLogStore(t.LogStore),
+			Env:       req.Env,
+			Workspace: &workspacePolicy,
+			LogStore:  normalizeTaskLogStore(t.LogStore),
 		}
 		b, err := json.Marshal(createTaskReq)
 		if err != nil {
