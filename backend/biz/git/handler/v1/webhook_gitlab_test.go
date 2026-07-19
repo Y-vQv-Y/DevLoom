@@ -26,7 +26,7 @@ func TestBuildGitlabNoteTask(t *testing.T) {
 	if !ok || key != "gitlab:note:12:42" {
 		t.Fatalf("unexpected note result: ok=%v key=%q", ok, key)
 	}
-	if req.Prompt != "fix the failing test" {
+	if req.Prompt != "the failing test" {
 		t.Fatalf("prompt = %q", req.Prompt)
 	}
 	if req.Command != "fix" {

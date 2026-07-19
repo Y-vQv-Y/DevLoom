@@ -84,7 +84,8 @@
       "^.+\\.[jt]sx?$": "babel-jest"
     },
     "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
+      "^@/(.*)$": "<rootDir>/src/$1",
+      "^expo/virtual/env$": "<rootDir>/src/__tests__/expo-virtual-env.cjs"
     }
   }
 }

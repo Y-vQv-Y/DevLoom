@@ -8,7 +8,7 @@ import en from "../src/i18n/resources/en.ts"
 const userSidebar = readFileSync(new URL("../src/components/console/nav/user-sidebar.tsx", import.meta.url), "utf8")
 
 test("控制台侧边栏使用统一品牌配置", () => {
-  assert.match(userSidebar, /BRAND\.supportUrl/)
+  assert.match(userSidebar, /BRAND\.consultationUrl/)
   assert.match(userSidebar, /BRAND\.repositoryUrl/)
   assert.match(userSidebar, /t\(brandSubtitleKey\)/)
 })
