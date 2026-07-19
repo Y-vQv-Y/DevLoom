@@ -1,10 +1,10 @@
 import i18n from "i18next"
 import { initReactI18next } from "react-i18next"
 
-import { patchDocumentMeta } from "./document-meta"
-import { initLanguage, type AppLanguage } from "./language"
-import cn from "./resources/cn"
-import en from "./resources/en"
+import { patchDocumentMeta } from "./document-meta.ts"
+import { initLanguage, type AppLanguage } from "./language.ts"
+import cn from "./resources/cn.ts"
+import en from "./resources/en.ts"
 
 const resources = {
   cn: {

@@ -22,7 +22,7 @@ test("管理后台挂载 Skills 页面路由和侧边栏入口", () => {
   assert.match(navSource, /to="\/manager\/skills"/);
   assert.match(navSource, /t\("managerShell\.nav\.skills"\)/);
   assert.match(pageSource, /"\/manager\/skills"/);
-  assert.match(pageSource, /label: "Skills"/);
+  assert.match(pageSource, /label: t\("managerShell\.nav\.skills"\)/);
 });
 
 test("添加 Skill 对话框默认选中输入文本并放在上传文件左侧", () => {

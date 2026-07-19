@@ -30,8 +30,13 @@ test("remaining runtime messages are wired through i18n", () => {
   for (const file of [
     "utils/requestUtils.ts",
     "lib/agent-resources-api.ts",
-    "components/manager/skill-package.ts",
   ]) {
     assert.match(readSource(file), /@\/i18n/, file)
   }
+
+  assert.match(
+    readSource("components/manager/skill-package.ts"),
+    /\.\.\/\.\.\/i18n\/index\.ts/,
+    "components/manager/skill-package.ts",
+  )
 })

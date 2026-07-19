@@ -39,6 +39,6 @@ test("欢迎页主体小组件提供中英文资源", () => {
   assert.equal(en.welcomeHome.banner.headlinePrefix, "DevLoom is");
   assert.equal(cn.welcomeHome.sdd.title, "三个核心能力");
   assert.equal(en.welcomeHome.sdd.title, "Three core capabilities");
-  assert.equal(cn.welcomeHome.downloads.action, "下载");
-  assert.equal(en.welcomeHome.downloads.action, "Download");
+  assert.equal(cn.welcomeHome.downloads.action, "查看发布");
+  assert.equal(en.welcomeHome.downloads.action, "View releases");
 });
