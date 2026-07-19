@@ -21,8 +21,8 @@ let AudioRecord: {
 } | null = null;
 try {
   if (NativeModules.RNLiveAudioStream) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    AudioRecord = require('react-native-live-audio-stream').default;
+		// eslint-disable-next-line @typescript-eslint/no-require-imports
+		AudioRecord = require('react-native-live-audio-stream').default;
   }
 } catch {
   AudioRecord = null;

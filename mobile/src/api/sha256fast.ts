@@ -13,7 +13,8 @@ type HashFn = (input: Uint8Array) => Uint8Array;
 let nativeHash: HashFn | null = null;
 try {
   // 守卫式 require：Expo Go / 未打入原生模块时会抛错，落到 JS 兜底。
-  const qc = require('react-native-quick-crypto');
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+	const qc = require('react-native-quick-crypto');
   const createHash = qc?.createHash ?? qc?.default?.createHash;
   if (typeof createHash === 'function') {
     const fn: HashFn = (input) => {

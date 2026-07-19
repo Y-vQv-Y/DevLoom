@@ -5,6 +5,8 @@ jest.mock('../client', () => ({
   openWebSocket: (...args: unknown[]) => mockOpenWebSocket(...args),
 }));
 
+// Mocks must be registered before loading the module under test.
+// eslint-disable-next-line import/first
 import { TaskStreamClient } from '../stream';
 
 class MockSocket {

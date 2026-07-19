@@ -57,6 +57,7 @@ jest.mock('@/api/client', () => ({
 (global as any).WebSocket = MockWS;
 
 // 在 mock 就绪后再加载 hook（模块级守卫此时看到 NativeModules.RNLiveAudioStream）
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { useSpeechToText } = require('../useSpeechToText');
 
 // 极简 renderHook（hook 不渲染任何宿主组件，react-test-renderer 即可）

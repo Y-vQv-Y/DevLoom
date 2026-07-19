@@ -2,7 +2,6 @@
  * Git 平台元数据 —— 对齐 Web 端 add-identity.tsx 的平台列表与默认地址，
  * 以及 utils/common.tsx 的 GitHub App 安装地址逻辑。
  */
-import { getBaseUrl } from '@/api/client';
 import type { GitPlatform } from '@/api/types';
 
 export interface GitPlatformDef {

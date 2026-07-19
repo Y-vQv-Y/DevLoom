@@ -19,6 +19,7 @@ export type { AnswerMap } from '@/messages/askAnswers';
 export type AnswerSubmitResult = 'sent' | 'queued' | 'rejected';
 export type AnswerSubmitState = Exclude<AnswerSubmitResult, 'rejected'>;
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const MERMAID_RUNTIME_ASSET = require('../../assets/mermaid.min.mermaidjs');
 let mermaidRuntimePromise: Promise<string> | null = null;
 

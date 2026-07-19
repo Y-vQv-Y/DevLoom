@@ -23,6 +23,8 @@ jest.mock('../client', () => ({
   request: (...args: unknown[]) => mockRequest(...args),
 }));
 
+// Mocks must be registered before loading the module under test.
+// eslint-disable-next-line import/first
 import { pickZipFile, uploadFileWithPresignedUrl } from '../upload';
 
 class MockXHR {

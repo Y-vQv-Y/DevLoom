@@ -20,7 +20,8 @@ export function withContactFooter(
 }
 
 export function renderOfficialChannels(t: TFunction, keyPrefix: string, _isGlobalRegion: boolean) {
-  return (
+	void _isGlobalRegion
+	return (
     <>
       {t(`${keyPrefix}.prefix`)}
       <a className="text-[var(--a-accent)] hover:underline" href={BRAND.repositoryUrl} target="_blank" rel="noreferrer">

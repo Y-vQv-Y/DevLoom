@@ -1,3 +1,5 @@
+/* global afterEach, expect, test */
+
 const buildConfig = require('../../app.config');
 
 const ENV_KEYS = [

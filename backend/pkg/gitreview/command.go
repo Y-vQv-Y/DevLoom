@@ -32,7 +32,8 @@ func ParseMention(comment, mention string) (Command, string, bool) {
 		return "", "", false
 	}
 
-	remaining := strings.TrimSpace(comment[:index] + " " + comment[index+len(mention):])
+	// Text before the mention is conversational context, not an instruction.
+	remaining := strings.TrimSpace(comment[index+len(mention):])
 	words := strings.Fields(remaining)
 	command := CommandReview
 	if len(words) > 0 {

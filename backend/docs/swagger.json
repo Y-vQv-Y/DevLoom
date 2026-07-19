@@ -10135,13 +10135,6 @@
                 "UserRoleIndividual": "个人用户",
                 "UserRoleSubAccount": "企业子账户"
             },
-            "x-enum-descriptions": [
-                "个人用户",
-                "企业用户",
-                "企业子账户",
-                "DevLoom 管理员账号，用来配置公共资源. 如公共宿主机等",
-                "全自动 git 任务插入的用户"
-            ],
             "x-enum-varnames": [
                 "UserRoleIndividual",
                 "UserRoleEnterprise",
@@ -12840,11 +12833,11 @@
                     "description": "消息序号，来自 ClickHouse msg_seq_start",
                     "type": "integer"
                 },
-                "turn_seq": {
-                    "description": "轮次号，可作为 cursor 翻页；仅日志存储为 ClickHouse 时有值",
+                "timestamp": {
                     "type": "integer"
                 },
-                "timestamp": {
+                "turn_seq": {
+                    "description": "轮次号，可作为 cursor 翻页；仅日志存储为 ClickHouse 时有值",
                     "type": "integer"
                 }
             }
@@ -14442,7 +14435,7 @@
                 "conditions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_Y_vQv_Y_DevLoom_backend_ent_types.Condition"
+                        "$ref": "#/definitions/github_com_Y-vQv-Y_DevLoom_backend_ent_types.Condition"
                     }
                 },
                 "cores": {
@@ -14492,7 +14485,7 @@
                 }
             }
         },
-        "github_com_Y_vQv_Y_DevLoom_backend_ent_types.Condition": {
+        "github_com_Y-vQv-Y_DevLoom_backend_ent_types.Condition": {
             "type": "object",
             "properties": {
                 "last_transition_time": {
@@ -14662,7 +14655,6 @@
         },
         "types.ConditionStatus": {
             "type": "integer",
-            "format": "int32",
             "enum": [
                 0,
                 1,

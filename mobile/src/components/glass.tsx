@@ -16,7 +16,8 @@ let glassEffectMod: typeof import('expo-glass-effect') | null | undefined;
 function liquidGlassModule(): typeof import('expo-glass-effect') | null {
   if (glassEffectMod === undefined) {
     try {
-      const mod = require('expo-glass-effect') as typeof import('expo-glass-effect');
+			// eslint-disable-next-line @typescript-eslint/no-require-imports
+			const mod = require('expo-glass-effect') as typeof import('expo-glass-effect');
       glassEffectMod = mod.isLiquidGlassAvailable() ? mod : null;
     } catch {
       glassEffectMod = null;

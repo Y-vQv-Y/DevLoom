@@ -17,14 +17,18 @@ export function getSiteRedirectUrl(
   _location: SiteLocation | null = getCurrentLocation(),
   _languages: readonly string[] = getBrowserLanguages(),
 ): string | null {
-  return null
+	void _location
+	void _languages
+	return null
 }
 
 export function getSiteRedirectPrompt(
   _location: SiteLocation | null = getCurrentLocation(),
   _languages: readonly string[] = getBrowserLanguages(),
 ): SiteRedirectPrompt | null {
-  return null
+	void _location
+	void _languages
+	return null
 }
 
 export function languagesContainChinese(languages: readonly string[]): boolean {
