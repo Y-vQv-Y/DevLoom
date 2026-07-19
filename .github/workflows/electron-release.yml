@@ -340,7 +340,7 @@ jobs:
             : "${ANDROID_KEY_PASSWORD:?Configure all Android signing secrets}"
             KEYSTORE_PATH="$RUNNER_TEMP/devloom-upload.keystore"
             printf '%s' "$ANDROID_KEYSTORE_BASE64" | openssl base64 -d -A -out "$KEYSTORE_PATH"
-            ./android/gradlew --no-daemon assembleRelease bundleRelease \
+            ./android/gradlew -p android --no-daemon assembleRelease bundleRelease \
               -Pandroid.injected.signing.store.file="$KEYSTORE_PATH" \
               -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \
               -Pandroid.injected.signing.key.alias="$ANDROID_KEY_ALIAS" \
@@ -349,7 +349,7 @@ jobs:
             cp android/app/build/outputs/bundle/release/*.aab "release/devloom-android-${{ needs.metadata.outputs.version }}.aab"
           else
             echo "::warning title=Unsigned Android package::Android signing secrets are not configured; building a Debug APK."
-            ./android/gradlew --no-daemon assembleDebug
+            ./android/gradlew -p android --no-daemon assembleDebug
             cp android/app/build/outputs/apk/debug/app-debug.apk "release/devloom-android-debug-${{ needs.metadata.outputs.version }}.apk"
           fi
       - uses: actions/upload-artifact@v4
@@ -521,7 +521,7 @@ jobs:
             -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
             -derivedDataPath "$DERIVED_DATA" build \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
-          APP_PATH=$(find "$DERIVED_DATA/Build/Products/Release-iphonesimulator" -maxdepth 1 -type d -name '*.app' -print -quit)
+          APP_PATH=$(find "$DERIVED_DATA/Build/Products" -type d -name '*.app' -print -quit)
           : "${APP_PATH:?Xcode did not produce an iOS Simulator app}"
           ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" \
             "release/devloom-ios-simulator-${{ needs.metadata.outputs.version }}.app.zip"
