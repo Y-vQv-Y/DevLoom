@@ -43,7 +43,7 @@ Android signing is optional. If any Android signing secret is present, all four 
 
 With these secrets, the job publishes a signed APK and AAB. Without them, it publishes only a clearly named Debug APK.
 
-iOS device builds require all of the following:
+iOS device IPA builds require all of the following:
 
 | Secret | Purpose |
 |---|---|
@@ -53,6 +53,8 @@ iOS device builds require all of the following:
 | `IOS_TEAM_ID` | Optional fallback if not stored as a repository variable |
 
 The workflow imports these files into a temporary keychain, archives the generated Xcode project, exports an IPA, and deletes the keychain and profile before finishing. Apple Developer signing is mandatory for a physical iPhone; a simulator app cannot be installed on a phone.
+
+If no iOS signing input is configured, the same job builds and publishes `devloom-ios-simulator-<version>.app.zip` instead. This is a valid unsigned iOS Simulator package for local simulator testing, not a phone-installable IPA. Partial signing configuration fails early so a release cannot silently publish a misleading device package.
 
 ## Preparing Signing Files
 
@@ -101,6 +103,7 @@ devloom-android-<version>.apk
 devloom-android-<version>.aab
 devloom-android-debug-<version>.apk   # when Android signing is absent
 devloom-ios-<version>.ipa
+devloom-ios-simulator-<version>.app.zip   # when Apple signing is absent
 ```
 
 Create a release with:

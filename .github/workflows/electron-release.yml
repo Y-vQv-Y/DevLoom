@@ -359,7 +359,7 @@ jobs:
           if-no-files-found: error
 
   mobile_ios:
-    name: Mobile iOS (native device IPA)
+    name: Mobile iOS (device IPA or simulator package)
     needs: metadata
     if: vars.ENABLE_MOBILE_RELEASE == 'true' || inputs.mobile == true
     runs-on: macos-latest
@@ -381,7 +381,8 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: mobile/package-lock.json
-      - name: Validate Apple signing inputs
+      - name: Detect Apple signing inputs
+        id: signing_inputs
         env:
           IOS_CERTIFICATE_P12_BASE64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
           IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
@@ -389,14 +390,26 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          : "${IOS_CERTIFICATE_P12_BASE64:?Configure IOS_CERTIFICATE_P12_BASE64}"
-          : "${IOS_CERTIFICATE_PASSWORD:?Configure IOS_CERTIFICATE_PASSWORD}"
-          : "${IOS_PROVISIONING_PROFILE_BASE64:?Configure IOS_PROVISIONING_PROFILE_BASE64}"
-          : "${IOS_TEAM_ID:?Configure the IOS_TEAM_ID repository variable or secret}"
+          present=0
+          for value in "${IOS_CERTIFICATE_P12_BASE64:-}" "${IOS_CERTIFICATE_PASSWORD:-}" \
+            "${IOS_PROVISIONING_PROFILE_BASE64:-}" "${IOS_TEAM_ID:-}"; do
+            [[ -n "$value" ]] && present=$((present + 1))
+          done
+
+          if [[ "$present" == "0" ]]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Unsigned iOS package::Apple signing secrets are not configured; building an iOS Simulator package. An IPA for a physical iPhone requires Apple signing materials."
+          elif [[ "$present" == "4" ]]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Configure all iOS signing inputs, or remove all of them to build the simulator package." >&2
+            exit 1
+          fi
       - run: npm ci
         working-directory: mobile
       - name: Import Apple signing materials
         id: signing
+        if: steps.signing_inputs.outputs.configured == 'true'
         env:
           IOS_CERTIFICATE_P12_BASE64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
           IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
@@ -449,6 +462,7 @@ jobs:
         shell: bash
         run: pod install --project-directory=ios
       - name: Archive and export iOS IPA
+        if: steps.signing_inputs.outputs.configured == 'true'
         working-directory: mobile
         env:
           KEYCHAIN_PATH: ${{ steps.signing.outputs.keychain }}
@@ -491,6 +505,26 @@ jobs:
           IPA_PATH=$(find "$EXPORT_PATH" -maxdepth 1 -name '*.ipa' -print -quit)
           : "${IPA_PATH:?Xcode did not export an IPA}"
           cp "$IPA_PATH" "release/devloom-ios-${{ needs.metadata.outputs.version }}.ipa"
+      - name: Build iOS Simulator package
+        if: steps.signing_inputs.outputs.configured != 'true'
+        working-directory: mobile
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          WORKSPACE=$(find ios -maxdepth 1 -name '*.xcworkspace' -print -quit)
+          : "${WORKSPACE:?Generated iOS workspace was not found}"
+          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list -json | jq -r '.workspace.schemes[0]')
+          : "${SCHEME:?Generated iOS scheme was not found}"
+          DERIVED_DATA="$RUNNER_TEMP/devloom-ios-simulator-derived-data"
+          xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Release \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath "$DERIVED_DATA" build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+          APP_PATH=$(find "$DERIVED_DATA/Build/Products/Release-iphonesimulator" -maxdepth 1 -type d -name '*.app' -print -quit)
+          : "${APP_PATH:?Xcode did not produce an iOS Simulator app}"
+          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" \
+            "release/devloom-ios-simulator-${{ needs.metadata.outputs.version }}.app.zip"
       - name: Remove Apple signing materials
         if: always() && steps.signing.outputs.keychain != ''
         shell: bash
