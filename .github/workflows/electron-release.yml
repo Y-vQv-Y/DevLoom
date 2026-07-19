@@ -478,8 +478,9 @@ jobs:
           esac
           WORKSPACE=$(find ios -maxdepth 1 -name '*.xcworkspace' -print -quit)
           : "${WORKSPACE:?Generated iOS workspace was not found}"
-          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list -json | jq -r '.workspace.schemes[0]')
-          : "${SCHEME:?Generated iOS scheme was not found}"
+          SCHEME_FILE=$(find ios -path '*/xcshareddata/xcschemes/*.xcscheme' ! -path '*/Pods/*' -print -quit)
+          : "${SCHEME_FILE:?Generated application scheme was not found}"
+          SCHEME=$(basename "$SCHEME_FILE" .xcscheme)
           ARCHIVE_PATH="$RUNNER_TEMP/devloom.xcarchive"
           EXPORT_PATH="$RUNNER_TEMP/devloom-export"
           xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Release \
@@ -514,8 +515,9 @@ jobs:
           mkdir -p release
           WORKSPACE=$(find ios -maxdepth 1 -name '*.xcworkspace' -print -quit)
           : "${WORKSPACE:?Generated iOS workspace was not found}"
-          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list -json | jq -r '.workspace.schemes[0]')
-          : "${SCHEME:?Generated iOS scheme was not found}"
+          SCHEME_FILE=$(find ios -path '*/xcshareddata/xcschemes/*.xcscheme' ! -path '*/Pods/*' -print -quit)
+          : "${SCHEME_FILE:?Generated application scheme was not found}"
+          SCHEME=$(basename "$SCHEME_FILE" .xcscheme)
           DERIVED_DATA="$RUNNER_TEMP/devloom-ios-simulator-derived-data"
           xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Release \
             -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
