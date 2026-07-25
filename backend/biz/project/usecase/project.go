@@ -26,6 +26,7 @@ import (
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/git/github"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/git/gitlab"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/git/giturl"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/netguard"
 )
 
 // repoTokenCacheTTL 仓库 token 缓存过期时间
@@ -47,6 +48,7 @@ type ProjectUsecase struct {
 	tokenProvider   *gituc.TokenProvider
 	gitbotUsecase   domain.GitBotUsecase
 	hostUsecase     domain.HostUsecase
+	guard           *netguard.Guard
 }
 
 // NewProjectUsecase 创建项目业务逻辑层实例
@@ -80,6 +82,7 @@ func NewProjectUsecase(i *do.Injector) (domain.ProjectUsecase, error) {
 		tokenProvider:   do.MustInvoke[*gituc.TokenProvider](i),
 		gitbotUsecase:   do.MustInvoke[domain.GitBotUsecase](i),
 		hostUsecase:     do.MustInvoke[domain.HostUsecase](i),
+		guard:           netguard.New(cfg.Security.BlockPrivateNetwork),
 	}, nil
 }
 
@@ -464,12 +467,17 @@ type ClientContext struct {
 }
 
 // getClient 获取平台客户端和上下文
-func (u *ProjectUsecase) getClient(p *db.Project) (domain.GitClienter, *ClientContext, error) {
+func (u *ProjectUsecase) getClient(ctx context.Context, p *db.Project) (domain.GitClienter, *ClientContext, error) {
 	gi := p.Edges.GitIdentity
 	if gi == nil {
 		return nil, nil, errcode.ErrGitOperation.Wrap(fmt.Errorf("project has no git identity"))
 	}
 	token := gi.AccessToken
+	if p.Platform != consts.GitPlatformGithub {
+		if err := u.guard.ValidateURL(ctx, gi.BaseURL); err != nil {
+			return nil, nil, errcode.ErrForbiddenBaseURL.Wrap(err)
+		}
+	}
 
 	switch p.Platform {
 	case consts.GitPlatformGithub:
@@ -565,7 +573,7 @@ func (u *ProjectUsecase) GetProjectTree(ctx context.Context, uid uuid.UUID, req 
 	if err != nil {
 		return nil, err
 	}
-	client, cctx, err := u.getClient(p)
+	client, cctx, err := u.getClient(ctx, p)
 	if err != nil {
 		return nil, err
 	}
@@ -593,7 +601,7 @@ func (u *ProjectUsecase) GetProjectBlob(ctx context.Context, uid uuid.UUID, req 
 	if err != nil {
 		return nil, err
 	}
-	client, cctx, err := u.getClient(p)
+	client, cctx, err := u.getClient(ctx, p)
 	if err != nil {
 		return nil, err
 	}
@@ -638,7 +646,7 @@ func (u *ProjectUsecase) GetProjectLogs(ctx context.Context, uid uuid.UUID, req 
 	if err != nil {
 		return nil, err
 	}
-	client, cctx, err := u.getClient(p)
+	client, cctx, err := u.getClient(ctx, p)
 	if err != nil {
 		return nil, err
 	}
@@ -681,7 +689,7 @@ func (u *ProjectUsecase) GetProjectArchive(ctx context.Context, uid uuid.UUID, r
 	if err != nil {
 		return nil, err
 	}
-	client, cctx, err := u.getClient(p)
+	client, cctx, err := u.getClient(ctx, p)
 	if err != nil {
 		return nil, err
 	}

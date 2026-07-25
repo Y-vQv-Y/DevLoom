@@ -6,6 +6,7 @@ import (
 	"github.com/GoYoko/web"
 	"github.com/samber/do"
 
+	"github.com/Y-vQv-Y/DevLoom/backend/config"
 	"github.com/Y-vQv-Y/DevLoom/backend/db"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/modelusage"
 )
@@ -27,6 +28,9 @@ func NewHandler(i *do.Injector) (*Handler, error) {
 	client := do.MustInvoke[*db.Client](i)
 	logger := do.MustInvoke[*slog.Logger](i)
 	var opts []Option
+	if cfg, err := do.Invoke[*config.Config](i); err == nil && cfg != nil {
+		opts = append(opts, WithPrivateNetworkBlocked(cfg.Security.BlockPrivateNetwork))
+	}
 	if recorder, err := do.Invoke[*modelusage.Recorder](i); err == nil {
 		opts = append(opts, WithUsageRecorder(recorder))
 	}

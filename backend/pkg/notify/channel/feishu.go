@@ -12,7 +12,6 @@ import (
 	"github.com/Y-vQv-Y/DevLoom/backend/domain"
 
 	"github.com/Y-vQv-Y/DevLoom/backend/consts"
-	"github.com/Y-vQv-Y/DevLoom/backend/pkg/request"
 )
 
 type FeishuSender struct{}
@@ -48,7 +47,7 @@ func (f *FeishuSender) Send(ctx context.Context, cfg *ChannelConfig, _ *domain.N
 		body["timestamp"] = timestamp
 		body["sign"] = sign
 	}
-	resp, err := request.PostURL[apiResponse](ctx, cfg.WebhookURL, body)
+	resp, err := postURL[apiResponse](ctx, cfg, cfg.WebhookURL, body)
 	if err != nil {
 		return err
 	}

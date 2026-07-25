@@ -21,6 +21,7 @@ import (
 	"github.com/Y-vQv-Y/DevLoom/backend/domain"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/cvt"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/llm"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/netguard"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/request"
 )
 
@@ -31,10 +32,13 @@ type modelUsecase struct {
 	client    *http.Client
 	cfg       *config.Config
 	modelHook domain.ModelHook
+	guard     *netguard.Guard
 }
 
 func NewModelUsecase(i *do.Injector) (domain.ModelUsecase, error) {
-	client := &http.Client{
+	cfg := do.MustInvoke[*config.Config](i)
+	guard := netguard.New(cfg.Security.BlockPrivateNetwork)
+	client := guard.HTTPClient(&http.Client{
 		Timeout: time.Second * 30,
 		Transport: &http.Transport{
 			Proxy:               http.ProxyFromEnvironment,
@@ -43,13 +47,14 @@ func NewModelUsecase(i *do.Injector) (domain.ModelUsecase, error) {
 			MaxConnsPerHost:     100,
 			IdleConnTimeout:     time.Second * 30,
 		},
-	}
+	})
 	u := &modelUsecase{
 		repo:     do.MustInvoke[domain.ModelRepo](i),
 		userRepo: do.MustInvoke[domain.UserRepo](i),
 		logger:   do.MustInvoke[*slog.Logger](i),
 		client:   client,
-		cfg:      do.MustInvoke[*config.Config](i),
+		cfg:      cfg,
+		guard:    guard,
 	}
 
 	if hook, err := do.Invoke[domain.ModelHook](i); err == nil {
@@ -104,6 +109,9 @@ func (u *modelUsecase) List(ctx context.Context, uid uuid.UUID, cursor domain.Cu
 }
 
 func (u *modelUsecase) Create(ctx context.Context, uid uuid.UUID, req *domain.CreateModelReq) (*domain.Model, error) {
+	if err := u.validateBaseURL(ctx, req.BaseURL); err != nil {
+		return nil, err
+	}
 	m, err := u.repo.Create(ctx, uid, req)
 	if err != nil {
 		u.logger.ErrorContext(ctx, "failed to create model config in repo", "error", err, "user_id", uid)
@@ -129,6 +137,11 @@ func (u *modelUsecase) Delete(ctx context.Context, uid uuid.UUID, id uuid.UUID) 
 }
 
 func (u *modelUsecase) Update(ctx context.Context, uid, id uuid.UUID, req *domain.UpdateModelReq) error {
+	if req.BaseURL != nil {
+		if err := u.validateBaseURL(ctx, *req.BaseURL); err != nil {
+			return err
+		}
+	}
 	if err := u.repo.Update(ctx, uid, id, req); err != nil {
 		u.logger.ErrorContext(ctx, "failed to update model config in repo", "error", err, "user_id", uid, "id", id)
 		return fmt.Errorf("failed to update model config: %w", err)
@@ -148,6 +161,7 @@ func (u *modelUsecase) Check(ctx context.Context, uid, id uuid.UUID) (*domain.Ch
 		APIKey:        m.APIKey,
 		Model:         m.Model,
 		InterfaceType: llm.InterfaceType(m.InterfaceType),
+		HTTPClient:    u.client,
 	})
 
 	resp := &domain.CheckModelResp{}
@@ -175,6 +189,7 @@ func (u *modelUsecase) CheckByConfig(ctx context.Context, req *domain.CheckByCon
 		APIKey:        req.APIKey,
 		Model:         req.Model,
 		InterfaceType: llm.InterfaceType(req.InterfaceType),
+		HTTPClient:    u.client,
 	})
 
 	resp := &domain.CheckModelResp{}
@@ -191,6 +206,9 @@ func (u *modelUsecase) CheckByConfig(ctx context.Context, req *domain.CheckByCon
 }
 
 func (u *modelUsecase) GetProviderModelList(ctx context.Context, req *domain.GetProviderModelListReq) (*domain.GetProviderModelListResp, error) {
+	if err := u.validateBaseURL(ctx, req.BaseURL); err != nil {
+		return nil, err
+	}
 	switch req.Provider {
 	case consts.ModelProviderAzureOpenAI,
 		consts.ModelProviderVolcengine:
@@ -336,7 +354,7 @@ func (u *modelUsecase) getModelsWithProxyRetry(
 			continue
 		}
 
-		proxyClient := &http.Client{
+		proxyClient := u.guard.HTTPClient(&http.Client{
 			Timeout: u.client.Timeout,
 			Transport: &http.Transport{
 				Proxy:               http.ProxyURL(parsedProxy),
@@ -345,7 +363,7 @@ func (u *modelUsecase) getModelsWithProxyRetry(
 				MaxConnsPerHost:     100,
 				IdleConnTimeout:     time.Second * 30,
 			},
-		}
+		})
 
 		client := request.NewClient(m.Scheme, m.Host, u.client.Timeout, request.WithClient(proxyClient))
 		resp, err := request.Get[domain.OpenAIResp](
@@ -380,6 +398,13 @@ func (u *modelUsecase) getModelsWithProxyRetry(
 		return nil, fmt.Errorf("all proxies failed, last error: %w", lastErr)
 	}
 	return nil, fmt.Errorf("all proxies failed")
+}
+
+func (u *modelUsecase) validateBaseURL(ctx context.Context, baseURL string) error {
+	if err := u.guard.ValidateURL(ctx, baseURL); err != nil {
+		return errcode.ErrForbiddenBaseURL.Wrap(err)
+	}
+	return nil
 }
 
 func (u *modelUsecase) getQuery(req *domain.GetProviderModelListReq) request.Query {

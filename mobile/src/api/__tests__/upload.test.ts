@@ -25,7 +25,12 @@ jest.mock('../client', () => ({
 
 // Mocks must be registered before loading the module under test.
 // eslint-disable-next-line import/first
-import { pickZipFile, uploadFileWithPresignedUrl } from '../upload';
+import { pickWorkspaceFile, pickZipFile, uploadFileWithPresignedUrl, uploadWorkspaceFile } from '../upload';
+
+class MockFormData {
+  entries: [string, unknown][] = [];
+  append(name: string, value: unknown) { this.entries.push([name, value]); }
+}
 
 class MockXHR {
   responseType = '';
@@ -39,6 +44,7 @@ class MockXHR {
 beforeAll(() => {
   (global as any).XMLHttpRequest = MockXHR;
   (global as any).fetch = mockFetch;
+  (global as any).FormData = MockFormData;
 });
 
 beforeEach(() => {
@@ -74,6 +80,72 @@ test('pickZipFile rejects a zip whose size cannot be read', async () => {
   mockGetInfoAsync.mockResolvedValueOnce({ exists: true });
 
   await expect(pickZipFile()).rejects.toThrow('无法读取 zip 文件大小，请重新选择');
+});
+
+test('pickWorkspaceFile accepts any document up to 10MB', async () => {
+  mockGetDocumentAsync.mockResolvedValueOnce({
+    canceled: false,
+    assets: [{ uri: 'file:///cache/spec.pdf', name: 'spec.pdf', mimeType: 'application/pdf', size: 4096 }],
+  });
+
+  await expect(pickWorkspaceFile()).resolves.toEqual({
+    uri: 'file:///cache/spec.pdf',
+    name: 'spec.pdf',
+    mimeType: 'application/pdf',
+    size: 4096,
+  });
+  expect(mockGetDocumentAsync).toHaveBeenCalledWith(expect.objectContaining({ type: '*/*', multiple: false }));
+});
+
+test('pickWorkspaceFile accepts an empty document', async () => {
+  mockGetDocumentAsync.mockResolvedValueOnce({
+    canceled: false,
+    assets: [{ uri: 'file:///cache/empty.txt', name: 'empty.txt', mimeType: 'text/plain', size: 0 }],
+  });
+
+  await expect(pickWorkspaceFile()).resolves.toEqual({
+    uri: 'file:///cache/empty.txt',
+    name: 'empty.txt',
+    mimeType: 'text/plain',
+    size: 0,
+  });
+  expect(mockGetInfoAsync).not.toHaveBeenCalled();
+});
+
+test('pickWorkspaceFile rejects a document larger than 10MB', async () => {
+  mockGetDocumentAsync.mockResolvedValueOnce({
+    canceled: false,
+    assets: [{ uri: 'file:///cache/large.bin', name: 'large.bin', size: 10 * 1024 * 1024 + 1 }],
+  });
+
+  await expect(pickWorkspaceFile()).rejects.toThrow('单个文件不能超过 10MB');
+});
+
+test('uploadWorkspaceFile sends the picked file as multipart form data', async () => {
+  mockRequest.mockResolvedValueOnce({ code: 0 });
+  const controller = new AbortController();
+  const onProgress = jest.fn();
+
+  await uploadWorkspaceFile('vm-1', '/workspace/docs/spec.pdf', {
+    uri: 'file:///cache/spec.pdf',
+    name: 'spec.pdf',
+    mimeType: 'application/pdf',
+    size: 4096,
+  }, { signal: controller.signal, onProgress });
+
+  expect(mockRequest).toHaveBeenCalledWith('/api/v1/users/files/upload', expect.objectContaining({
+    method: 'POST',
+    query: { id: 'vm-1', path: '/workspace/docs/spec.pdf' },
+    formData: expect.any(MockFormData),
+    signal: controller.signal,
+    onUploadProgress: onProgress,
+  }));
+  const form = mockRequest.mock.calls[0][1].formData as MockFormData;
+  expect(form.entries).toEqual([['file', {
+    uri: 'file:///cache/spec.pdf',
+    name: 'spec.pdf',
+    type: 'application/pdf',
+  }]]);
 });
 
 test('uploadFileWithPresignedUrl PUTs the file without signed headers', async () => {

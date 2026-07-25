@@ -206,14 +206,19 @@ func (a *TaskUsecase) SwitchModel(ctx context.Context, user *domain.User, taskID
 		}
 	}
 
-	coding, configs, agentRes, err := a.getCodingConfigs(ctx, t.CliName, model, nil, nil, a.userScope(ctx, user), false)
+	var skillIDs, pluginIDs []string
+	if t.Extra != nil {
+		skillIDs = t.Extra.SkillIDs
+		pluginIDs = t.Extra.PluginIDs
+	}
+	coding, configs, agentRes, err := a.getCodingConfigs(ctx, t.CliName, model, skillIDs, pluginIDs, a.userScope(ctx, user), false)
 	if err != nil {
 		return nil, err
 	}
 	if coding != taskflow.CodingAgentOpenCode {
 		return nil, fmt.Errorf("switch model only supports opencode runtime")
 	}
-	_ = agentRes // switch-model path does not currently forward AgentResources to taskflow.
+	_ = agentRes // switch-model intentionally leaves AgentResources nil (see design spec: nil = agent does not touch on-disk assets).
 
 	envs := map[string]string{
 		"OPENAI_API_KEY":                   model.APIKey,
@@ -307,6 +312,7 @@ func (a *TaskUsecase) Info(ctx context.Context, user *domain.User, id uuid.UUID)
 	owner := user.ID == t.UserID
 
 	tk := cvt.From(t, &domain.Task{})
+	fillAgentResourceBaseline(tk, t.SkillIds, t.PluginIds)
 	if vm := tk.VirtualMachine; vm != nil {
 		resp, _ := a.taskflow.VirtualMachiner().IsOnline(ctx, &taskflow.IsOnlineReq[string]{
 			IDs: []string{vm.ID},
@@ -406,7 +412,7 @@ func (a *TaskUsecase) Continue(ctx context.Context, user *domain.User, id uuid.U
 	if strings.TrimSpace(string(req.Content)) == "" {
 		return errcode.ErrBadRequest
 	}
-	if err := validateAttachments(user.ID, req.Attachments, a.cfg.Attachment, a.cfg.ObjectStorage); err != nil {
+	if err := validateAttachments(user.ID, req.Attachments, a.cfg.Attachment, a.cfg.ObjectStorage, a.cfg.Security.BlockPrivateNetwork); err != nil {
 		return err
 	}
 	attachments, err := a.taskAttachmentsToTaskflow(ctx, req.Attachments)
@@ -465,7 +471,7 @@ func (a *TaskUsecase) IncrUserInputCount(ctx context.Context, userID, taskID uui
 
 // Create implements domain.TaskUsecase.
 func (a *TaskUsecase) Create(ctx context.Context, user *domain.User, req domain.CreateTaskReq) (*domain.ProjectTask, error) {
-	if err := validateAttachments(user.ID, req.Attachments, a.cfg.Attachment, a.cfg.ObjectStorage); err != nil {
+	if err := validateAttachments(user.ID, req.Attachments, a.cfg.Attachment, a.cfg.ObjectStorage, a.cfg.Security.BlockPrivateNetwork); err != nil {
 		return nil, err
 	}
 	attachments, err := a.taskAttachmentsToTaskflow(ctx, req.Attachments)

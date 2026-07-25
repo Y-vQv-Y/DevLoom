@@ -121,19 +121,19 @@ type VirtualMachineCondition struct {
 
 // CreateVirtualMachineReq 创建虚拟机请求
 type CreateVirtualMachineReq struct {
-	ID                  string         `json:"id,omitempty"`
-	UserID              string         `json:"user_id" validate:"required"`
-	HostID              string         `json:"host_id" validate:"required"`
-	HostName            string         `json:"hostname"`
-	Git                 Git            `json:"git"`
-	ZipUrl              string         `json:"zip_url"`
-	ImageURL            string         `json:"image_url"`
-	ProxyURL            string         `json:"proxy_url"`
-	TaskID              uuid.UUID      `json:"task_id"`
-	LLM                 LLMProviderReq `json:"llm"`
-	Cores               string         `json:"cores"`
-	Memory              uint64         `json:"memory"`
-	InstallCodingAgents bool           `json:"install_coding_agents"`
+	ID                  string           `json:"id,omitempty"`
+	UserID              string           `json:"user_id" validate:"required"`
+	HostID              string           `json:"host_id" validate:"required"`
+	HostName            string           `json:"hostname"`
+	Git                 Git              `json:"git"`
+	ZipUrl              string           `json:"zip_url"`
+	ImageURL            string           `json:"image_url"`
+	ProxyURL            string           `json:"proxy_url"`
+	TaskID              uuid.UUID        `json:"task_id"`
+	LLM                 LLMProviderReq   `json:"llm"`
+	Cores               string           `json:"cores"`
+	Memory              uint64           `json:"memory"`
+	InstallCodingAgents bool             `json:"install_coding_agents"`
 	Envs                []string         `json:"envs,omitempty"`
 	Workspace           *WorkspacePolicy `json:"workspace,omitempty"`
 	LogStore            string           `json:"log_store,omitempty"`
@@ -593,9 +593,10 @@ type ConfigFile struct {
 
 // TaskExecutionConfig 任务运行配置
 type TaskExecutionConfig struct {
-	Envs        map[string]string `json:"envs,omitempty"`
-	ConfigFiles []ConfigFile      `json:"config_files,omitempty"`
-	McpServers  []McpServerConfig `json:"mcp_servers,omitempty"`
+	Envs           map[string]string `json:"envs,omitempty"`
+	ConfigFiles    []ConfigFile      `json:"config_files,omitempty"`
+	McpServers     []McpServerConfig `json:"mcp_servers,omitempty"`
+	AgentResources *AgentResources   `json:"agent_resources,omitempty"`
 }
 
 // McpHttpHeader MCP HTTP 头

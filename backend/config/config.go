@@ -92,6 +92,11 @@ type Config struct {
 	Doubao Doubao `mapstructure:"doubao"`
 
 	ReviewAgent ReviewAgent `mapstructure:"review_agent"`
+	Security    Security    `mapstructure:"security"`
+}
+
+type Security struct {
+	BlockPrivateNetwork bool `mapstructure:"block_private_network"`
 }
 
 type ReviewAgent struct {
@@ -334,6 +339,7 @@ func Init(dir string) (*Config, error) {
 	v.SetDefault("debug", false)
 	v.SetDefault("server.addr", ":8888")
 	v.SetDefault("server.base_url", "")
+	v.SetDefault("security.block_private_network", false)
 	v.SetDefault("loki.addr", "http://devloom-loki:3100")
 	v.SetDefault("clickhouse.addr", "")
 	v.SetDefault("clickhouse.database", "")
@@ -521,11 +527,11 @@ type GitlabConfig struct {
 
 // GitlabInstance GitLab 实例配置
 type GitlabInstance struct {
-	Token                  string            `mapstructure:"token"`
-	BaseURL                string            `mapstructure:"base_url"`
-	Enabled                bool              `mapstructure:"enabled"`
-	TLSInsecureSkipVerify  bool              `mapstructure:"tls_insecure_skip_verify"`
-	OAuth                  GitlabOAuthConfig `mapstructure:"oauth"`
+	Token                 string            `mapstructure:"token"`
+	BaseURL               string            `mapstructure:"base_url"`
+	Enabled               bool              `mapstructure:"enabled"`
+	TLSInsecureSkipVerify bool              `mapstructure:"tls_insecure_skip_verify"`
+	OAuth                 GitlabOAuthConfig `mapstructure:"oauth"`
 }
 
 // GitlabOAuthConfig GitLab OAuth 配置

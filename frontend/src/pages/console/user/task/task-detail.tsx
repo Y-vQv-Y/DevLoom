@@ -14,6 +14,7 @@ import { TaskPreviewPanel } from "@/components/console/task/task-preview-panel"
 import type { AvailableCommands, TaskPlan, TaskStreamStatus, TaskUserInput } from "@/components/console/task/task-shared"
 import { TaskStreamClient, type TaskStreamClientState, type TaskStreamCloseReason, type TaskStreamConnectionState } from "@/components/console/task/task-stream-client"
 import { TaskTerminalPanel } from "@/components/console/task/task-terminal-panel"
+import { TaskSkillsUpdateDialog } from "@/components/console/task/task-skills-update-dialog"
 import { TaskUserInputIndex } from "@/components/console/task/task-user-input-index"
 import { IS_OFFLINE_EDITION } from "@/utils/edition"
 import {
@@ -49,7 +50,7 @@ import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
 import { canUseModelBySubscription, formatTokens, getBrandFromModel, getBuiltinModelName, getModelDisplayName, getOwnerTypeBadge, getTaskDisplayName, isBuiltinPublicModelPackage, stripBuiltinPublicModelPackagePrefix } from "@/utils/common"
 import { apiRequest } from "@/utils/requestUtils"
-import { IconChevronDown, IconDeviceDesktop, IconFile, IconReload, IconTerminal2, IconUpload } from "@tabler/icons-react"
+import { IconChevronDown, IconDeviceDesktop, IconFile, IconPuzzle, IconReload, IconTerminal2, IconUpload } from "@tabler/icons-react"
 import React from "react"
 import { useParams } from "react-router-dom"
 import { toast } from "sonner"
@@ -113,6 +114,7 @@ export default function TaskDetailPage() {
   const [restartAgentSubmitting, setRestartAgentSubmitting] = React.useState(false)
   const [restartAgentClearContext, setRestartAgentClearContext] = React.useState(false)
   const [publishConfirmDialogOpen, setPublishConfirmDialogOpen] = React.useState(false)
+  const [skillsDialogOpen, setSkillsDialogOpen] = React.useState(false)
   const [modelSwitchDialogOpen, setModelSwitchDialogOpen] = React.useState(false)
   const [modelSwitchSubmitting, setModelSwitchSubmitting] = React.useState(false)
   const [pendingSwitchModel, setPendingSwitchModel] = React.useState<DomainModel | null>(null)
@@ -124,6 +126,8 @@ export default function TaskDetailPage() {
   const historyLoadedRef = React.useRef(false)
   const chatScrollRef = React.useRef<HTMLDivElement | null>(null)
   const chatInputRef = React.useRef<TaskChatInputBoxHandle>(null)
+  const restartAgentCancelRef = React.useRef<HTMLButtonElement>(null)
+  const restartAgentConfirmRef = React.useRef<HTMLButtonElement>(null)
   const chatContentRef = React.useRef<HTMLDivElement | null>(null)
   const taskMessageListRef = React.useRef<TaskMessageVirtualListHandle | null>(null)
   const taskFileExplorerRef = React.useRef<TaskFileExplorerHandle | null>(null)
@@ -949,6 +953,31 @@ export default function TaskDetailPage() {
     streamClientRef.current?.sendCancel()
   }, [])
 
+  const handleSwitchAgentResources = React.useCallback(
+    async (skillIds: string[], pluginIds: string[]) => {
+      const response = await taskControlClientRef.current?.switchAgentResources(
+        skillIds,
+        pluginIds,
+      )
+      if (response?.success) {
+        setTask((prev) =>
+          prev
+            ? {
+                ...prev,
+                extra: {
+                  ...(prev.extra ?? {}),
+                  skill_ids: skillIds,
+                  plugin_ids: pluginIds,
+                },
+              }
+            : prev,
+        )
+      }
+      return response ?? null
+    },
+    [],
+  )
+
   const handleResetSession = React.useCallback(async () => {
     const success = await taskControlClientRef.current?.restart(false)
     return !!success
@@ -976,6 +1005,19 @@ export default function TaskDetailPage() {
     setRestartAgentClearContext(clearContext)
     setRestartAgentDialogOpen(true)
   }, [canInput])
+
+  const handleRestartAgentDialogKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault()
+      restartAgentCancelRef.current?.focus()
+      return
+    }
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault()
+      restartAgentConfirmRef.current?.focus()
+    }
+  }
 
   const handleConfirmRestartAgent = React.useCallback(async () => {
     if (restartAgentSubmitting) return
@@ -1314,6 +1356,16 @@ export default function TaskDetailPage() {
             <Button
               variant="ghost"
               size="sm"
+              className="h-7 min-w-0 gap-1 px-2 text-sm font-normal"
+              onClick={() => setSkillsDialogOpen(true)}
+              disabled={!taskInteractive}
+            >
+              <IconPuzzle className="size-3.5" />
+              {t("taskDetail.chat.skills")}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               className={cn("hidden h-7 min-w-0 gap-1 px-2 text-sm font-normal md:inline-flex", terminalPanelOpen && "text-primary bg-accent")}
               onClick={toggleTerminalPanel}
               disabled={!taskInteractive}
@@ -1432,7 +1484,7 @@ export default function TaskDetailPage() {
           setRestartAgentDialogOpen(open)
         }}
       >
-        <AlertDialogContent>
+        <AlertDialogContent onKeyDown={handleRestartAgentDialogKeyDown}>
           <AlertDialogHeader>
             <AlertDialogTitle>
               {restartAgentClearContext
@@ -1446,8 +1498,9 @@ export default function TaskDetailPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={restartAgentSubmitting}>{t("taskDetail.common.cancel")}</AlertDialogCancel>
+            <AlertDialogCancel ref={restartAgentCancelRef} disabled={restartAgentSubmitting}>{t("taskDetail.common.cancel")}</AlertDialogCancel>
             <Button
+              ref={restartAgentConfirmRef}
               type="button"
               onClick={() => {
                 void handleConfirmRestartAgent()
@@ -1600,6 +1653,13 @@ export default function TaskDetailPage() {
           </DialogContent>
         </Dialog>
       )}
+      <TaskSkillsUpdateDialog
+        open={skillsDialogOpen}
+        onOpenChange={setSkillsDialogOpen}
+        initialSkillIds={task?.extra?.skill_ids ?? []}
+        pluginIds={task?.extra?.plugin_ids ?? []}
+        onSwitch={handleSwitchAgentResources}
+      />
     </div>
   )
 }
