@@ -28,3 +28,7 @@ dist
 
 # ai
 .superpowers/
+
+# Local patent disclosure materials
+/*专利*.docx
+/docs/patent/
