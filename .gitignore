@@ -12,6 +12,8 @@ devloom/
 backend/bin/
 .pnpm-store/
 frontend/.vite/
+__pycache__/
+*.pyc
 
 # Electron (electron-builder)
 desktop/release/
@@ -32,3 +34,9 @@ dist
 # Local patent disclosure materials
 /*专利*.docx
 /docs/patent/
+
+# Local offline-package inputs and generated bundles
+/deploy/monkeycode-offline-linux-amd64/
+/deploy/vendor/
+/deploy/out/
+/deploy/package/package.env

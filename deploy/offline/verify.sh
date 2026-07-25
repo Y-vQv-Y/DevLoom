@@ -2,9 +2,9 @@
 set -Eeuo pipefail
 
 ROOT="${INSTALL_DIR:-/opt/devloom}"
-ENV_FILE="${ENV_FILE:-$ROOT/.env}"
-COMPOSE_FILE="${COMPOSE_FILE:-$ROOT/source/backend/docker-compose.yml}"
-OVERRIDE_FILE="${COMPOSE_OVERRIDE_FILE:-$ROOT/compose.override.yml}"
+ENV_FILE="${ENV_FILE:-}"
+COMPOSE_FILE="${COMPOSE_FILE:-}"
+OVERRIDE_FILE="${COMPOSE_OVERRIDE_FILE:-}"
 TIMEOUT="${VERIFY_TIMEOUT_SECONDS:-180}"
 
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
@@ -36,6 +36,16 @@ while (($#)); do
   esac
 done
 
+[[ -n "$ENV_FILE" ]] || ENV_FILE="$ROOT/.env"
+if [[ -z "$COMPOSE_FILE" ]]; then
+  if [[ -f "$ROOT/docker-compose.yml" ]]; then
+    COMPOSE_FILE="$ROOT/docker-compose.yml"
+  else
+    COMPOSE_FILE="$ROOT/source/backend/docker-compose.yml"
+  fi
+fi
+[[ -n "$OVERRIDE_FILE" ]] || OVERRIDE_FILE="$ROOT/compose.override.yml"
+
 [[ -f "$ENV_FILE" ]] || die "missing environment file: $ENV_FILE"
 [[ -f "$COMPOSE_FILE" ]] || die "missing Compose file: $COMPOSE_FILE"
 command -v docker >/dev/null 2>&1 || die "Docker is not installed"
@@ -47,23 +57,25 @@ COMPOSE=(docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE")
 "${COMPOSE[@]}" ps
 
 STARTED_AT="$(date +%s)"
+CONTAINER_PREFIX="$(env_value CONTAINER_PREFIX)"
+[[ -n "$CONTAINER_PREFIX" ]] || CONTAINER_PREFIX=devloom
 for service in db redis clickhouse rustfs ingress taskflow frontend backend preview; do
   while :; do
-    state="$(docker inspect -f '{{.State.Status}}' "devloom-$service" 2>/dev/null || true)"
+    state="$(docker inspect -f '{{.State.Status}}' "$CONTAINER_PREFIX-$service" 2>/dev/null || true)"
     [[ "$state" == running ]] && break
     now="$(date +%s)"
-    (( now - STARTED_AT < TIMEOUT )) || die "service devloom-$service did not become running (state=${state:-missing})"
+    (( now - STARTED_AT < TIMEOUT )) || die "service $CONTAINER_PREFIX-$service did not become running (state=${state:-missing})"
     sleep 3
   done
 done
 
 for service in db clickhouse rustfs; do
   while :; do
-    health="$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{end}}' "devloom-$service" 2>/dev/null || true)"
+    health="$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{end}}' "$CONTAINER_PREFIX-$service" 2>/dev/null || true)"
     [[ "$health" == healthy ]] && break
-    [[ "$health" == unhealthy ]] && die "service devloom-$service reported unhealthy"
+    [[ "$health" == unhealthy ]] && die "service $CONTAINER_PREFIX-$service reported unhealthy"
     now="$(date +%s)"
-    (( now - STARTED_AT < TIMEOUT )) || die "service devloom-$service did not become healthy (health=${health:-unknown})"
+    (( now - STARTED_AT < TIMEOUT )) || die "service $CONTAINER_PREFIX-$service did not become healthy (health=${health:-unknown})"
     sleep 3
   done
 done

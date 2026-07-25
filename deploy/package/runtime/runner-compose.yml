@@ -1,0 +1,17 @@
+name: ${RUNNER_COMPOSE_PROJECT_NAME:-devloom_runner}
+services:
+  orchestrator:
+    image: ${ORCHESTRATOR_IMAGE}
+    container_name: ${RUNNER_CONTAINER_PREFIX:-devloom}-orchestrator
+    restart: always
+    init: true
+    environment:
+      ORCHESTRATOR_GRPC_URL: ${GRPC_URL}
+      ORCHESTRATOR_AUTH_TOKEN: ${TOKEN}
+      ORCHESTRATOR_TYPE: docker
+      ORCHESTRATOR_LOG_LEVEL: ${ORCHESTRATOR_LOG_LEVEL:-info}
+      ORCHESTRATOR_GRPC_PROXY: ${GRPC_PROXY:-}
+      TZ: Asia/Shanghai
+    volumes:
+      - ./data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock

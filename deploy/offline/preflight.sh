@@ -6,9 +6,9 @@ set -Eeuo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/../.." && pwd)"
 ROOT="${INSTALL_DIR:-/opt/devloom}"
-ENV_FILE="${ENV_FILE:-$ROOT/.env}"
-COMPOSE_FILE="${COMPOSE_FILE:-$ROOT/source/backend/docker-compose.yml}"
-OVERRIDE_FILE="${COMPOSE_OVERRIDE_FILE:-$ROOT/compose.override.yml}"
+ENV_FILE="${ENV_FILE:-}"
+COMPOSE_FILE="${COMPOSE_FILE:-}"
+OVERRIDE_FILE="${COMPOSE_OVERRIDE_FILE:-}"
 SKIP_DOCKER=0
 
 usage() {
@@ -58,6 +58,16 @@ while (($#)); do
   esac
 done
 
+[[ -n "$ENV_FILE" ]] || ENV_FILE="$ROOT/.env"
+if [[ -z "$COMPOSE_FILE" ]]; then
+  if [[ -f "$ROOT/docker-compose.yml" ]]; then
+    COMPOSE_FILE="$ROOT/docker-compose.yml"
+  else
+    COMPOSE_FILE="$ROOT/source/backend/docker-compose.yml"
+  fi
+fi
+[[ -n "$OVERRIDE_FILE" ]] || OVERRIDE_FILE="$ROOT/compose.override.yml"
+
 if [[ ! -f "$COMPOSE_FILE" && -f "$REPO_ROOT/backend/docker-compose.yml" ]]; then
   COMPOSE_FILE="$REPO_ROOT/backend/docker-compose.yml"
 fi
@@ -68,7 +78,7 @@ fi
 [[ "$(env_value INSTALL_DIR)" == "$ROOT" ]] || die "INSTALL_DIR in $ENV_FILE must equal $ROOT"
 
 REQUIRED_VARS=(
-  INSTALL_DIR REMOTE_IP NGINX_PORT SUBNET_PREFIX
+  INSTALL_DIR COMPOSE_PROJECT_NAME CONTAINER_PREFIX REMOTE_IP NGINX_PORT SUBNET_PREFIX
   POSTGRES_IMAGE POSTGRES_DB POSTGRES_USER POSTGRES_PASSWORD
   REDIS_IMAGE REDIS_PASSWORD
   CLICKHOUSE_IMAGE CLICKHOUSE_DB CLICKHOUSE_USER CLICKHOUSE_PASSWORD
@@ -92,8 +102,8 @@ RELAY_VALUE="$(env_value RELAY_SECRET)"
 
 ARCH="$(uname -m)"
 case "$ARCH" in
-  x86_64|amd64) ARCH_DIR=amd64 ;;
-  aarch64|arm64) ARCH_DIR=arm64 ;;
+  x86_64|amd64) ARCH_DIR=x86_64 ;;
+  aarch64|arm64) ARCH_DIR=aarch64 ;;
   *) die "unsupported CPU architecture: $ARCH" ;;
 esac
 
@@ -101,6 +111,7 @@ esac
 for file in installer host.tgz docker.tgz; do
   path="$ROOT/static/installer/$ARCH_DIR/$file"
   [[ -s "$path" ]] || die "missing $path"
+  [[ -s "$path.sha256" ]] || die "missing $path.sha256"
 done
 [[ -x "$ROOT/static/installer/$ARCH_DIR/installer" ]] || die "installer is not executable: $ROOT/static/installer/$ARCH_DIR/installer"
 

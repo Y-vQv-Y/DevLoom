@@ -136,6 +136,9 @@ func TestInstallScriptUsesOfflineBundle(t *testing.T) {
 	if !strings.Contains(script, "INSTALLER_URL=\"http://devloom.local/static/installer/{{.arch}}/installer\"") {
 		t.Fatalf("script missing installer url: %s", script)
 	}
+	if !strings.Contains(script, "INSTALLER_URL.sha256") || !strings.Contains(script, "sha256sum --check --status") {
+		t.Fatalf("script missing installer checksum verification: %s", script)
+	}
 	if !strings.Contains(script, "BASE_URL=\"http://devloom.local\"") || !strings.Contains(script, "DEVLOOM_BASE_URL=\"$BASE_URL\"") {
 		t.Fatalf("script missing base url: %s", script)
 	}

@@ -55,10 +55,11 @@ DOCKER_BUNDLE_PATH="{{.docker_bundle_path}}"
 HOST_BUNDLE_PATH="{{.host_bundle_path}}"
 EXTENSION_IMAGES_MANIFEST_PATH="{{.extension_images_manifest_path}}"
 INSTALLER_FILE="/tmp/devloom-installer"
+INSTALLER_SHA_FILE="/tmp/devloom-installer.sha256"
 
 cleanup() {
     echo -e "${YELLOW}Cleaning up temporary files...${NC}"
-    rm -f "$INSTALLER_FILE"
+    rm -f "$INSTALLER_FILE" "$INSTALLER_SHA_FILE"
 }
 
 if [[ -z "$BASE_URL" || -z "$INSTALLER_URL" ]]; then
@@ -76,6 +77,15 @@ HOST_BUNDLE_PATH=${HOST_BUNDLE_PATH//\{\{.arch\}\}/$ARCH}
 EXTENSION_IMAGES_MANIFEST_PATH=${EXTENSION_IMAGES_MANIFEST_PATH//\{\{.arch\}\}/$ARCH}
 if ! curl -4fLk --progress-bar -o "$INSTALLER_FILE" "$INSTALLER_URL"; then
     echo -e "${RED}Failed to download installer${NC}"
+    exit 1
+fi
+if ! curl -4fLk --progress-bar -o "$INSTALLER_SHA_FILE" "$INSTALLER_URL.sha256"; then
+    echo -e "${RED}Failed to download installer checksum${NC}"
+    exit 1
+fi
+EXPECTED_SHA256=$(awk 'NR==1 {print $1}' "$INSTALLER_SHA_FILE")
+if [[ ! "$EXPECTED_SHA256" =~ ^[a-fA-F0-9]{64}$ ]] || ! printf '%s  %s\n' "$EXPECTED_SHA256" "$INSTALLER_FILE" | sha256sum --check --status -; then
+    echo -e "${RED}Installer checksum verification failed${NC}"
     exit 1
 fi
 

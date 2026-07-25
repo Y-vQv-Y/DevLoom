@@ -54,12 +54,12 @@ cd /opt/devloom/source
 
 ```text
 /opt/devloom/static/project-tpl.zip
-/opt/devloom/static/installer/amd64/installer
-/opt/devloom/static/installer/amd64/host.tgz
-/opt/devloom/static/installer/amd64/docker.tgz
-/opt/devloom/static/installer/arm64/installer
-/opt/devloom/static/installer/arm64/host.tgz
-/opt/devloom/static/installer/arm64/docker.tgz
+/opt/devloom/static/installer/x86_64/installer
+/opt/devloom/static/installer/x86_64/host.tgz
+/opt/devloom/static/installer/x86_64/docker.tgz
+/opt/devloom/static/installer/aarch64/installer
+/opt/devloom/static/installer/aarch64/host.tgz
+/opt/devloom/static/installer/aarch64/docker.tgz
 ```
 
 这些文件不在本仓库中，缺失时“开发主机”页面生成的离线安装命令无法完成安装。
