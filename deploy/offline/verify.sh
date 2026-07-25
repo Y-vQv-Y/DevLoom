@@ -57,6 +57,17 @@ for service in db redis clickhouse rustfs ingress taskflow frontend backend prev
   done
 done
 
+for service in db clickhouse rustfs; do
+  while :; do
+    health="$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{end}}' "devloom-$service" 2>/dev/null || true)"
+    [[ "$health" == healthy ]] && break
+    [[ "$health" == unhealthy ]] && die "service devloom-$service reported unhealthy"
+    now="$(date +%s)"
+    (( now - STARTED_AT < TIMEOUT )) || die "service devloom-$service did not become healthy (health=${health:-unknown})"
+    sleep 3
+  done
+done
+
 REMOTE_IP="$(env_value REMOTE_IP)"
 NGINX_PORT="$(env_value NGINX_PORT)"
 BASE_URL="$(env_value PUBLIC_BASE_URL)"
