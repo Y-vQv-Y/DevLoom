@@ -83,8 +83,11 @@ func (u *GitBotUsecase) GetAccessToken(ctx context.Context, botID uuid.UUID) (st
 		}
 		return bot.Token, nil
 	}
-	// TODO: 从 GitIdentity 获取动态 token
-	return "", fmt.Errorf("not implemented")
+	token, err := u.tokenProvider.GetToken(ctx, identityID)
+	if err != nil {
+		return "", fmt.Errorf("get git identity token: %w", err)
+	}
+	return token, nil
 }
 
 // List 获取用户的 GitBot 列表
