@@ -208,9 +208,13 @@ PACKAGE_VERSION="$(awk -F'"' '/"version"[[:space:]]*:/ {print $4; exit}' "$PACKA
 set_env "$ENV_FILE" DEVLOOM_VERSION "$PACKAGE_VERSION"
 chmod 600 "$ENV_FILE"
 
+if [[ -z "$ACCESS_HOST" ]]; then
+  ACCESS_HOST="$(awk -F= '$1=="REMOTE_IP" {print substr($0,index($0,"=")+1); exit}' "$ENV_FILE")"
+fi
+[[ -n "$ACCESS_HOST" ]] || die "installed environment REMOTE_IP is empty"
+
 if [[ ! -s "$INSTALL_DIR/tls/server.crt" || ! -s "$INSTALL_DIR/tls/server.key" ]]; then
   command -v openssl >/dev/null 2>&1 || die "openssl is required to generate the ingress certificate"
-  [[ -n "$ACCESS_HOST" ]] || ACCESS_HOST="$(awk -F= '$1=="REMOTE_IP" {print substr($0,index($0,"=")+1); exit}' "$ENV_FILE")"
   if [[ "$ACCESS_HOST" =~ ^[0-9a-fA-F:.]+$ ]]; then
     SAN="IP:$ACCESS_HOST"
   else

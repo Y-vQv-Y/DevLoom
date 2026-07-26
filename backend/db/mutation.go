@@ -37198,6 +37198,7 @@ type TaskMutation struct {
 	title                 *string
 	summary               *string
 	status                *consts.TaskStatus
+	finish_reason         *consts.TaskFinishReason
 	log_store             *consts.LogStore
 	created_at            *time.Time
 	last_active_at        *time.Time
@@ -37674,6 +37675,55 @@ func (m *TaskMutation) OldStatus(ctx context.Context) (v consts.TaskStatus, err 
 // ResetStatus resets all changes to the "status" field.
 func (m *TaskMutation) ResetStatus() {
 	m.status = nil
+}
+
+// SetFinishReason sets the "finish_reason" field.
+func (m *TaskMutation) SetFinishReason(cfr consts.TaskFinishReason) {
+	m.finish_reason = &cfr
+}
+
+// FinishReason returns the value of the "finish_reason" field in the mutation.
+func (m *TaskMutation) FinishReason() (r consts.TaskFinishReason, exists bool) {
+	v := m.finish_reason
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFinishReason returns the old "finish_reason" field's value of the Task entity.
+// If the Task object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TaskMutation) OldFinishReason(ctx context.Context) (v consts.TaskFinishReason, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFinishReason is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFinishReason requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFinishReason: %w", err)
+	}
+	return oldValue.FinishReason, nil
+}
+
+// ClearFinishReason clears the value of the "finish_reason" field.
+func (m *TaskMutation) ClearFinishReason() {
+	m.finish_reason = nil
+	m.clearedFields[task.FieldFinishReason] = struct{}{}
+}
+
+// FinishReasonCleared returns if the "finish_reason" field was cleared in this mutation.
+func (m *TaskMutation) FinishReasonCleared() bool {
+	_, ok := m.clearedFields[task.FieldFinishReason]
+	return ok
+}
+
+// ResetFinishReason resets all changes to the "finish_reason" field.
+func (m *TaskMutation) ResetFinishReason() {
+	m.finish_reason = nil
+	delete(m.clearedFields, task.FieldFinishReason)
 }
 
 // SetLogStore sets the "log_store" field.
@@ -38382,7 +38432,7 @@ func (m *TaskMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TaskMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 16)
 	if m.deleted_at != nil {
 		fields = append(fields, task.FieldDeletedAt)
 	}
@@ -38406,6 +38456,9 @@ func (m *TaskMutation) Fields() []string {
 	}
 	if m.status != nil {
 		fields = append(fields, task.FieldStatus)
+	}
+	if m.finish_reason != nil {
+		fields = append(fields, task.FieldFinishReason)
 	}
 	if m.log_store != nil {
 		fields = append(fields, task.FieldLogStore)
@@ -38452,6 +38505,8 @@ func (m *TaskMutation) Field(name string) (ent.Value, bool) {
 		return m.Summary()
 	case task.FieldStatus:
 		return m.Status()
+	case task.FieldFinishReason:
+		return m.FinishReason()
 	case task.FieldLogStore:
 		return m.LogStore()
 	case task.FieldCreatedAt:
@@ -38491,6 +38546,8 @@ func (m *TaskMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldSummary(ctx)
 	case task.FieldStatus:
 		return m.OldStatus(ctx)
+	case task.FieldFinishReason:
+		return m.OldFinishReason(ctx)
 	case task.FieldLogStore:
 		return m.OldLogStore(ctx)
 	case task.FieldCreatedAt:
@@ -38569,6 +38626,13 @@ func (m *TaskMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStatus(v)
+		return nil
+	case task.FieldFinishReason:
+		v, ok := value.(consts.TaskFinishReason)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFinishReason(v)
 		return nil
 	case task.FieldLogStore:
 		v, ok := value.(consts.LogStore)
@@ -38661,6 +38725,9 @@ func (m *TaskMutation) ClearedFields() []string {
 	if m.FieldCleared(task.FieldSummary) {
 		fields = append(fields, task.FieldSummary)
 	}
+	if m.FieldCleared(task.FieldFinishReason) {
+		fields = append(fields, task.FieldFinishReason)
+	}
 	if m.FieldCleared(task.FieldLogStore) {
 		fields = append(fields, task.FieldLogStore)
 	}
@@ -38698,6 +38765,9 @@ func (m *TaskMutation) ClearField(name string) error {
 		return nil
 	case task.FieldSummary:
 		m.ClearSummary()
+		return nil
+	case task.FieldFinishReason:
+		m.ClearFinishReason()
 		return nil
 	case task.FieldLogStore:
 		m.ClearLogStore()
@@ -38742,6 +38812,9 @@ func (m *TaskMutation) ResetField(name string) error {
 		return nil
 	case task.FieldStatus:
 		m.ResetStatus()
+		return nil
+	case task.FieldFinishReason:
+		m.ResetFinishReason()
 		return nil
 	case task.FieldLogStore:
 		m.ResetLogStore()

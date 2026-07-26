@@ -261,6 +261,7 @@ func (t *TaskRepo) Stop(ctx context.Context, u *domain.User, id uuid.UUID, fn fu
 
 		return tx.Task.UpdateOneID(tk.ID).
 			SetStatus(consts.TaskStatusFinished).
+			SetFinishReason(consts.TaskFinishReasonCancelled).
 			SetCompletedAt(time.Now()).
 			Exec(ctx)
 	})

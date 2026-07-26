@@ -70,6 +70,9 @@ func TestTaskHook_OnStateChange_FinishedUpdatesTaskStatusAndCompletedAt(t *testi
 	if got.Status != consts.TaskStatusFinished {
 		t.Fatalf("task status = %s, want %s", got.Status, consts.TaskStatusFinished)
 	}
+	if got.FinishReason != consts.TaskFinishReasonCompleted {
+		t.Fatalf("finish reason = %s, want %s", got.FinishReason, consts.TaskFinishReasonCompleted)
+	}
 	if got.CompletedAt.IsZero() {
 		t.Fatal("expected completed_at to be set")
 	}

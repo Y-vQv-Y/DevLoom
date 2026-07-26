@@ -175,6 +175,26 @@ func (_u *TaskUpdate) SetNillableStatus(v *consts.TaskStatus) *TaskUpdate {
 	return _u
 }
 
+// SetFinishReason sets the "finish_reason" field.
+func (_u *TaskUpdate) SetFinishReason(v consts.TaskFinishReason) *TaskUpdate {
+	_u.mutation.SetFinishReason(v)
+	return _u
+}
+
+// SetNillableFinishReason sets the "finish_reason" field if the given value is not nil.
+func (_u *TaskUpdate) SetNillableFinishReason(v *consts.TaskFinishReason) *TaskUpdate {
+	if v != nil {
+		_u.SetFinishReason(*v)
+	}
+	return _u
+}
+
+// ClearFinishReason clears the value of the "finish_reason" field.
+func (_u *TaskUpdate) ClearFinishReason() *TaskUpdate {
+	_u.mutation.ClearFinishReason()
+	return _u
+}
+
 // SetLogStore sets the "log_store" field.
 func (_u *TaskUpdate) SetLogStore(v consts.LogStore) *TaskUpdate {
 	_u.mutation.SetLogStore(v)
@@ -611,6 +631,12 @@ func (_u *TaskUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(task.FieldStatus, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.FinishReason(); ok {
+		_spec.SetField(task.FieldFinishReason, field.TypeString, value)
+	}
+	if _u.mutation.FinishReasonCleared() {
+		_spec.ClearField(task.FieldFinishReason, field.TypeString)
 	}
 	if value, ok := _u.mutation.LogStore(); ok {
 		_spec.SetField(task.FieldLogStore, field.TypeString, value)
@@ -1108,6 +1134,26 @@ func (_u *TaskUpdateOne) SetNillableStatus(v *consts.TaskStatus) *TaskUpdateOne 
 	return _u
 }
 
+// SetFinishReason sets the "finish_reason" field.
+func (_u *TaskUpdateOne) SetFinishReason(v consts.TaskFinishReason) *TaskUpdateOne {
+	_u.mutation.SetFinishReason(v)
+	return _u
+}
+
+// SetNillableFinishReason sets the "finish_reason" field if the given value is not nil.
+func (_u *TaskUpdateOne) SetNillableFinishReason(v *consts.TaskFinishReason) *TaskUpdateOne {
+	if v != nil {
+		_u.SetFinishReason(*v)
+	}
+	return _u
+}
+
+// ClearFinishReason clears the value of the "finish_reason" field.
+func (_u *TaskUpdateOne) ClearFinishReason() *TaskUpdateOne {
+	_u.mutation.ClearFinishReason()
+	return _u
+}
+
 // SetLogStore sets the "log_store" field.
 func (_u *TaskUpdateOne) SetLogStore(v consts.LogStore) *TaskUpdateOne {
 	_u.mutation.SetLogStore(v)
@@ -1574,6 +1620,12 @@ func (_u *TaskUpdateOne) sqlSave(ctx context.Context) (_node *Task, err error) {
 	}
 	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(task.FieldStatus, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.FinishReason(); ok {
+		_spec.SetField(task.FieldFinishReason, field.TypeString, value)
+	}
+	if _u.mutation.FinishReasonCleared() {
+		_spec.ClearField(task.FieldFinishReason, field.TypeString)
 	}
 	if value, ok := _u.mutation.LogStore(); ok {
 		_spec.SetField(task.FieldLogStore, field.TypeString, value)

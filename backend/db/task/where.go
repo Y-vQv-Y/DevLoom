@@ -100,6 +100,12 @@ func Status(v consts.TaskStatus) predicate.Task {
 	return predicate.Task(sql.FieldEQ(FieldStatus, vc))
 }
 
+// FinishReason applies equality check predicate on the "finish_reason" field. It's identical to FinishReasonEQ.
+func FinishReason(v consts.TaskFinishReason) predicate.Task {
+	vc := string(v)
+	return predicate.Task(sql.FieldEQ(FieldFinishReason, vc))
+}
+
 // LogStore applies equality check predicate on the "log_store" field. It's identical to LogStoreEQ.
 func LogStore(v consts.LogStore) predicate.Task {
 	vc := string(v)
@@ -671,6 +677,100 @@ func StatusEqualFold(v consts.TaskStatus) predicate.Task {
 func StatusContainsFold(v consts.TaskStatus) predicate.Task {
 	vc := string(v)
 	return predicate.Task(sql.FieldContainsFold(FieldStatus, vc))
+}
+
+// FinishReasonEQ applies the EQ predicate on the "finish_reason" field.
+func FinishReasonEQ(v consts.TaskFinishReason) predicate.Task {
+	vc := string(v)
+	return predicate.Task(sql.FieldEQ(FieldFinishReason, vc))
+}
+
+// FinishReasonNEQ applies the NEQ predicate on the "finish_reason" field.
+func FinishReasonNEQ(v consts.TaskFinishReason) predicate.Task {
+	vc := string(v)
+	return predicate.Task(sql.FieldNEQ(FieldFinishReason, vc))
+}
+
+// FinishReasonIn applies the In predicate on the "finish_reason" field.
+func FinishReasonIn(vs ...consts.TaskFinishReason) predicate.Task {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = string(vs[i])
+	}
+	return predicate.Task(sql.FieldIn(FieldFinishReason, v...))
+}
+
+// FinishReasonNotIn applies the NotIn predicate on the "finish_reason" field.
+func FinishReasonNotIn(vs ...consts.TaskFinishReason) predicate.Task {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = string(vs[i])
+	}
+	return predicate.Task(sql.FieldNotIn(FieldFinishReason, v...))
+}
+
+// FinishReasonGT applies the GT predicate on the "finish_reason" field.
+func FinishReasonGT(v consts.TaskFinishReason) predicate.Task {
+	vc := string(v)
+	return predicate.Task(sql.FieldGT(FieldFinishReason, vc))
+}
+
+// FinishReasonGTE applies the GTE predicate on the "finish_reason" field.
+func FinishReasonGTE(v consts.TaskFinishReason) predicate.Task {
+	vc := string(v)
+	return predicate.Task(sql.FieldGTE(FieldFinishReason, vc))
+}
+
+// FinishReasonLT applies the LT predicate on the "finish_reason" field.
+func FinishReasonLT(v consts.TaskFinishReason) predicate.Task {
+	vc := string(v)
+	return predicate.Task(sql.FieldLT(FieldFinishReason, vc))
+}
+
+// FinishReasonLTE applies the LTE predicate on the "finish_reason" field.
+func FinishReasonLTE(v consts.TaskFinishReason) predicate.Task {
+	vc := string(v)
+	return predicate.Task(sql.FieldLTE(FieldFinishReason, vc))
+}
+
+// FinishReasonContains applies the Contains predicate on the "finish_reason" field.
+func FinishReasonContains(v consts.TaskFinishReason) predicate.Task {
+	vc := string(v)
+	return predicate.Task(sql.FieldContains(FieldFinishReason, vc))
+}
+
+// FinishReasonHasPrefix applies the HasPrefix predicate on the "finish_reason" field.
+func FinishReasonHasPrefix(v consts.TaskFinishReason) predicate.Task {
+	vc := string(v)
+	return predicate.Task(sql.FieldHasPrefix(FieldFinishReason, vc))
+}
+
+// FinishReasonHasSuffix applies the HasSuffix predicate on the "finish_reason" field.
+func FinishReasonHasSuffix(v consts.TaskFinishReason) predicate.Task {
+	vc := string(v)
+	return predicate.Task(sql.FieldHasSuffix(FieldFinishReason, vc))
+}
+
+// FinishReasonIsNil applies the IsNil predicate on the "finish_reason" field.
+func FinishReasonIsNil() predicate.Task {
+	return predicate.Task(sql.FieldIsNull(FieldFinishReason))
+}
+
+// FinishReasonNotNil applies the NotNil predicate on the "finish_reason" field.
+func FinishReasonNotNil() predicate.Task {
+	return predicate.Task(sql.FieldNotNull(FieldFinishReason))
+}
+
+// FinishReasonEqualFold applies the EqualFold predicate on the "finish_reason" field.
+func FinishReasonEqualFold(v consts.TaskFinishReason) predicate.Task {
+	vc := string(v)
+	return predicate.Task(sql.FieldEqualFold(FieldFinishReason, vc))
+}
+
+// FinishReasonContainsFold applies the ContainsFold predicate on the "finish_reason" field.
+func FinishReasonContainsFold(v consts.TaskFinishReason) predicate.Task {
+	vc := string(v)
+	return predicate.Task(sql.FieldContainsFold(FieldFinishReason, vc))
 }
 
 // LogStoreEQ applies the EQ predicate on the "log_store" field.

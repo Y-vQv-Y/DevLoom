@@ -1272,6 +1272,7 @@ var (
 		{Name: "title", Type: field.TypeString, Nullable: true, Size: 2147483647},
 		{Name: "summary", Type: field.TypeString, Nullable: true, Size: 2147483647},
 		{Name: "status", Type: field.TypeString},
+		{Name: "finish_reason", Type: field.TypeString, Nullable: true},
 		{Name: "log_store", Type: field.TypeString, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "last_active_at", Type: field.TypeTime},
@@ -1289,7 +1290,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "tasks_users_tasks",
-				Columns:    []*schema.Column{TasksColumns[15]},
+				Columns:    []*schema.Column{TasksColumns[16]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

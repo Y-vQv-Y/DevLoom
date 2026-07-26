@@ -10,6 +10,14 @@ const (
 	TaskStatusFinished   TaskStatus = "finished"
 )
 
+// TaskFinishReason records why a finished task reached its terminal state.
+type TaskFinishReason string
+
+const (
+	TaskFinishReasonCompleted TaskFinishReason = "completed"
+	TaskFinishReasonCancelled TaskFinishReason = "cancelled"
+)
+
 // TaskStreamType 任务流消息类型
 type TaskStreamType string
 

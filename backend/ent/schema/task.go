@@ -43,6 +43,7 @@ func (Task) Fields() []ent.Field {
 		field.Text("title").Optional(),
 		field.Text("summary").Optional(),
 		field.String("status").GoType(consts.TaskStatus("")),
+		field.String("finish_reason").GoType(consts.TaskFinishReason("")).Optional(),
 		field.String("log_store").GoType(consts.LogStore("")).Optional().Nillable(),
 		field.Time("created_at").Default(time.Now),
 		field.Time("last_active_at").Default(time.Now),

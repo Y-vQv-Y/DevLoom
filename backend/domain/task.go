@@ -241,28 +241,29 @@ func (pt *ProjectTask) From(src *db.ProjectTask) *ProjectTask {
 
 // Task 任务
 type Task struct {
-	ID             uuid.UUID          `json:"id"`
-	UserID         uuid.UUID          `json:"user_id"`
-	Type           consts.TaskType    `json:"type"`
-	SubType        consts.TaskSubType `json:"sub_type"`
-	Content        string             `json:"content"`
-	Title          string             `json:"title"`
-	Summary        string             `json:"summary"`
-	Status         consts.TaskStatus  `json:"status"`
-	LogStore       consts.LogStore    `json:"log_store"`
-	VirtualMachine *VirtualMachine    `json:"virtualmachine"`
-	CreatedAt      int64              `json:"created_at"`
-	LastActiveAt   int64              `json:"last_active_at"`
-	CompletedAt    int64              `json:"completed_at"`
-	Model          *ModelBrief        `json:"model,omitempty"`
-	Image          *Image             `json:"image,omitempty"`
-	Branch         string             `json:"branch,omitempty"`
-	CliName        consts.CliName     `json:"cli_name,omitempty"`
-	RepoURL        string             `json:"repo_url,omitempty"`
-	FullName       string             `json:"full_name,omitempty"`
-	RepoFilename   string             `json:"repo_filename,omitempty"`
-	Extra          *TaskExtraConfig   `json:"extra,omitempty"`
-	Stats          *TaskStats         `json:"stats,omitempty"`
+	ID             uuid.UUID               `json:"id"`
+	UserID         uuid.UUID               `json:"user_id"`
+	Type           consts.TaskType         `json:"type"`
+	SubType        consts.TaskSubType      `json:"sub_type"`
+	Content        string                  `json:"content"`
+	Title          string                  `json:"title"`
+	Summary        string                  `json:"summary"`
+	Status         consts.TaskStatus       `json:"status"`
+	FinishReason   consts.TaskFinishReason `json:"finish_reason,omitempty"`
+	LogStore       consts.LogStore         `json:"log_store"`
+	VirtualMachine *VirtualMachine         `json:"virtualmachine"`
+	CreatedAt      int64                   `json:"created_at"`
+	LastActiveAt   int64                   `json:"last_active_at"`
+	CompletedAt    int64                   `json:"completed_at"`
+	Model          *ModelBrief             `json:"model,omitempty"`
+	Image          *Image                  `json:"image,omitempty"`
+	Branch         string                  `json:"branch,omitempty"`
+	CliName        consts.CliName          `json:"cli_name,omitempty"`
+	RepoURL        string                  `json:"repo_url,omitempty"`
+	FullName       string                  `json:"full_name,omitempty"`
+	RepoFilename   string                  `json:"repo_filename,omitempty"`
+	Extra          *TaskExtraConfig        `json:"extra,omitempty"`
+	Stats          *TaskStats              `json:"stats,omitempty"`
 }
 
 // TaskStats 任务 token 用量统计
@@ -287,6 +288,7 @@ func (t *Task) From(src *db.Task) *Task {
 	t.Title = src.Title
 	t.Summary = src.Summary
 	t.Status = src.Status
+	t.FinishReason = src.FinishReason
 	if src.LogStore != nil {
 		t.LogStore = *src.LogStore
 	}

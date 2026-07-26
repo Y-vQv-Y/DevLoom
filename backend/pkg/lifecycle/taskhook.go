@@ -53,7 +53,7 @@ func (h *TaskHook) OnStateChange(ctx context.Context, id uuid.UUID, from, to con
 	case consts.TaskStatusError:
 		return h.handleError(ctx, id, metadata.UserID)
 	case consts.TaskStatusFinished:
-		return h.handleFinished(ctx, id, metadata.UserID)
+		return h.handleFinished(ctx, id, metadata)
 	}
 
 	return nil
@@ -80,10 +80,15 @@ func (h *TaskHook) handleError(ctx context.Context, id, uid uuid.UUID) error {
 	})
 }
 
-func (h *TaskHook) handleFinished(ctx context.Context, id, uid uuid.UUID) error {
-	u := domain.User{ID: uid}
+func (h *TaskHook) handleFinished(ctx context.Context, id uuid.UUID, metadata TaskMetadata) error {
+	u := domain.User{ID: metadata.UserID}
+	finishReason := metadata.FinishReason
+	if finishReason == "" {
+		finishReason = consts.TaskFinishReasonCompleted
+	}
 	return h.repo.Update(ctx, &u, id, func(up *db.TaskUpdateOne) error {
 		up.SetStatus(consts.TaskStatusFinished)
+		up.SetFinishReason(finishReason)
 		up.SetCompletedAt(time.Now())
 		return nil
 	})

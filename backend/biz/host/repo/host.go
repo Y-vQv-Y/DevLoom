@@ -649,6 +649,7 @@ func (h *HostRepo) DeleteVirtualMachine(ctx context.Context, uid uuid.UUID, host
 					task.StatusNotIn(consts.TaskStatusFinished, consts.TaskStatusError),
 				).
 				SetStatus(consts.TaskStatusFinished).
+				SetFinishReason(consts.TaskFinishReasonCancelled).
 				SetCompletedAt(time.Now()).
 				Save(ctx)
 			if err != nil {

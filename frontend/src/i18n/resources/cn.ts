@@ -415,6 +415,7 @@ const cn = {
         createdAt: "创建时间",
       },
       status: {
+        completed: "已完成",
         stopped: "已终止",
         autoRecycleTip: "连续三天不对话的任务将自动回收",
         startFailed: "启动失败",
@@ -3699,6 +3700,7 @@ const cn = {
       delete: "删除",
     },
     status: {
+      completed: "已完成",
       stopped: "已终止",
       recycleTip: "连续三天不对话的任务将自动回收",
       startFailed: "启动失败",

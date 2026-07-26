@@ -5,6 +5,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+
+	"github.com/Y-vQv-Y/DevLoom/backend/consts"
 )
 
 // State 状态类型约束（支持 string 及其派生类型）
@@ -29,9 +31,10 @@ type Hook[I comparable, S State, M any] interface {
 
 // TaskMetadata 任务元数据
 type TaskMetadata struct {
-	TaskID uuid.UUID `json:"task_id"`
-	UserID uuid.UUID `json:"user_id"`
-	Error  string    `json:"error,omitempty"`
+	TaskID       uuid.UUID               `json:"task_id"`
+	UserID       uuid.UUID               `json:"user_id"`
+	Error        string                  `json:"error,omitempty"`
+	FinishReason consts.TaskFinishReason `json:"finish_reason,omitempty"`
 }
 
 // VMState 虚拟机状态

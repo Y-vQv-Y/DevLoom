@@ -158,6 +158,7 @@ func (h *HostUsecase) markRecycledTasksFinished(ctx context.Context, vm *db.Virt
 		}
 		err := h.taskRepo.Update(ctx, nil, tk.ID, func(up *db.TaskUpdateOne) error {
 			up.SetStatus(consts.TaskStatusFinished)
+			up.SetFinishReason(consts.TaskFinishReasonCancelled)
 			up.SetCompletedAt(time.Now())
 			return nil
 		})

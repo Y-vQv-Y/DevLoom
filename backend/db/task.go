@@ -38,6 +38,8 @@ type Task struct {
 	Summary string `json:"summary,omitempty"`
 	// Status holds the value of the "status" field.
 	Status consts.TaskStatus `json:"status,omitempty"`
+	// FinishReason holds the value of the "finish_reason" field.
+	FinishReason consts.TaskFinishReason `json:"finish_reason,omitempty"`
 	// LogStore holds the value of the "log_store" field.
 	LogStore *consts.LogStore `json:"log_store,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -153,7 +155,7 @@ func (*Task) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case task.FieldSkillIds, task.FieldPluginIds:
 			values[i] = new([]byte)
-		case task.FieldKind, task.FieldSubType, task.FieldContent, task.FieldTitle, task.FieldSummary, task.FieldStatus, task.FieldLogStore:
+		case task.FieldKind, task.FieldSubType, task.FieldContent, task.FieldTitle, task.FieldSummary, task.FieldStatus, task.FieldFinishReason, task.FieldLogStore:
 			values[i] = new(sql.NullString)
 		case task.FieldDeletedAt, task.FieldCreatedAt, task.FieldLastActiveAt, task.FieldUpdatedAt, task.FieldCompletedAt:
 			values[i] = new(sql.NullTime)
@@ -227,6 +229,12 @@ func (_m *Task) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
 				_m.Status = consts.TaskStatus(value.String)
+			}
+		case task.FieldFinishReason:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field finish_reason", values[i])
+			} else if value.Valid {
+				_m.FinishReason = consts.TaskFinishReason(value.String)
 			}
 		case task.FieldLogStore:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -369,6 +377,9 @@ func (_m *Task) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Status))
+	builder.WriteString(", ")
+	builder.WriteString("finish_reason=")
+	builder.WriteString(fmt.Sprintf("%v", _m.FinishReason))
 	builder.WriteString(", ")
 	if v := _m.LogStore; v != nil {
 		builder.WriteString("log_store=")

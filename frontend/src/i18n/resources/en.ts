@@ -415,6 +415,7 @@ const en = {
         createdAt: "Created at",
       },
       status: {
+        completed: "Completed",
         stopped: "Stopped",
         autoRecycleTip: "Tasks without messages for three consecutive days will be recycled automatically",
         startFailed: "Start failed",
@@ -3699,6 +3700,7 @@ const en = {
       delete: "Delete",
     },
     status: {
+      completed: "Completed",
       stopped: "Stopped",
       recycleTip: "Tasks with no activity for three days will be automatically reclaimed",
       startFailed: "Failed to start",

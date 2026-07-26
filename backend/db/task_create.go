@@ -112,6 +112,20 @@ func (_c *TaskCreate) SetStatus(v consts.TaskStatus) *TaskCreate {
 	return _c
 }
 
+// SetFinishReason sets the "finish_reason" field.
+func (_c *TaskCreate) SetFinishReason(v consts.TaskFinishReason) *TaskCreate {
+	_c.mutation.SetFinishReason(v)
+	return _c
+}
+
+// SetNillableFinishReason sets the "finish_reason" field if the given value is not nil.
+func (_c *TaskCreate) SetNillableFinishReason(v *consts.TaskFinishReason) *TaskCreate {
+	if v != nil {
+		_c.SetFinishReason(*v)
+	}
+	return _c
+}
+
 // SetLogStore sets the "log_store" field.
 func (_c *TaskCreate) SetLogStore(v consts.LogStore) *TaskCreate {
 	_c.mutation.SetLogStore(v)
@@ -455,6 +469,10 @@ func (_c *TaskCreate) createSpec() (*Task, *sqlgraph.CreateSpec) {
 		_spec.SetField(task.FieldStatus, field.TypeString, value)
 		_node.Status = value
 	}
+	if value, ok := _c.mutation.FinishReason(); ok {
+		_spec.SetField(task.FieldFinishReason, field.TypeString, value)
+		_node.FinishReason = value
+	}
 	if value, ok := _c.mutation.LogStore(); ok {
 		_spec.SetField(task.FieldLogStore, field.TypeString, value)
 		_node.LogStore = &value
@@ -772,6 +790,24 @@ func (u *TaskUpsert) UpdateStatus() *TaskUpsert {
 	return u
 }
 
+// SetFinishReason sets the "finish_reason" field.
+func (u *TaskUpsert) SetFinishReason(v consts.TaskFinishReason) *TaskUpsert {
+	u.Set(task.FieldFinishReason, v)
+	return u
+}
+
+// UpdateFinishReason sets the "finish_reason" field to the value that was provided on create.
+func (u *TaskUpsert) UpdateFinishReason() *TaskUpsert {
+	u.SetExcluded(task.FieldFinishReason)
+	return u
+}
+
+// ClearFinishReason clears the value of the "finish_reason" field.
+func (u *TaskUpsert) ClearFinishReason() *TaskUpsert {
+	u.SetNull(task.FieldFinishReason)
+	return u
+}
+
 // SetLogStore sets the "log_store" field.
 func (u *TaskUpsert) SetLogStore(v consts.LogStore) *TaskUpsert {
 	u.Set(task.FieldLogStore, v)
@@ -1065,6 +1101,27 @@ func (u *TaskUpsertOne) SetStatus(v consts.TaskStatus) *TaskUpsertOne {
 func (u *TaskUpsertOne) UpdateStatus() *TaskUpsertOne {
 	return u.Update(func(s *TaskUpsert) {
 		s.UpdateStatus()
+	})
+}
+
+// SetFinishReason sets the "finish_reason" field.
+func (u *TaskUpsertOne) SetFinishReason(v consts.TaskFinishReason) *TaskUpsertOne {
+	return u.Update(func(s *TaskUpsert) {
+		s.SetFinishReason(v)
+	})
+}
+
+// UpdateFinishReason sets the "finish_reason" field to the value that was provided on create.
+func (u *TaskUpsertOne) UpdateFinishReason() *TaskUpsertOne {
+	return u.Update(func(s *TaskUpsert) {
+		s.UpdateFinishReason()
+	})
+}
+
+// ClearFinishReason clears the value of the "finish_reason" field.
+func (u *TaskUpsertOne) ClearFinishReason() *TaskUpsertOne {
+	return u.Update(func(s *TaskUpsert) {
+		s.ClearFinishReason()
 	})
 }
 
@@ -1546,6 +1603,27 @@ func (u *TaskUpsertBulk) SetStatus(v consts.TaskStatus) *TaskUpsertBulk {
 func (u *TaskUpsertBulk) UpdateStatus() *TaskUpsertBulk {
 	return u.Update(func(s *TaskUpsert) {
 		s.UpdateStatus()
+	})
+}
+
+// SetFinishReason sets the "finish_reason" field.
+func (u *TaskUpsertBulk) SetFinishReason(v consts.TaskFinishReason) *TaskUpsertBulk {
+	return u.Update(func(s *TaskUpsert) {
+		s.SetFinishReason(v)
+	})
+}
+
+// UpdateFinishReason sets the "finish_reason" field to the value that was provided on create.
+func (u *TaskUpsertBulk) UpdateFinishReason() *TaskUpsertBulk {
+	return u.Update(func(s *TaskUpsert) {
+		s.UpdateFinishReason()
+	})
+}
+
+// ClearFinishReason clears the value of the "finish_reason" field.
+func (u *TaskUpsertBulk) ClearFinishReason() *TaskUpsertBulk {
+	return u.Update(func(s *TaskUpsert) {
+		s.ClearFinishReason()
 	})
 }
 

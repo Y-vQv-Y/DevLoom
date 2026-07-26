@@ -245,7 +245,7 @@ export default function TasksPage() {
                     <span className="inline-flex">
                       <Badge variant="outline" className="text-muted-foreground">
                         <IconCircleCheck />
-                        {t("consoleTasks.status.stopped")}
+                        {t(task.finish_reason === "cancelled" ? "consoleTasks.status.stopped" : "consoleTasks.status.completed")}
                       </Badge>
                     </span>
                   </TooltipTrigger>

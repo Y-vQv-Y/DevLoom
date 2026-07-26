@@ -461,9 +461,14 @@ func (h *InternalHostHandler) TaskStatus(c *web.Context, req taskflow.TaskStatus
 		return fmt.Errorf("task id is required")
 	}
 	var target consts.TaskStatus
+	var finishReason consts.TaskFinishReason
 	switch req.Status {
-	case "completed", "cancelled":
+	case "completed":
 		target = consts.TaskStatusFinished
+		finishReason = consts.TaskFinishReasonCompleted
+	case "cancelled":
+		target = consts.TaskStatusFinished
+		finishReason = consts.TaskFinishReasonCancelled
 	case "failed":
 		target = consts.TaskStatusError
 	default:
@@ -474,8 +479,9 @@ func (h *InternalHostHandler) TaskStatus(c *web.Context, req taskflow.TaskStatus
 		return c.Success(nil)
 	}
 	if err := h.taskLifecycle.Transition(c.Request().Context(), req.ID, target, lifecycle.TaskMetadata{
-		TaskID: req.ID,
-		Error:  req.Error,
+		TaskID:       req.ID,
+		Error:        req.Error,
+		FinishReason: finishReason,
 	}); err != nil {
 		return err
 	}

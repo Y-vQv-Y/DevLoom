@@ -320,6 +320,9 @@ func TestHostUsecase_markRecycledTasksFinished(t *testing.T) {
 	if gotProcessing.Status != consts.TaskStatusFinished {
 		t.Fatalf("processing task status = %s, want %s", gotProcessing.Status, consts.TaskStatusFinished)
 	}
+	if gotProcessing.FinishReason != consts.TaskFinishReasonCancelled {
+		t.Fatalf("processing task finish reason = %s, want %s", gotProcessing.FinishReason, consts.TaskFinishReasonCancelled)
+	}
 	if gotProcessing.CompletedAt.IsZero() {
 		t.Fatal("expected processing task completed_at to be set")
 	}
@@ -430,6 +433,9 @@ func TestHostUsecase_DeleteVMFinishesBoundTasks(t *testing.T) {
 	}
 	if gotTask.Status != consts.TaskStatusFinished {
 		t.Fatalf("task status = %s, want %s", gotTask.Status, consts.TaskStatusFinished)
+	}
+	if gotTask.FinishReason != consts.TaskFinishReasonCancelled {
+		t.Fatalf("task finish reason = %s, want %s", gotTask.FinishReason, consts.TaskFinishReasonCancelled)
 	}
 	if gotTask.CompletedAt.IsZero() {
 		t.Fatal("expected task completed_at to be set")

@@ -238,7 +238,7 @@ export default function ProjectOverviewTasksTab({ projectId, refreshKey }: Proje
                       <span className="inline-flex">
                         <Badge variant="outline" className="text-muted-foreground">
                           <IconCircleCheck />
-                          {t("projectOverview.tasks.status.stopped")}
+                          {t(task.finish_reason === "cancelled" ? "projectOverview.tasks.status.stopped" : "projectOverview.tasks.status.completed")}
                         </Badge>
                       </span>
                     </TooltipTrigger>

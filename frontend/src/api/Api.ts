@@ -137,6 +137,11 @@ export enum ConstsSubscriptionPlan {
   PlanUltra = "ultra",
 }
 
+export enum ConstsTaskFinishReason {
+  TaskFinishReasonCompleted = "completed",
+  TaskFinishReasonCancelled = "cancelled",
+}
+
 export enum ConstsTaskStatus {
   TaskStatusPending = "pending",
   TaskStatusProcessing = "processing",
@@ -1151,6 +1156,7 @@ export interface DomainProjectTask {
   created_at?: number;
   /** 额外参数 */
   extra?: DomainTaskExtraConfig;
+  finish_reason?: ConstsTaskFinishReason;
   full_name?: string;
   id: string;
   identity?: DomainGitIdentity;
@@ -1394,6 +1400,7 @@ export interface DomainTask {
   created_at?: number;
   /** 额外参数 */
   extra?: DomainTaskExtraConfig;
+  finish_reason?: ConstsTaskFinishReason;
   full_name?: string;
   id?: string;
   identity?: DomainGitIdentity;

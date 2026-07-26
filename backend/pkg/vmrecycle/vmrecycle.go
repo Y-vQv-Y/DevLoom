@@ -184,6 +184,7 @@ func (r *recycler) cleanup(ctx context.Context, vm *db.VirtualMachine) error {
 		}
 		if err := r.taskRepo.Update(ctx, nil, tk.ID, func(up *db.TaskUpdateOne) error {
 			up.SetStatus(consts.TaskStatusFinished)
+			up.SetFinishReason(consts.TaskFinishReasonCancelled)
 			up.SetCompletedAt(completedAt)
 			return nil
 		}); err != nil {
