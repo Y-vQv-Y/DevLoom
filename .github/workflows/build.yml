@@ -16,7 +16,7 @@ concurrency:
 env:
   NODE_VERSION: "22"
   PNPM_VERSION: "11.17.0"
-  GO_VERSION: "1.25.x"
+  GO_VERSION: "1.25.8"
   VITE_DOCS_URL: ${{ vars.VITE_DOCS_URL }}
   VITE_PUBLIC_SITE_URL: ${{ vars.VITE_PUBLIC_SITE_URL }}
   VITE_ANNOUNCEMENT_URL: ${{ vars.VITE_ANNOUNCEMENT_URL }}
@@ -61,7 +61,7 @@ jobs:
         working-directory: backend
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
           go-version: ${{ env.GO_VERSION }}
           cache: true
@@ -161,7 +161,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
           go-version: ${{ env.GO_VERSION }}
           cache: true
