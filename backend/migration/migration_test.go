@@ -99,3 +99,28 @@ func TestAgentRulesExtensionSourceMigrationExists(t *testing.T) {
 		t.Fatalf("down migration does not drop extension source columns")
 	}
 }
+
+func TestTaskFinishReasonMigrationExists(t *testing.T) {
+	up, err := os.ReadFile("000024_alter_tasks_add_finish_reason.up.sql")
+	if err != nil {
+		t.Fatalf("read up migration: %v", err)
+	}
+	for _, want := range []string{
+		"ADD COLUMN IF NOT EXISTS finish_reason",
+		"SET finish_reason = 'completed'",
+		"tasks_finish_reason_check",
+		"'completed', 'cancelled'",
+	} {
+		if !strings.Contains(string(up), want) {
+			t.Fatalf("up migration missing %q", want)
+		}
+	}
+
+	down, err := os.ReadFile("000024_alter_tasks_add_finish_reason.down.sql")
+	if err != nil {
+		t.Fatalf("read down migration: %v", err)
+	}
+	if !strings.Contains(string(down), "DROP COLUMN IF EXISTS finish_reason") {
+		t.Fatal("down migration does not drop finish_reason")
+	}
+}
