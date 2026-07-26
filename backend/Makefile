@@ -33,6 +33,7 @@ ingress:
 
 swag:
 	swag fmt && swag init -ot json --pd -g cmd/server/main.go
+	python3 scripts/normalize_swagger.py docs/swagger.json
 
 generate:
 	go generate ./ent

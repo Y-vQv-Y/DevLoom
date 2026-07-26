@@ -173,6 +173,8 @@ jobs:
         run: |
           go generate ./ent
           swag init -ot json --pd -g cmd/server/main.go
+          python3 scripts/normalize_swagger.py docs/swagger.json
+          python3 scripts/test_normalize_swagger.py
       - name: Validate generated diff
         run: git diff --exit-code -- backend/db backend/docs/swagger.json
       - uses: actions/upload-artifact@v4
