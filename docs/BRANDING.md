@@ -1,69 +1,93 @@
-# DevLoom Brand Replacement Guide
+# ADTEC DevLoom 品牌维护手册
 
-## Identity and Links
+## 品牌层级
 
-The product name is **DevLoom** and the canonical repository is `https://github.com/Y-vQv-Y/DevLoom`. Web links are centralized in `frontend/src/config/brand.ts`. Configure a deployment with `VITE_PUBLIC_SITE_URL`, `VITE_DOCS_URL`, `VITE_ANNOUNCEMENT_URL`, `VITE_FORUM_URL`, `VITE_CONSULTATION_URL`, `VITE_COMPANY_URL`, `VITE_COMMUNITY_URL`, and `VITE_SUPPORT_URL`; unset values fall back to the GitHub owner, repository, Releases, or Issues.
+- 企业品牌：`ADTEC`；
+- 产品名称：`DevLoom`；
+- 完整展示名：`ADTEC DevLoom`；
+- 仓库与技术标识：`DevLoom`、`devloom`；
+- Go module：`github.com/Y-vQv-Y/DevLoom/backend`；
+- 稳定协议环境变量：`DEVLOOM_*`。
 
-The Go module is `github.com/Y-vQv-Y/DevLoom/backend`. Runtime environment variables use the `DEVLOOM_` prefix, user-level files use `.devloom`, Electron uses `DEVLOOM_DESKTOP_URL`, and mobile storage uses `devloom.*`. Mobile identifiers default to `io.github.yvqvy.devloom` and can be overridden by Actions variables.
+包名、镜像名、目录名和环境变量保持 ASCII 技术标识，用户界面与离线包清单使用完整展示名。
 
-| Entry | Default | Override |
-|---|---|---|
-| Website | `https://github.com/Y-vQv-Y/DevLoom` | `VITE_PUBLIC_SITE_URL` |
-| Documentation | Repository README | `VITE_DOCS_URL` |
-| Forum | GitHub Issues | `VITE_FORUM_URL` |
-| GitHub | `https://github.com/Y-vQv-Y/DevLoom` | Fixed canonical repository |
-| Consulting | New GitHub Issue | `VITE_CONSULTATION_URL` |
-| Company/Maintainer | `https://github.com/Y-vQv-Y` | `VITE_COMPANY_URL` |
-| Community | GitHub Issues | `VITE_COMMUNITY_URL` |
-| Announcements | GitHub Releases | `VITE_ANNOUNCEMENT_URL` |
+## Web 素材
 
-## Brand Images
-
-The web login and authentication pages use `logo-brand.png` for the full DTEC lockup. Sidebars, favicons, and compact surfaces use the transparent compact mark in `logo.png`, `logo-light.png`, and `logo-dark.png`. Keep filenames stable so web and packaging references remain valid.
+认证页面使用完整 ADTEC lockup：
 
 ```text
-E:\Code\MonkeyCode\frontend\public\logo.png
-E:\Code\MonkeyCode\frontend\public\logo-light.png
-E:\Code\MonkeyCode\frontend\public\logo-dark.png
-E:\Code\MonkeyCode\frontend\public\logo-colored.png
-E:\Code\MonkeyCode\frontend\public\devloom-1.png
-E:\Code\MonkeyCode\frontend\public\devloom-2.png
-E:\Code\MonkeyCode\frontend\public\devloom-3.png
-E:\Code\MonkeyCode\frontend\public\devloom-mobile.png
-E:\Code\MonkeyCode\frontend\public\head.jpg
-E:\Code\MonkeyCode\frontend\public\task-1.png
-E:\Code\MonkeyCode\frontend\public\task-2.png
-E:\Code\MonkeyCode\frontend\public\task-3.png
-E:\Code\MonkeyCode\frontend\public\qrcode.png
-E:\Code\MonkeyCode\frontend\public\wechat.png
-E:\Code\MonkeyCode\frontend\public\feishu.png
-E:\Code\MonkeyCode\frontend\public\dingtalk.png
-E:\Code\MonkeyCode\frontend\electron\icon.png
-E:\Code\MonkeyCode\desktop\electron\icon.png
-E:\Code\MonkeyCode\mobile\assets\icon.png
-E:\Code\MonkeyCode\mobile\assets\icon-dark.png
-E:\Code\MonkeyCode\mobile\assets\adaptive-icon.png
-E:\Code\MonkeyCode\mobile\assets\favicon.png
-E:\Code\MonkeyCode\mobile\assets\logo-light.png
-E:\Code\MonkeyCode\mobile\assets\logo-dark.png
-E:\Code\MonkeyCode\mobile\assets\splash.png
-E:\Code\MonkeyCode\mobile\assets\splash-dark.png
-E:\Code\MonkeyCode\mobile\assets\provider-light.png
-E:\Code\MonkeyCode\mobile\assets\provider-dark.png
-
-Repository screenshots and unused image assets to review manually:
-
-E:\Code\MonkeyCode\.github\pr-assets\832\provider-model-search-filtered.png
-E:\Code\MonkeyCode\.github\pr-assets\832\provider-model-search-list.png
-E:\Code\MonkeyCode\frontend\src\assets\react.svg
+frontend/public/logo-brand.png
 ```
 
-The QR-code images still point to the previous communities until replaced. The `provider-*.png` files are retained only as manual replacement placeholders and are not used by the current login screen. Do not replace third-party assets under `frontend/public/tldraw/` unless separately required by their license or design system.
+侧栏、favicon 和紧凑界面使用透明紧凑标志：
 
-Web authentication and compact logo assets were replaced and visually verified on desktop. Desktop and mobile application icons remain separate release assets and must use the same approved mark before publishing those clients.
+```text
+frontend/public/logo.png
+frontend/public/logo-light.png
+frontend/public/logo-dark.png
+frontend/public/logo-colored.png
+```
 
-## Source Runtime Branding
+以下文件是当前产品截图或其他客户端发布素材，发布对应客户端前必须逐项确认仍为批准的
+ADTEC 品牌版本：
 
-Runner, Taskflow, preview, devbox, host installers, Compose files, and offline package metadata are built from this repository. Their images use the configured `IMAGE_PREFIX` and `BRAND_SLUG`; runtime variables use the `DEVLOOM_*` namespace for protocol stability. Host installer files are served from the configured `static_files` route.
+```text
+frontend/public/devloom-1.png
+frontend/public/devloom-2.png
+frontend/public/devloom-3.png
+frontend/public/devloom-mobile.png
+frontend/electron/icon.png
+desktop/electron/icon.png
+mobile/assets/icon.png
+mobile/assets/icon-dark.png
+mobile/assets/adaptive-icon.png
+mobile/assets/favicon.png
+mobile/assets/logo-light.png
+mobile/assets/logo-dark.png
+mobile/assets/splash.png
+mobile/assets/splash-dark.png
+```
 
-The open-source backend omits billing, payment, invitation, check-in, recharge, playground, Git identity OAuth authorization-URL, Apple authentication/account-deletion, and enterprise-license routes. Automatic project review is implemented here but remains opt-in and requires a configured development host, review model, development image, and repository webhook access. Keep the corresponding flags in `docs/GITHUB_ACTIONS.md` set to `false` unless compatible services are supplied. The whiteboard uses tldraw; obtain a license appropriate for your distribution and inject it through `VITE_TLDRAW_LICENSE_KEY` instead of reusing a third-party key.
+不要修改 `frontend/public/tldraw/` 的第三方素材来冒充产品品牌。社区二维码和未使用的
+provider 图片不是认证页依赖；对外发布前应删除不用的旧社区素材或替换为 ADTEC 运营入口。
+
+## 链接配置
+
+Web 链接集中在 `frontend/src/config/brand.ts`。私有部署通过以下构建变量指向企业站点：
+
+```text
+VITE_PUBLIC_SITE_URL
+VITE_DOCS_URL
+VITE_ANNOUNCEMENT_URL
+VITE_FORUM_URL
+VITE_CONSULTATION_URL
+VITE_COMPANY_URL
+VITE_COMMUNITY_URL
+VITE_SUPPORT_URL
+```
+
+未设置时回退到当前 GitHub 仓库、Releases 或 Issues。内网无 GitHub 访问时必须在构建镜像
+前设置内网站点，不能在安装后只改容器名。
+
+## 运行时与离线包
+
+`deploy/package/package.env` 使用：
+
+```dotenv
+BRAND_NAME="ADTEC DevLoom"
+BRAND_SLUG=devloom
+IMAGE_PREFIX=devloom.local
+```
+
+frontend、backend、ingress、Taskflow、preview、Orchestrator、devbox、Compose、中心安装器、
+开发主机安装器和离线清单都由仓库构建。`BRAND_SLUG` 改动会影响镜像、容器和包名，必须
+整包重建；`DEVLOOM_*` 是内部协议的一部分，不应只为视觉改名。
+
+## 发布检查
+
+1. 登录页显示完整 ADTEC lockup，侧栏和 favicon 显示紧凑标志；
+2. 桌面与窄屏没有裁切、拉伸或文字覆盖；
+3. 页面标题、邮件、通知、安装输出和 `manifest.json` 使用 ADTEC DevLoom；
+4. 包路径与文本不包含旧产品品牌、专利材料、外部应用下载地址或第三方安装器；
+5. 桌面和移动端发布前单独检查图标、启动图、包标识和签名主体；
+6. tldraw 和所有第三方资源按实际分发方式配置许可证。

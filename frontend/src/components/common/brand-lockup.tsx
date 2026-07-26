@@ -11,7 +11,7 @@ export function BrandLockup({ className, title }: { className?: string; title?: 
     <Link to="/" className={cn('flex justify-center', className)}>
       <img
         src="/logo-brand.png"
-        alt="DTEC"
+        alt="ADTEC"
         className="h-28 w-auto max-w-full object-contain"
       />
       <h1 className="sr-only">{accessibleTitle}</h1>

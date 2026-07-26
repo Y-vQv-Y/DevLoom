@@ -27,8 +27,8 @@ test("登录页根据服务端 region=global 展示海外登录入口", () => {
 });
 
 test("登录页翻译资源提供中英文文案", () => {
-  assert.equal(cn.login.title, "DevLoom 智能开发平台");
-  assert.equal(en.login.title, "DevLoom AI Platform");
+  assert.equal(cn.login.title, "ADTEC DevLoom 智能开发平台");
+  assert.equal(en.login.title, "ADTEC DevLoom AI Platform");
   assert.equal(en.login.tabs.manager, "Admin");
   assert.equal(cn.login.choices.google, "Google 登录");
   assert.equal(en.login.choices.google, "Google Sign-in");

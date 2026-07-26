@@ -91,7 +91,7 @@ func (s *Server) createVM(w http.ResponseWriter, r *http.Request) {
 		fail(w, http.StatusInternalServerError, err)
 		return
 	}
-	if err := s.prepareWorkspace(r.Context(), workspace, req.Git, req.ZipUrl); err != nil {
+	if err := s.prepareWorkspace(r.Context(), workspace, req.Git, req.ZipUrl, req.Workspace); err != nil {
 		fail(w, http.StatusBadGateway, err)
 		return
 	}
@@ -117,7 +117,7 @@ func (s *Server) createVM(w http.ResponseWriter, r *http.Request) {
 	s.scheduleVMReady(*vm)
 }
 
-func (s *Server) prepareWorkspace(ctx context.Context, workspace string, git taskflow.Git, zipURL string) error {
+func (s *Server) prepareWorkspace(ctx context.Context, workspace string, git taskflow.Git, zipURL string, policy *taskflow.WorkspacePolicy) error {
 	entries, err := os.ReadDir(workspace)
 	if err != nil {
 		return err
@@ -127,13 +127,39 @@ func (s *Server) prepareWorkspace(ctx context.Context, workspace string, git tas
 	}
 	if strings.TrimSpace(git.URL) != "" {
 		args := []string{"clone", "--depth", "1"}
-		if git.Branch != "" {
-			args = append(args, "--branch", git.Branch)
+		baseBranch := strings.TrimSpace(git.Branch)
+		if policy != nil && policy.Isolated && strings.TrimSpace(policy.BaseBranch) != "" {
+			baseBranch = strings.TrimSpace(policy.BaseBranch)
+		}
+		if baseBranch != "" {
+			if err := validateGitBranch(ctx, baseBranch); err != nil {
+				return fmt.Errorf("invalid base branch: %w", err)
+			}
+			args = append(args, "--branch", baseBranch)
 		}
 		args = append(args, git.URL, workspace)
-		cmd := s.dockerGitCommand(ctx, args...)
+		cmd, cleanup, err := s.authenticatedGitCommand(ctx, git, args...)
+		if err != nil {
+			return err
+		}
+		defer cleanup()
 		if output, cmdErr := cmd.CombinedOutput(); cmdErr != nil {
 			return fmt.Errorf("git clone: %s", strings.TrimSpace(string(output)))
+		}
+		if strings.TrimSpace(git.Username) != "" {
+			if output, cmdErr := s.dockerGitCommand(ctx, "-C", workspace, "config", "user.name", git.Username).CombinedOutput(); cmdErr != nil {
+				return fmt.Errorf("configure git user: %s", strings.TrimSpace(string(output)))
+			}
+		}
+		if strings.TrimSpace(git.Email) != "" {
+			if output, cmdErr := s.dockerGitCommand(ctx, "-C", workspace, "config", "user.email", git.Email).CombinedOutput(); cmdErr != nil {
+				return fmt.Errorf("configure git email: %s", strings.TrimSpace(string(output)))
+			}
+		}
+		if policy != nil && policy.Isolated {
+			if err := s.prepareIsolatedBranch(ctx, workspace, *policy); err != nil {
+				return err
+			}
 		}
 		return nil
 	}
@@ -145,6 +171,90 @@ func (s *Server) prepareWorkspace(ctx context.Context, workspace string, git tas
 
 func (s *Server) dockerGitCommand(ctx context.Context, args ...string) *exec.Cmd {
 	return exec.CommandContext(ctx, "git", args...)
+}
+
+func (s *Server) authenticatedGitCommand(ctx context.Context, git taskflow.Git, args ...string) (*exec.Cmd, func(), error) {
+	cmd := s.dockerGitCommand(ctx, args...)
+	if strings.TrimSpace(git.Token) == "" {
+		return cmd, func() {}, nil
+	}
+	authDir, err := os.MkdirTemp("", "devloom-git-auth-")
+	if err != nil {
+		return nil, nil, fmt.Errorf("create git authentication helper: %w", err)
+	}
+	cleanup := func() { _ = os.RemoveAll(authDir) }
+	path := filepath.Join(authDir, "askpass.sh")
+	script := "#!/bin/sh\ncase \"$1\" in\n  *Username*) printf '%s\\n' \"$DEVLOOM_GIT_USERNAME\" ;;\n  *) printf '%s\\n' \"$DEVLOOM_GIT_TOKEN\" ;;\nesac\n"
+	if err := os.WriteFile(path, []byte(script), 0o700); err != nil {
+		cleanup()
+		return nil, nil, fmt.Errorf("write git authentication helper: %w", err)
+	}
+	username := strings.TrimSpace(git.Username)
+	if username == "" {
+		username = "oauth2"
+	}
+	cmd.Env = append(os.Environ(),
+		"GIT_ASKPASS="+path,
+		"GIT_TERMINAL_PROMPT=0",
+		"DEVLOOM_GIT_USERNAME="+username,
+		"DEVLOOM_GIT_TOKEN="+git.Token,
+	)
+	return cmd, cleanup, nil
+}
+
+func validateGitBranch(ctx context.Context, branch string) error {
+	branch = strings.TrimSpace(branch)
+	if branch == "" {
+		return fmt.Errorf("branch is empty")
+	}
+	if output, err := exec.CommandContext(ctx, "git", "check-ref-format", "--branch", branch).CombinedOutput(); err != nil {
+		return fmt.Errorf("%s", strings.TrimSpace(string(output)))
+	}
+	return nil
+}
+
+func (s *Server) prepareIsolatedBranch(ctx context.Context, workspace string, policy taskflow.WorkspacePolicy) error {
+	baseBranch := strings.TrimSpace(policy.BaseBranch)
+	workBranch := strings.TrimSpace(policy.WorkBranch)
+	if err := validateGitBranch(ctx, baseBranch); err != nil {
+		return fmt.Errorf("invalid protected branch: %w", err)
+	}
+	if err := validateGitBranch(ctx, workBranch); err != nil {
+		return fmt.Errorf("invalid work branch: %w", err)
+	}
+	if baseBranch == workBranch {
+		return fmt.Errorf("work branch must differ from protected branch")
+	}
+	if output, err := s.dockerGitCommand(ctx, "-C", workspace, "checkout", "-b", workBranch).CombinedOutput(); err != nil {
+		return fmt.Errorf("create isolated work branch: %s", strings.TrimSpace(string(output)))
+	}
+	hookDir := filepath.Join(workspace, ".git", "hooks")
+	if err := os.MkdirAll(hookDir, 0o750); err != nil {
+		return fmt.Errorf("create git hook directory: %w", err)
+	}
+	hook := fmt.Sprintf(`#!/bin/sh
+base_ref=%s
+work_ref=%s
+push_mode=%s
+if [ "$push_mode" = "disabled" ]; then
+  echo "DevLoom policy rejects all pushes for this task" >&2
+  exit 1
+fi
+while read -r _local_ref _local_sha remote_ref _remote_sha; do
+  if [ "$remote_ref" = "$base_ref" ]; then
+    echo "DevLoom policy rejects pushes to protected branch $base_ref" >&2
+    exit 1
+  fi
+  if [ "$remote_ref" != "$work_ref" ]; then
+    echo "DevLoom policy permits only $work_ref" >&2
+    exit 1
+  fi
+done
+`, shellQuote("refs/heads/"+baseBranch), shellQuote("refs/heads/"+workBranch), shellQuote(strings.TrimSpace(policy.PushMode)))
+	if err := os.WriteFile(filepath.Join(hookDir, "pre-push"), []byte(hook), 0o750); err != nil {
+		return fmt.Errorf("install protected branch hook: %w", err)
+	}
+	return nil
 }
 
 func (s *Server) deleteVM(w http.ResponseWriter, r *http.Request) {

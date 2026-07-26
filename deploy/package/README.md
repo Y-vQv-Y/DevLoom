@@ -1,7 +1,7 @@
-# DevLoom Independent Offline Package Builder
+# ADTEC DevLoom Independent Offline Package Builder
 
-This directory builds an auditable offline package without reading or invoking
-the `monkeycode-offline-linux-amd64` directory or its closed installer binary.
+This directory builds an auditable offline package using only this source tree
+and the explicitly pinned third-party infrastructure artifacts in `package.env`.
 
 ```bash
 cp deploy/package/package.env.example deploy/package/package.env

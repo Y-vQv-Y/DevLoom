@@ -1,7 +1,7 @@
 const en = {
   meta: {
     default: {
-      title: "DevLoom AI Platform",
+      title: "ADTEC DevLoom AI Platform",
       description:
         "DevLoom AI is an intelligent code generation platform that helps developers build applications faster with AI-powered coding assistants, automated workflows, and smart development tools.",
       keywords: "AI code generation, intelligent programming, developer tools, automated programming, code assistant, AI development platform, DevLoom, artificial intelligence programming",
@@ -147,7 +147,7 @@ const en = {
     },
   },
   login: {
-    title: "DevLoom AI Platform",
+    title: "ADTEC DevLoom AI Platform",
     tabs: {
       user: "User",
       manager: "Admin",
@@ -1918,7 +1918,7 @@ const en = {
       console: "Console",
     },
     footer: {
-      brandTitle: "DevLoom AI development workspace",
+      brandTitle: "ADTEC DevLoom AI development workspace",
       brandDescription: "DevLoom connects code repositories, model services, development hosts, and team tasks, and can be extended for each deployment.",
       description: "Feature availability, model access, resource limits, and costs are configured by the deployment operator. Review the deployment documentation and operator notices before using an instance.",
       resources: "Resources",

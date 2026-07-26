@@ -6,7 +6,7 @@
 ## 一、发布一次 OTA 更新
 
 ```bash
-cd mobile-expo
+cd mobile
 npx expo export --platform android --platform ios   # 产出 dist/
 node ota-server/server.js                           # 默认 :4747，读 ../dist
 ```
@@ -57,7 +57,10 @@ curl -s -H "expo-platform: android" -H "expo-runtime-version: $RTV" http://127.0
 OTA 只能下发给「已内置 expo-updates 且指向本服务器」的包。当前线上包收不到，第一版要走整包；
 之后纯 JS 改动就 `expo export` → 重启/进前台自动拉取，或「我的 → 检查更新」手动拉。
 
-## 生产 TODO
-- 换 HTTPS 域名（去掉 demo 的 cleartext）。
-- 开代码签名：`npx expo-updates codesigning:generate / configure`，防服务器被攻破推恶意 JS。
-- 按导出真实指纹做多版本路由（本 demo 为单版本回填）。
+## 六、生产部署要求
+
+- 使用受信任的 HTTPS 域名，并在 release 包中禁止 cleartext 更新地址；
+- 使用 `expo-updates` 代码签名，客户端只接受受信任证书签发的 manifest；
+- 按平台、channel 和真实 runtime fingerprint 保存多个版本，不能把请求指纹直接回填给不兼容的 bundle；
+- 更新目录使用只读发布账号写入，服务进程不持有移动端签名私钥；
+- 发布前同时验证原生版本升级、OTA 更新、回滚和旧 runtime 拒绝四条路径。

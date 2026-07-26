@@ -1,131 +1,111 @@
-# DevLoom
+# ADTEC DevLoom
 
 <p align="center">
-  <img src="./frontend/public/logo-dark.png" alt="DevLoom" width="200" />
+  <img src="./frontend/public/logo-brand.png" alt="ADTEC DevLoom" width="260" />
 </p>
 
-<p align="center">
-  <a href="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/build.yml"><img src="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/build.yml/badge.svg" alt="Service Images" /></a>
-  <a href="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/electron-release.yml"><img src="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/electron-release.yml/badge.svg" alt="Client Release" /></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue.svg" alt="License: AGPL-3.0" /></a>
-</p>
+ADTEC DevLoom 是面向企业内网的软件研发平台，统一管理代码仓库、项目、模型、AI
+任务、隔离开发环境、远程终端、文件与差异以及在线预览。完整 Linux 运行时均由本仓库
+源码构建，包括 Web、Go API、ingress、Taskflow、preview relay、远程
+Orchestrator/Runner、devbox、中心安装器和开发主机安装器。
 
-<p align="center">
-  <a href="https://github.com/Y-vQv-Y/DevLoom">项目主页</a> ·
-  <a href="https://github.com/Y-vQv-Y/DevLoom/releases">版本公告</a> ·
-  <a href="./docs/DEPLOYMENT_CN.md">部署文档</a> ·
-  <a href="./docs/USER_GUIDE_CN.md">用户手册</a> ·
-  <a href="#独立部署使用">独立部署</a> ·
-  <a href="https://github.com/Y-vQv-Y/DevLoom/issues">问题与支持</a>
-</p>
+构建链路不读取也不执行任何外部应用离线包。PostgreSQL、Redis、ClickHouse、
+RustFS、Docker Engine 和 Docker Compose 是固定版本的第三方基础设施依赖，会随自有
+离线包一起交付。
 
-## DevLoom 是什么
+## 完整功能面
 
-DevLoom 是按 AGPL-3.0 发布的 AI 开发控制台，用于管理代码仓库、模型、项目和远程任务环境。本仓库包含 Go API、React Web、Electron 桌面端封装和 Expo 移动客户端。
+- 密码账号、团队、成员、分组、权限策略与审计记录；
+- Git 身份、仓库、项目、Issue、合并请求和 Webhook；
+- OpenAI 兼容与 Anthropic 兼容模型服务；
+- 基于 Docker 隔离工作区的 AI 开发任务与完整生命周期控制；
+- 中心本机执行和带认证的远程 Runner；
+- 浏览器终端、工作区文件、上传下载、仓库 diff 和端口管理；
+- 通过自带 preview relay 访问任务中运行的 Web 应用；
+- 技能、MCP、通知、开发镜像、环境变量和资源限制；
+- React Web、Electron 桌面端和 Expo 移动端源码。
 
-本仓库不是完整的独立运行时。完整 AI 任务执行依赖 Taskflow、runner/host、preview、开发镜像和安装器产物；这些组件仅被配置引用，不在本仓库中构建。生产部署前必须提供兼容实现或镜像。
+套餐计费、支付、邀请奖励、社区发布、Apple 登录、Git OAuth 快捷绑定和企业许可证
+扩展默认关闭，因为这些入口需要另行运营的外部服务；关闭后不影响上述内网研发功能。
 
-商业计费、广场发布、Git 身份 OAuth 快捷绑定、Apple 登录/账号注销和企业许可证界面默认关闭，因为开源 Go 后端没有实现这些接口。手动 Git Token 身份和密码账号仍可使用。项目自动审查已经由开源后端实现，但默认采用显式开启方式，并要求配置开发主机、审查模型和开发镜像。
+## 目录结构
 
-## 界面展示
+| 目录 | 内容 |
+|---|---|
+| `backend/` | Go API、迁移、Taskflow、Orchestrator、preview 与 E2E 模型 |
+| `frontend/` | Vite + React Web 控制台 |
+| `desktop/` | Electron 桌面封装 |
+| `mobile/` | Expo/React Native 客户端与自建更新服务 |
+| `devbox/` | 从源码构建的 Linux 开发镜像 |
+| `deploy/` | Compose、E2E、VMware、离线构建、安装与验收脚本 |
+| `docs/` | 当前有效的部署、使用、集成和发布文档 |
 
-<table>
-  <tr>
-    <td align="center">
-      <img src="./frontend/public/devloom-1.png" alt="DevLoom AI 任务工作台" />
-      <br />
-      <sub>AI 任务工作台</sub>
-    </td>
-    <td align="center">
-      <img src="./frontend/public/devloom-2.png" alt="DevLoom 云端终端与任务执行" />
-      <br />
-      <sub>云端终端与任务执行</sub>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="./frontend/public/devloom-3.png" alt="DevLoom 项目协作与文件管理" />
-      <br />
-      <sub>项目协作与文件管理</sub>
-    </td>
-    <td align="center">
-      <img src="./frontend/public/devloom-mobile.png" alt="DevLoom 移动端任务与文件管理" />
-      <br />
-      <sub>移动端任务与文件管理</sub>
-    </td>
-  </tr>
-</table>
+## 一键离线部署
 
-## 功能与特色
-
-- 管理仓库、项目、任务、模型、镜像、成员和团队策略。
-- 提供 Web 控制台、Electron 桌面端和 Expo 移动端代码。
-- 支持 Git 集成、MCP 配置、通知、审计记录和对象存储。
-- 接入兼容运行服务后，可使用远程终端、文件和端口预览流程。
-- 模型提供方、权限、资源限制和数据边界均由部署方管理。
-
-## 使用指南
-
-### 项目主页
-
-以 GitHub 仓库作为项目主页、文档和版本发布入口：
-
-[https://github.com/Y-vQv-Y/DevLoom](https://github.com/Y-vQv-Y/DevLoom)
-
-### 独立部署使用
-
-完整部署步骤见 [`docs/DEPLOYMENT_CN.md`](./docs/DEPLOYMENT_CN.md)，包括 Compose 变量、TLS、内网/离线资源、备份升级和故障排查。终端用户操作见 [`docs/USER_GUIDE_CN.md`](./docs/USER_GUIDE_CN.md)。
-
-获取源码：
+在 Linux amd64 构建机上安装 Docker Buildx，并在忽略提交的配置中固定四个基础镜像
+与 Docker 静态包校验值：
 
 ```bash
-git clone https://github.com/Y-vQv-Y/DevLoom.git
-cd DevLoom
+cp deploy/package/package.env.example deploy/package/package.env
+bash deploy/package/build.sh --version v1.0.0
 ```
 
-部署配置从 `backend/config/server/config.yaml.example` 开始。`backend/docker-compose.yml` 还要求配置 `TASKFLOW_IMAGE`、`PREVIEW_IMAGE` 等镜像变量，这些镜像不由本仓库产出。
+输出为：
 
-### 商业功能
+```text
+deploy/out/devloom-offline-linux-amd64.tgz
+deploy/out/devloom-offline-linux-amd64.tgz.sha256
+```
 
-开源后端没有实现套餐购买、充值、签到、邀请和支付接口。Web 与移动端默认分别使用 `VITE_ENABLE_COMMERCIAL_BILLING=false` 和 `EXPO_PUBLIC_ENABLE_COMMERCIAL_BILLING=false` 关闭相关入口；开启前必须自行实现兼容商业后端。
+在无公网的 Linux amd64 服务器安装：
 
-前端生成客户端还保留了注释为外部企业扩展实现的 License 接口，当前 Go 后端没有注册这些路由。默认使用 `VITE_ENABLE_ENTERPRISE_LICENSE=false` 隐藏授权页面并停止席位状态请求。
+```bash
+sha256sum -c devloom-offline-linux-amd64.tgz.sha256
+tar -xzf devloom-offline-linux-amd64.tgz
+cd devloom-offline-linux-amd64
+sudo bash install.sh --host devloom.intra.example --admin-email admin@intra.example
+```
 
-广场发布、Git 身份 OAuth 快捷绑定和移动端 Apple 登录/账号注销也默认关闭。项目自动审查由 `VITE_ENABLE_AUTO_REVIEW` 控制，完整路由和运行组件边界见 [`docs/OPEN_SOURCE_BOUNDARIES.md`](./docs/OPEN_SOURCE_BOUNDARIES.md)。
+安装器会校验清单、按需安装包内 Docker、导入全部镜像、生成随机密钥和 TLS 材料、启动
+Compose 并执行部署验收。登录后至少配置一个模型；远程开发主机使用系统从
+`/static/installer/<arch>/` 提供的可读安装脚本注册。
 
-### 构建与发布
+完整说明见[离线部署手册](./docs/DEPLOYMENT_OFFLINE_CN.md)和
+[离线包构建手册](./docs/OFFLINE_PACKAGE_BUILD_CN.md)。
 
-按要求使用 GitHub Actions，不依赖本地构建：
+## 源码验证
 
-- `.github/workflows/build.yml` 测试并构建后端、前端、移动 Web、重新生成的后端 API 产物和 Docker 镜像。
-- `.github/workflows/electron-release.yml` 构建发布二进制、前端压缩包、桌面安装包、原生 Android/iOS 移动端制品和 GHCR 镜像。移动端在 GitHub Runner 上本地构建，不使用 Expo/EAS 云构建。
-- [`docs/AGENT_INTEGRATION_CN.md`](./docs/AGENT_INTEGRATION_CN.md) 说明 OpenHands、Taskflow 与隔离工作区的接入协议。
+```bash
+(cd backend && go test ./...)
+pnpm --dir frontend test
+pnpm --dir frontend lint
+pnpm --dir frontend build:online
+bash -n deploy/offline/install.sh deploy/offline/preflight.sh deploy/offline/verify.sh
+```
 
-仓库变量、Secrets、产物和发布步骤见 [`docs/GITHUB_ACTIONS.md`](./docs/GITHUB_ACTIONS.md)。
+`deploy/e2e/run-linux.sh <VM_IP>` 会在 Linux Docker 主机从源码构建并启动完整平台；
+`deploy/vmware/Invoke-DevLoomE2E.ps1` 驱动仓库自带的 VMware 测试环境。外部模型不可用
+时，`backend/cmd/e2ellm` 的确定性企业验收模型可生成带持久化 API、自动测试和预览的
+全栈项目，用于离线回归。
 
-## 社区与支持
+## 文档
 
-欢迎加入技术社区，与更多开发者交流 DevLoom 的使用、部署和开发经验。
+- [部署手册](./docs/DEPLOYMENT_CN.md)
+- [离线部署手册](./docs/DEPLOYMENT_OFFLINE_CN.md)
+- [用户操作手册](./docs/USER_GUIDE_CN.md)
+- [Agent 与隔离工作区](./docs/AGENT_INTEGRATION_CN.md)
+- [企业全链路验收需求](./docs/ENTERPRISE_E2E_ACCEPTANCE_CN.md)
+- [运行边界](./docs/OPEN_SOURCE_BOUNDARIES.md)
+- [品牌资源](./docs/BRANDING.md)
+- [构建与发布](./docs/GITHUB_ACTIONS.md)
 
-<table>
-  <tr>
-    <td align="center"><img src="./frontend/public/wechat.png" width="160" /><br/>微信交流群</td>
-    <td align="center"><img src="./frontend/public/feishu.png" width="160" /><br/>飞书交流群</td>
-    <td align="center"><img src="./frontend/public/dingtalk.png" width="160" /><br/>钉钉交流群</td>
-  </tr>
-</table>
+## 安全
 
-你也可以通过以下入口获取支持：
+禁止提交模型密钥、Git Token、数据库密码、Runner 凭据、TLS 私钥、签名材料和
+`deploy/package/package.env`。生产环境使用随机密钥和内网 CA，不向外暴露数据库、缓存
+和对象存储端口，只开放 Web、必要的 Runner 与 preview 路由。
 
-- 使用文档：[README](https://github.com/Y-vQv-Y/DevLoom#readme)
-- 版本公告：[GitHub Releases](https://github.com/Y-vQv-Y/DevLoom/releases)
-- 问题与支持：[GitHub Issues](https://github.com/Y-vQv-Y/DevLoom/issues)
-- GitHub Issues：[https://github.com/Y-vQv-Y/DevLoom/issues](https://github.com/Y-vQv-Y/DevLoom/issues)
+## 许可证
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=Y-vQv-Y/DevLoom&type=Date)](https://star-history.com/#Y-vQv-Y/DevLoom&Date)
-
-## License
-
-DevLoom 使用 [GNU Affero General Public License v3.0](./LICENSE) 开源。
+源码使用 [GNU AGPL-3.0](./LICENSE)。重新分发离线包前还需分别审核第三方基础镜像和
+前端组件的许可证。

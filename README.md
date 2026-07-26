@@ -1,131 +1,120 @@
-# DevLoom
+# ADTEC DevLoom
 
 <p align="center">
-  <img src="./frontend/public/logo-dark.png" alt="DevLoom" width="200" />
+  <img src="./frontend/public/logo-brand.png" alt="ADTEC DevLoom" width="260" />
 </p>
 
-<p align="center">
-  <a href="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/build.yml"><img src="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/build.yml/badge.svg" alt="Service Images" /></a>
-  <a href="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/electron-release.yml"><img src="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/electron-release.yml/badge.svg" alt="Client Release" /></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue.svg" alt="License: AGPL-3.0" /></a>
-</p>
+ADTEC DevLoom is a self-hosted AI software-delivery platform for teams that need
+repository, project, model, task, workspace, terminal, file, diff, and live
+preview workflows inside a controlled network. The complete Linux runtime is
+built from this repository: web UI, Go API, ingress, Taskflow, preview relay,
+remote Orchestrator/Runner, devbox image, center installer, and host installer.
 
-<p align="center">
-  <a href="https://github.com/Y-vQv-Y/DevLoom">Project Home</a> ·
-  <a href="#self-hosted-deployment">Self-Hosted Deployment</a> ·
-  <a href="./docs/DEPLOYMENT_CN.md">Deployment Guide</a> ·
-  <a href="./docs/USER_GUIDE_CN.md">User Guide</a> ·
-  <a href="https://github.com/Y-vQv-Y/DevLoom/issues">Support</a> ·
-  <a href="./readme.cn.md">中文</a>
-</p>
+No external application package is read or invoked by the build. PostgreSQL,
+Redis, ClickHouse, RustFS, Docker Engine, and Docker Compose are pinned
+third-party infrastructure dependencies bundled into the offline archive.
 
-## What Is DevLoom?
+## Platform Surface
 
-DevLoom is an AGPL-3.0 AI development control plane for repositories, models, projects, and remote task environments. This repository contains the Go API, React web UI, Electron wrapper, and Expo mobile client.
+- Password accounts, teams, members, groups, permissions, and audit records.
+- Git identities, repositories, projects, issues, merge requests, and webhooks.
+- OpenAI-compatible and Anthropic-compatible model providers.
+- AI development tasks with isolated Docker workspaces and lifecycle control.
+- Local center execution and authenticated remote Runner hosts.
+- Browser terminal, workspace files, upload/download, repository diff, and ports.
+- Live HTTP preview through the bundled relay.
+- Skills, MCP servers, notifications, images, environment variables, and quotas.
+- React web, Electron desktop, and Expo mobile clients.
 
-The repository is not a complete standalone runtime. Full AI task execution requires Taskflow, runner/host, preview, development-image, and installer artifacts that are referenced by configuration but are not built here. Supply compatible implementations or images before production deployment.
+Commercial billing, payment, invitation rewards, community publishing, Apple
+login, Git OAuth shortcuts, and enterprise-license extensions are disabled by
+default because they require separately operated services. They are not needed
+for the private development workflow above.
 
-Commercial billing, playground publishing, Git identity OAuth shortcuts, Apple authentication/account deletion, and enterprise-license UI are disabled by default because their APIs are not implemented by the open-source Go backend. Manual Git access-token identities and password-based accounts remain available. Project automatic review is implemented in the open-source backend but remains opt-in and requires a configured development host, review model, and development image.
+## Repository Layout
 
-## Screenshots
+| Directory | Purpose |
+|---|---|
+| `backend/` | Go API, migrations, Taskflow, Orchestrator, preview, and E2E model |
+| `frontend/` | Vite + React web console |
+| `desktop/` | Electron desktop wrapper |
+| `mobile/` | Expo/React Native client and self-hosted update server |
+| `devbox/` | Source-built Linux development image |
+| `deploy/` | Compose, E2E, VMware, offline build, installer, and verification tools |
+| `docs/` | Current deployment, operation, integration, and release manuals |
 
-<table>
-  <tr>
-    <td align="center">
-      <img src="./frontend/public/devloom-1.png" alt="DevLoom AI task workspace" />
-      <br />
-      <sub>AI Task Workspace</sub>
-    </td>
-    <td align="center">
-      <img src="./frontend/public/devloom-2.png" alt="DevLoom cloud terminal and task execution" />
-      <br />
-      <sub>Cloud Terminal and Task Execution</sub>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="./frontend/public/devloom-3.png" alt="DevLoom project collaboration and file management" />
-      <br />
-      <sub>Project Collaboration and File Management</sub>
-    </td>
-    <td align="center">
-      <img src="./frontend/public/devloom-mobile.png" alt="DevLoom mobile task and file management" />
-      <br />
-      <sub>Mobile Task and File Management</sub>
-    </td>
-  </tr>
-</table>
+## One-Click Offline Deployment
 
-## Features
-
-- Repository, project, task, model, image, member, and team-policy management.
-- Web console plus Electron and Expo clients.
-- Git integrations, MCP configuration, notifications, audit records, and object storage.
-- Remote terminal, files, and preview flows when compatible runtime services are connected.
-- Operator-managed model providers, permissions, resource limits, and data boundaries.
-
-## Usage
-
-### Repository
-
-Use the repository as the canonical project and documentation entry point:
-
-[https://github.com/Y-vQv-Y/DevLoom](https://github.com/Y-vQv-Y/DevLoom)
-
-### Self-Hosted Deployment
-
-For the complete Chinese deployment procedure, including Compose variables, TLS, offline assets, backups, upgrades, and troubleshooting, see [`docs/DEPLOYMENT_CN.md`](./docs/DEPLOYMENT_CN.md). End-user workflows are documented in [`docs/USER_GUIDE_CN.md`](./docs/USER_GUIDE_CN.md).
-
-Source checkout:
+Build on Linux amd64 with Docker Buildx. Pin the four infrastructure images and
+Docker bundle checksums in the ignored local configuration:
 
 ```bash
-git clone https://github.com/Y-vQv-Y/DevLoom.git
-cd DevLoom
+cp deploy/package/package.env.example deploy/package/package.env
+bash deploy/package/build.sh --version v1.0.0
 ```
 
-Start with `backend/config/server/config.yaml.example`. The provided `backend/docker-compose.yml` also requires image variables including `TASKFLOW_IMAGE` and `PREVIEW_IMAGE`; those images are not produced by this repository.
+The output contains every application image and installation dependency:
 
-### Commercial Features
+```text
+deploy/out/devloom-offline-linux-amd64.tgz
+deploy/out/devloom-offline-linux-amd64.tgz.sha256
+```
 
-Plan, recharge, check-in, invitation, and payment APIs are not implemented by the open-source backend. Their UI is disabled by default with `VITE_ENABLE_COMMERCIAL_BILLING=false` and `EXPO_PUBLIC_ENABLE_COMMERCIAL_BILLING=false`. Enabling those flags requires a compatible commercial backend.
+Install on an offline Linux amd64 server:
 
-The generated frontend client also retains license endpoints documented as implemented by an external enterprise extension. The open-source Go backend does not register them, so `VITE_ENABLE_ENTERPRISE_LICENSE=false` hides the license page and prevents seat-status calls by default.
+```bash
+sha256sum -c devloom-offline-linux-amd64.tgz.sha256
+tar -xzf devloom-offline-linux-amd64.tgz
+cd devloom-offline-linux-amd64
+sudo bash install.sh --host devloom.intra.example --admin-email admin@intra.example
+```
 
-Playground publishing, Git identity OAuth shortcuts, and mobile Apple authentication/account deletion are also default-off. Project automatic review is controlled by `VITE_ENABLE_AUTO_REVIEW` and is documented in [`docs/OPEN_SOURCE_BOUNDARIES.md`](./docs/OPEN_SOURCE_BOUNDARIES.md).
+The installer verifies the manifest, installs the bundled Docker runtime when
+needed, imports all images, creates secrets and TLS material, starts Compose,
+and runs deployment checks. Configure at least one model after login. A remote
+development host can then use the readable installer served from
+`/static/installer/<arch>/`.
 
-### Build and Release
+See [offline deployment](./docs/DEPLOYMENT_OFFLINE_CN.md) and
+[offline package build](./docs/OFFLINE_PACKAGE_BUILD_CN.md) for the complete
+contract, upgrades, firewalls, and verification.
 
-Use GitHub Actions instead of local builds:
+## Source Validation
 
-- `.github/workflows/build.yml` tests and builds backend, frontend, mobile web, regenerated backend API artifacts, and Docker images.
-- `.github/workflows/electron-release.yml` builds release binaries, frontend archives, desktop packages, native Android/iOS packages, and GHCR images. Mobile builds run on GitHub-hosted runners and do not use Expo/EAS cloud builds.
-- [`docs/AGENT_INTEGRATION_CN.md`](./docs/AGENT_INTEGRATION_CN.md) documents the OpenHands, Taskflow, and isolated workspace contract.
+```bash
+(cd backend && go test ./...)
+pnpm --dir frontend test
+pnpm --dir frontend lint
+pnpm --dir frontend build:online
+bash -n deploy/offline/install.sh deploy/offline/preflight.sh deploy/offline/verify.sh
+```
 
-See [`docs/GITHUB_ACTIONS.md`](./docs/GITHUB_ACTIONS.md) for repository variables, secrets, artifacts, and release steps.
+`deploy/e2e/run-linux.sh <VM_IP>` builds and starts the full source stack in a
+Linux Docker host. `deploy/vmware/Invoke-DevLoomE2E.ps1` drives the repository's
+VMware test environment. The enterprise E2E model in `backend/cmd/e2ellm`
+generates, tests, starts, and publishes a persistent full-stack acceptance
+project when an external model is unavailable.
 
-## Community and Support
+## Documentation
 
-Join the community to discuss DevLoom usage, deployment, and development with other developers.
+- [Chinese README](./readme.cn.md)
+- [Deployment guide](./docs/DEPLOYMENT_CN.md)
+- [Offline deployment](./docs/DEPLOYMENT_OFFLINE_CN.md)
+- [User guide](./docs/USER_GUIDE_CN.md)
+- [Agent and workspace integration](./docs/AGENT_INTEGRATION_CN.md)
+- [Enterprise end-to-end acceptance](./docs/ENTERPRISE_E2E_ACCEPTANCE_CN.md)
+- [Runtime boundaries](./docs/OPEN_SOURCE_BOUNDARIES.md)
+- [Branding](./docs/BRANDING.md)
+- [GitHub Actions](./docs/GITHUB_ACTIONS.md)
 
-<table>
-  <tr>
-    <td align="center"><img src="./frontend/public/wechat.png" width="160" /><br/>WeChat Group</td>
-    <td align="center"><img src="./frontend/public/feishu.png" width="160" /><br/>Feishu Group</td>
-    <td align="center"><img src="./frontend/public/dingtalk.png" width="160" /><br/>DingTalk Group</td>
-  </tr>
-</table>
+## Security
 
-You can also get support through:
-
-- Documentation: [Repository README](https://github.com/Y-vQv-Y/DevLoom#readme)
-- Releases and announcements: [GitHub Releases](https://github.com/Y-vQv-Y/DevLoom/releases)
-- Support: [GitHub Issues](https://github.com/Y-vQv-Y/DevLoom/issues)
-- GitHub Issues: [https://github.com/Y-vQv-Y/DevLoom/issues](https://github.com/Y-vQv-Y/DevLoom/issues)
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=Y-vQv-Y/DevLoom&type=Date)](https://star-history.com/#Y-vQv-Y/DevLoom&Date)
+Never commit model keys, Git tokens, database passwords, Runner credentials,
+TLS private keys, signing material, or `deploy/package/package.env`. Use the
+generated secrets and internal CA in production, keep infrastructure ports
+private, and expose only the web endpoint and required Runner/preview routes.
 
 ## License
 
-DevLoom is open source under the [GNU Affero General Public License v3.0](./LICENSE).
+The source is distributed under [GNU AGPL-3.0](./LICENSE). Review the licenses
+of bundled third-party images and frontend components before redistribution.
