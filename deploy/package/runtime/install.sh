@@ -192,6 +192,9 @@ if [[ ! -f "$ENV_FILE" ]]; then
 else
   log "preserving existing $ENV_FILE"
 fi
+PACKAGE_VERSION="$(awk -F'"' '/"version"[[:space:]]*:/ {print $4; exit}' "$PACKAGE_DIR/manifest.json")"
+[[ -n "$PACKAGE_VERSION" ]] || die "package manifest version is empty"
+set_env "$ENV_FILE" DEVLOOM_VERSION "$PACKAGE_VERSION"
 chmod 600 "$ENV_FILE"
 
 if [[ ! -s "$INSTALL_DIR/tls/server.crt" || ! -s "$INSTALL_DIR/tls/server.key" ]]; then

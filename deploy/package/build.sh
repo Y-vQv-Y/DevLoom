@@ -180,6 +180,7 @@ python3 "$SCRIPT_DIR/manifest_tool.py" render-env "$REPO_ROOT/deploy/offline/.en
   --set "INSTALL_DIR=$DEFAULT_INSTALL_DIR" \
   --set "COMPOSE_PROJECT_NAME=$BRAND_SLUG" \
   --set "CONTAINER_PREFIX=$BRAND_SLUG" \
+  --set "DEVLOOM_VERSION=$VERSION" \
   --set "REMOTE_IP=CHANGE_ME_HOST" \
   --set "POSTGRES_IMAGE=$POSTGRES_IMAGE" \
   --set "REDIS_IMAGE=$REDIS_IMAGE" \

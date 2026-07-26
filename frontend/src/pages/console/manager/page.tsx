@@ -19,6 +19,7 @@ import ManagerSidebar from "@/components/manager/manager-sidebar"
 import { Fragment } from "react/jsx-runtime"
 import { ModeToggle } from "@/components/mode-toggle"
 import { useTranslation } from "react-i18next"
+import { BRAND } from "@/config/brand"
 
 export default function ManagerConsolePage() {
   const location = useLocation()
@@ -93,7 +94,7 @@ export default function ManagerConsolePage() {
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
                   <BreadcrumbLink href="#">
-                    DevLoom AI
+                    {BRAND.name}
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 {breadcrumbSegments.map((segment, index) => {

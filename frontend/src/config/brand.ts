@@ -8,7 +8,7 @@ function publicUrl(name: string, fallback: string) {
 }
 
 export const BRAND = {
-  name: "DevLoom",
+  name: "ADTEC DevLoom",
   repositoryUrl,
   ownerUrl,
   documentationUrl: publicUrl("VITE_DOCS_URL", `${repositoryUrl}#readme`),

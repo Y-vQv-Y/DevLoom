@@ -29,6 +29,7 @@ import { ModeToggle } from "@/components/mode-toggle"
 import { useTranslation } from "react-i18next"
 import { SettingsDialogContext } from "./settings-dialog-context"
 import { COMMERCIAL_BILLING_ENABLED } from "@/config/features"
+import { BRAND } from "@/config/brand"
 
 function UserConsoleContent() {
   const { t } = useTranslation()
@@ -93,7 +94,7 @@ function UserConsoleContent() {
                       href="/console"
                       className="whitespace-nowrap"
                     >
-                      DevLoom AI
+                      {BRAND.name}
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                   {breadcrumbSegments.map((segment, index) => {

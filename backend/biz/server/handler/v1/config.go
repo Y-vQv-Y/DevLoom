@@ -1,7 +1,10 @@
 package v1
 
 import (
+	"context"
 	"log/slog"
+	"os"
+	"strings"
 
 	"github.com/GoYoko/web"
 	"github.com/samber/do"
@@ -14,15 +17,29 @@ type ServerConfigHandler struct {
 	logger   *slog.Logger
 }
 
+type privateServerConfigProvider struct{}
+
+func (privateServerConfigProvider) GetServerConfig(context.Context) (domain.ServerConfig, error) {
+	version := strings.TrimSpace(os.Getenv("DEVLOOM_VERSION"))
+	if version == "" {
+		version = "development"
+	}
+
+	return domain.ServerConfig{
+		Edition:        domain.ProductEditionPrivate,
+		CurrentVersion: version,
+	}, nil
+}
+
 func NewServerConfigHandler(i *do.Injector) (*ServerConfigHandler, error) {
 	w := do.MustInvoke[*web.Web](i)
 	provider, err := do.Invoke[domain.ServerConfigProvider](i)
+	if err != nil {
+		provider = privateServerConfigProvider{}
+	}
 	h := &ServerConfigHandler{
 		provider: provider,
 		logger:   do.MustInvoke[*slog.Logger](i).With("handler", "server.config"),
-	}
-	if err != nil {
-		return h, nil
 	}
 
 	w.Group("/api/v1/server").GET("/config", web.BaseHandler(h.Get))

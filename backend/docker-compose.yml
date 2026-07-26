@@ -194,6 +194,7 @@ services:
         condition: service_healthy
     environment:
       DEVLOOM_LOGGER_LEVEL: debug
+      DEVLOOM_VERSION: ${DEVLOOM_VERSION:-development}
       TASKFLOW_SERVER: http://taskflow:8888
       DEVLOOM_SERVER_BASE_URL: http://${REMOTE_IP}:${NGINX_PORT:-80}
       DEVLOOM_LLM_PROXY_BASE_URL: http://${REMOTE_IP}:${NGINX_PORT:-80}

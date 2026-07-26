@@ -38,7 +38,8 @@ func TestServerRegistersConfigRoute(t *testing.T) {
 	}
 }
 
-func TestServerSkipsConfigRouteWithoutProvider(t *testing.T) {
+func TestServerConfigUsesPrivateFallbackWithoutProvider(t *testing.T) {
+	t.Setenv("DEVLOOM_VERSION", "v1.0.0-adtec.1")
 	injector := do.New()
 	w := web.New()
 	do.ProvideValue(injector, w)
@@ -47,8 +48,29 @@ func TestServerSkipsConfigRouteWithoutProvider(t *testing.T) {
 	ProvideServer(injector)
 	InvokeServer(injector)
 
-	if hasRoute(w, http.MethodGet, "/api/v1/server/config") {
-		t.Fatal("GET /api/v1/server/config should not be registered without provider")
+	if !hasRoute(w, http.MethodGet, "/api/v1/server/config") {
+		t.Fatal("GET /api/v1/server/config route is not registered")
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/server/config", nil)
+	rec := httptest.NewRecorder()
+	w.Echo().ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d, body: %s", rec.Code, http.StatusOK, rec.Body.String())
+	}
+
+	var resp struct {
+		Data domain.ServerConfig `json:"data"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &resp); err != nil {
+		t.Fatalf("unmarshal response: %v", err)
+	}
+	if resp.Data.Edition != domain.ProductEditionPrivate {
+		t.Fatalf("edition = %q, want %q", resp.Data.Edition, domain.ProductEditionPrivate)
+	}
+	if resp.Data.CurrentVersion != "v1.0.0-adtec.1" {
+		t.Fatalf("current version = %q, want v1.0.0-adtec.1", resp.Data.CurrentVersion)
 	}
 }
 

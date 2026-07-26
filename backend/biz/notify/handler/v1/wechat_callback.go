@@ -18,7 +18,7 @@ import (
 
 // 微信回调的默认回复文案。usecase 返回非空文本时优先用 usecase 的；为空时回退到这里。
 const (
-	defaultReplySubscribe = `🎉 感谢关注，欢迎体验 DevLoom AI！
+	defaultReplySubscribe = `🎉 感谢关注，欢迎体验 ADTEC DevLoom！
 🔗 项目主页：https://github.com/Y-vQv-Y/DevLoom
 🌟 问题与支持：https://github.com/Y-vQv-Y/DevLoom/issues`
 	defaultReplyScan  = "扫码成功"

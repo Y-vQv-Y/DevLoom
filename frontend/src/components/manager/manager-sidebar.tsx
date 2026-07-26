@@ -12,6 +12,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import NavTeams from "./nav-teams"
+import { BRAND } from "@/config/brand"
 
 export default function ManagerSidebar({ 
   ...props 
@@ -25,9 +26,9 @@ export default function ManagerSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href="/">
-                <img src="/logo-light.png" alt="DevLoom AI" className="size-8" />
+                <img src="/logo-light.png" alt="" className="size-8" />
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">DevLoom</span>
+                  <span className="truncate font-medium">{BRAND.name}</span>
                   <span className="truncate text-xs">{t("managerShell.brand.subtitle")}</span>
                 </div>
               </a>

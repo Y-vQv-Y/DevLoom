@@ -3,7 +3,7 @@ const cn = {
     default: {
       title: "ADTEC DevLoom 智能开发平台",
       description:
-        "DevLoom AI 是一个智能代码生成平台，通过AI驱动的编程助手、自动化工作流和智能开发工具，帮助开发者更快速地构建应用程序。",
+        "ADTEC DevLoom 是一个智能代码生成平台，通过AI驱动的编程助手、自动化工作流和智能开发工具，帮助开发者更快速地构建应用程序。",
       keywords: "AI代码生成, 智能编程, 开发者工具, 自动化编程, 代码助手, AI开发平台, DevLoom, 人工智能编程",
     },
   },
@@ -1375,8 +1375,8 @@ const cn = {
       refreshPage: "刷新页面",
     },
     sidebar: {
-      brandSubtitle: "DevLoom 开源平台",
-      globalBrandSubtitle: "DevLoom 开源平台",
+      brandSubtitle: "智能开发平台",
+      globalBrandSubtitle: "智能开发平台",
       consultPurchase: "咨询采购",
       currentVersion: "当前版本",
       unknownVersion: "未知版本",
@@ -3681,7 +3681,7 @@ const cn = {
     },
   },
   consoleTasks: {
-    title: "DevLoom 智能任务",
+    title: "ADTEC DevLoom 智能任务",
     hover: {
       taskName: "任务名称",
       taskContent: "任务内容",
