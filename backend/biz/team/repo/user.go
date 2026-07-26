@@ -36,7 +36,10 @@ type TeamGroupUserRepo struct {
 	logger *slog.Logger
 }
 
-const defaultTeamGroupName = "默认分组"
+const (
+	defaultTeamGroupName   = "默认分组"
+	defaultTeamImageRemark = "DevLoom 默认开发环境"
+)
 
 // NewTeamGroupUserRepo 创建团队分组成员数据访问层 (samber/do 风格)
 func NewTeamGroupUserRepo(i *do.Injector) (domain.TeamGroupUserRepo, error) {
@@ -663,6 +666,13 @@ func (r *TeamGroupUserRepo) initTeamImage(ctx context.Context, tx *db.Tx, teamID
 	if imageName == "" {
 		return nil
 	}
+	managedImages, err := tx.Image.Query().
+		Where(image.UserIDEQ(userID), image.RemarkEQ(defaultTeamImageRemark)).
+		Order(image.ByCreatedAt(sql.OrderDesc())).
+		All(ctx)
+	if err != nil {
+		return err
+	}
 	img, err := tx.Image.Query().
 		Where(image.UserIDEQ(userID), image.NameEQ(imageName)).
 		First(ctx)
@@ -670,13 +680,39 @@ func (r *TeamGroupUserRepo) initTeamImage(ctx context.Context, tx *db.Tx, teamID
 		if !db.IsNotFound(err) {
 			return err
 		}
-		img, err = tx.Image.Create().
-			SetID(uuid.New()).
-			SetUserID(userID).
-			SetName(imageName).
-			SetRemark("DevLoom 默认开发环境").
-			Save(ctx)
+		if len(managedImages) > 0 {
+			img, err = tx.Image.UpdateOneID(managedImages[0].ID).
+				SetName(imageName).
+				SetRemark(defaultTeamImageRemark).
+				Save(ctx)
+		} else {
+			img, err = tx.Image.Create().
+				SetID(uuid.New()).
+				SetUserID(userID).
+				SetName(imageName).
+				SetRemark(defaultTeamImageRemark).
+				Save(ctx)
+		}
 		if err != nil {
+			return err
+		}
+	}
+
+	staleManagedIDs := make([]uuid.UUID, 0, len(managedImages))
+	for _, managed := range managedImages {
+		if managed.ID != img.ID {
+			staleManagedIDs = append(staleManagedIDs, managed.ID)
+		}
+	}
+	if len(staleManagedIDs) > 0 {
+		if _, err := tx.TeamGroupImage.Delete().
+			Where(teamgroupimage.GroupIDEQ(groupID), teamgroupimage.ImageIDIn(staleManagedIDs...)).
+			Exec(ctx); err != nil {
+			return err
+		}
+		if _, err := tx.TeamImage.Delete().
+			Where(teamimage.TeamIDEQ(teamID), teamimage.ImageIDIn(staleManagedIDs...)).
+			Exec(ctx); err != nil {
 			return err
 		}
 	}

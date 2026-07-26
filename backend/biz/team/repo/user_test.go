@@ -121,6 +121,49 @@ func TestInitTeamSkipsImageWhenConfigEmpty(t *testing.T) {
 	}
 }
 
+func TestInitTeamUpdatesManagedImageOnUpgrade(t *testing.T) {
+	ctx := context.Background()
+	client := newTeamRepoTestDB(t)
+	repo := &TeamGroupUserRepo{
+		db:     client,
+		logger: slog.New(slog.NewTextHandler(io.Discard, nil)),
+	}
+
+	result, err := repo.InitTeam(ctx, "admin@example.com", "DevLoom", "password", "devloom.local/devbox:v1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := repo.InitTeam(ctx, "admin@example.com", "DevLoom", "password", "devloom.local/devbox:v2"); err != nil {
+		t.Fatal(err)
+	}
+
+	images, err := client.Image.Query().
+		Where(image.UserIDEQ(result.UserID), image.RemarkEQ(defaultTeamImageRemark)).
+		All(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(images) != 1 || images[0].Name != "devloom.local/devbox:v2" {
+		t.Fatalf("managed images = %#v, want one v2 image", images)
+	}
+	if count, err := client.TeamImage.Query().Where(teamimage.TeamIDEQ(result.TeamID)).Count(ctx); err != nil {
+		t.Fatal(err)
+	} else if count != 1 {
+		t.Fatalf("team image count = %d, want 1", count)
+	}
+	group, err := client.TeamGroup.Query().
+		Where(teamgroup.TeamIDEQ(result.TeamID), teamgroup.NameEQ(defaultTeamGroupName)).
+		First(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if count, err := client.TeamGroupImage.Query().Where(teamgroupimage.GroupIDEQ(group.ID)).Count(ctx); err != nil {
+		t.Fatal(err)
+	} else if count != 1 {
+		t.Fatalf("group image count = %d, want 1", count)
+	}
+}
+
 func TestInitTeamCreatesMemberInDefaultGroup(t *testing.T) {
 	ctx := context.Background()
 	client := newTeamRepoTestDB(t)
