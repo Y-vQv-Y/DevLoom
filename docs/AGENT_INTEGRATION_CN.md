@@ -1,6 +1,6 @@
 # AI Agent 与隔离工作区集成手册
 
-本文说明 DevLoom 如何接入内网 AI Agent 和云开发环境。当前仓库负责账号、项目、任务、Git Webhook、任务状态和 WebSocket；开发环境与 Agent Server 由部署方提供。
+本文说明 DevLoom 如何接入内网 AI Agent 和可选云开发环境。当前仓库同时提供账号、项目、任务、Git Webhook、Taskflow、Docker Orchestrator、默认开发镜像、任务状态和 WebSocket；Eclipse Che、Coder 或 OpenHands 等扩展适配器仍由部署方按需提供。
 
 ## 推荐架构
 
@@ -64,4 +64,4 @@ DevLoom 默认向兼容 Taskflow 的 VM 创建和任务创建请求发送：
 - 内网模型、GitLab、镜像仓库和开发镜像必须使用企业 CA。
 - 固定 Agent、运行时和开发镜像版本，并保存许可证清单。
 
-没有兼容 Taskflow/Workspace Adapter 时，DevLoom 管理面可以启动，但任务执行、终端、文件、预览和 Agent 会话不会自动获得完整能力。
+默认 Docker Taskflow/Orchestrator 已覆盖任务执行、终端、文件和预览。只有切换到 Eclipse Che、Coder、OpenHands 等外部工作区时，才需要另外实现对应 Workspace Adapter。

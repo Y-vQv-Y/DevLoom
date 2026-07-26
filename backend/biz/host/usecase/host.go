@@ -279,6 +279,15 @@ func (h *HostUsecase) List(ctx context.Context, uid uuid.UUID) (*domain.HostList
 	if err != nil {
 		return nil, errcode.ErrDatabaseQuery.Wrap(err)
 	}
+	reportedHosts, err := h.taskflow.Host().List(ctx, uid.String())
+	if err != nil {
+		return nil, err
+	}
+	for _, reportedHost := range reportedHosts {
+		if err := h.repo.UpsertHost(ctx, reportedHost); err != nil {
+			return nil, err
+		}
+	}
 
 	hs, err := h.repo.List(ctx, uid)
 	if err != nil {

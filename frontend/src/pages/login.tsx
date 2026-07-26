@@ -30,6 +30,7 @@ import { Api } from "@/api/Api"
 import type { GithubComYVQvYDevLoomBackendDomainTeamOIDCPublicConfigResp as DomainTeamOIDCPublicConfigResp, GithubComGoYokoWebResp } from "@/api/Api"
 import { useTranslation } from "react-i18next"
 import { useAppRuntime } from "@/components/app-runtime-provider"
+import { BrandLockup } from "@/components/common/brand-lockup"
 
 const USER_STORAGE_KEY = 'login_user'
 const MANAGER_STORAGE_KEY = 'login_manager'
@@ -70,15 +71,23 @@ export default function LoginPage({
     try {
       const savedUser = localStorage.getItem(USER_STORAGE_KEY)
       if (savedUser) {
-        const { email, password } = JSON.parse(savedUser)
-        if (email) setUserEmail(email)
-        if (password) setUserPassword(password)
+        const { email } = JSON.parse(savedUser)
+        if (typeof email === 'string' && email) {
+          setUserEmail(email)
+          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify({ email }))
+        } else {
+          localStorage.removeItem(USER_STORAGE_KEY)
+        }
       }
       const savedManager = localStorage.getItem(MANAGER_STORAGE_KEY)
       if (savedManager) {
-        const { email, password } = JSON.parse(savedManager)
-        if (email) setTeamManagerEmail(email)
-        if (password) setTeamManagerPassword(password)
+        const { email } = JSON.parse(savedManager)
+        if (typeof email === 'string' && email) {
+          setTeamManagerEmail(email)
+          localStorage.setItem(MANAGER_STORAGE_KEY, JSON.stringify({ email }))
+        } else {
+          localStorage.removeItem(MANAGER_STORAGE_KEY)
+        }
       }
     } catch {
       // ignore
@@ -124,7 +133,7 @@ export default function LoginPage({
         captcha_token: token,
       }, [], async (resp) => {
         if (resp.code === 0) {
-          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify({ email: userEmail.trim(), password: userPassword.trim() }))
+          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify({ email: userEmail.trim() }))
           await reloadAuth()
           navigate('/console/tasks')
         } else {
@@ -181,7 +190,7 @@ export default function LoginPage({
         captcha_token: token,
       }, [], (resp) => {
         if (resp.code === 0) {
-          localStorage.setItem(MANAGER_STORAGE_KEY, JSON.stringify({ email: teamManagerEmail.trim(), password: teamManagerPassword.trim() }))
+          localStorage.setItem(MANAGER_STORAGE_KEY, JSON.stringify({ email: teamManagerEmail.trim() }))
           navigate('/manager/')
         } else {
           toast.error(t("login.toast.loginFailed"))
@@ -198,9 +207,7 @@ export default function LoginPage({
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
         <div className={cn("flex flex-col gap-6", className)} {...props}>
-          <Link to="/">
-            <h1 className="text-2xl hover:font-bold">{t("login.title")}</h1>
-          </Link>
+          <BrandLockup title={t("login.title")} />
           <Card>
             <CardContent>
               <Tabs defaultValue="user">

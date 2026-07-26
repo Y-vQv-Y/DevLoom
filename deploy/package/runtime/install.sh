@@ -148,6 +148,8 @@ for archive in "$PACKAGE_DIR"/images/*.tar.gz; do
 done
 
 mkdir -p "$INSTALL_DIR"/{data,logs,static,tls,extensions/packages,backup,metadata,tools}
+mkdir -p "$INSTALL_DIR/data/rustfs" "$INSTALL_DIR/logs/rustfs"
+chown -R 10001:10001 "$INSTALL_DIR/data/rustfs" "$INSTALL_DIR/logs/rustfs"
 if [[ -f "$INSTALL_DIR/docker-compose.yml" ]]; then
   stamp="$(date -u +%Y%m%dT%H%M%SZ)"
   mkdir -p "$INSTALL_DIR/backup/$stamp"

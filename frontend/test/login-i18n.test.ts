@@ -35,3 +35,12 @@ test("登录页翻译资源提供中英文文案", () => {
   assert.equal(cn.login.toast.captchaFailed, "验证码验证失败");
   assert.equal(en.login.toast.captchaFailed, "Captcha verification failed");
 });
+
+test("登录页只记住邮箱且会清理旧明文密码", () => {
+  assert.doesNotMatch(loginSource, /setUserPassword\(password\)/);
+  assert.doesNotMatch(loginSource, /setTeamManagerPassword\(password\)/);
+  assert.doesNotMatch(loginSource, /JSON\.stringify\(\{ email: userEmail\.trim\(\), password:/);
+  assert.doesNotMatch(loginSource, /JSON\.stringify\(\{ email: teamManagerEmail\.trim\(\), password:/);
+  assert.match(loginSource, /JSON\.stringify\(\{ email: userEmail\.trim\(\) \}\)/);
+  assert.match(loginSource, /JSON\.stringify\(\{ email: teamManagerEmail\.trim\(\) \}\)/);
+});

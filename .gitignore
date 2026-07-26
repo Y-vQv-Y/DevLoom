@@ -40,3 +40,7 @@ dist
 /deploy/vendor/
 /deploy/out/
 /deploy/package/package.env
+# Local reproducible-build toolchains and WSL virtual disks.
+.tools/
+.wsl/
+.vmware/

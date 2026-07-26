@@ -116,7 +116,7 @@ func (r *TeamHostRepo) UpsertHost(ctx context.Context, user *domain.User, info *
 
 	return entx.WithTx2(ctx, r.db, func(tx *db.Tx) error {
 		if _, err := tx.Host.Query().Where(host.ID(info.ID)).First(ctx); err == nil {
-			if err := tx.Host.UpdateOneID(info.ID).
+			update := tx.Host.UpdateOneID(info.ID).
 				SetArch(info.Arch).
 				SetCores(int(info.Cores)).
 				SetOs(info.OS).
@@ -125,8 +125,11 @@ func (r *TeamHostRepo) UpsertHost(ctx context.Context, user *domain.User, info *
 				SetExternalIP(info.PublicIP).
 				SetInternalIP(info.InternalIP).
 				SetHostname(info.Hostname).
-				SetVersion(info.Version).
-				Exec(ctx); err != nil {
+				SetVersion(info.Version)
+			if info.MachineID != "" {
+				update.SetMachineID(info.MachineID)
+			}
+			if err := update.Exec(ctx); err != nil {
 				return err
 			}
 
@@ -144,7 +147,7 @@ func (r *TeamHostRepo) UpsertHost(ctx context.Context, user *domain.User, info *
 			return nil
 		}
 
-		if err := tx.Host.Create().
+		create := tx.Host.Create().
 			SetID(info.ID).
 			SetUserID(uid).
 			SetArch(info.Arch).
@@ -154,8 +157,11 @@ func (r *TeamHostRepo) UpsertHost(ctx context.Context, user *domain.User, info *
 			SetMemory(int64(info.Memory)).
 			SetExternalIP(info.PublicIP).
 			SetInternalIP(info.InternalIP).
-			SetHostname(info.Hostname).
-			Exec(ctx); err != nil {
+			SetHostname(info.Hostname)
+		if info.MachineID != "" {
+			create.SetMachineID(info.MachineID)
+		}
+		if err := create.Exec(ctx); err != nil {
 			return err
 		}
 

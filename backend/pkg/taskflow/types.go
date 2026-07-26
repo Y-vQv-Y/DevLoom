@@ -12,11 +12,18 @@ type Resp[T any] struct {
 	Data    T      `json:"data,omitempty"`
 }
 
+type TaskStatusCallbackReq struct {
+	ID     uuid.UUID `json:"id"`
+	Status string    `json:"status"`
+	Error  string    `json:"error,omitempty"`
+}
+
 // ==================== Host 类型 ====================
 
 // Host 宿主机信息
 type Host struct {
 	ID         string `json:"id"`
+	MachineID  string `json:"machine_id,omitempty"`
 	UserID     string `json:"user_id"`
 	Hostname   string `json:"hostname"`
 	Arch       string `json:"arch"`

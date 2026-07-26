@@ -7,10 +7,11 @@ import { Field } from "@/components/ui/field";
 import { FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import { BrandLockup } from "@/components/common/brand-lockup";
 import { apiRequest } from "@/utils/requestUtils";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function ResetPasswordPage() {
@@ -77,9 +78,7 @@ export default function ResetPasswordPage() {
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
-          <Link to="/">
-            <h1 className="text-2xl hover:font-bold">{t("login.title")}</h1>
-          </Link>
+          <BrandLockup />
           <Card>
             <CardContent>
               <FieldGroup>

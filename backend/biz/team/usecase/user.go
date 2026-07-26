@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
@@ -19,6 +20,7 @@ import (
 	"github.com/Y-vQv-Y/DevLoom/backend/db"
 	"github.com/Y-vQv-Y/DevLoom/backend/domain"
 	"github.com/Y-vQv-Y/DevLoom/backend/errcode"
+	"github.com/Y-vQv-Y/DevLoom/backend/pkg/crypto"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/cvt"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/random"
 )
@@ -148,6 +150,129 @@ func (u *TeamGroupUserUsecase) Add(ctx context.Context, teamUser *domain.TeamUse
 		return nil, err
 	}
 	return cvt.From(group, &domain.TeamGroup{}), nil
+}
+
+func (u *TeamGroupUserUsecase) AddUser(ctx context.Context, teamUser *domain.TeamUser, req *domain.AddTeamUserReq) (*domain.AddTeamUserResp, error) {
+	users, err := u.repo.CreateUsers(ctx, teamUser.GetTeamID(), req)
+	if err != nil {
+		return nil, err
+	}
+	u.notifyMembersAdded(ctx, teamUser.GetTeamID(), users)
+	for _, member := range users {
+		if member.Email == "" {
+			continue
+		}
+		token, err := u.generateResetPWDToken(ctx, member.ID)
+		if err != nil {
+			u.logger.ErrorContext(ctx, "generate reset password token failed", "error", err)
+			continue
+		}
+		key := fmt.Sprintf("reset_password_token:%s", token)
+		if err := u.redisClient.Set(ctx, key, member.ID.String(), 24*time.Hour).Err(); err != nil {
+			u.logger.ErrorContext(ctx, "set reset password token failed", "error", err)
+			continue
+		}
+		go u.sendResetPasswordEmail(context.WithoutCancel(ctx), member.Email, member.Name, token)
+	}
+	return &domain.AddTeamUserResp{Users: cvt.Iter(users, func(_ int, member *db.User) *domain.TeamUser {
+		return cvt.From(member, &domain.TeamUser{})
+	})}, nil
+}
+
+func (u *TeamGroupUserUsecase) AddUserWithPassword(ctx context.Context, teamUser *domain.TeamUser, req *domain.AddTeamUserReq) (*domain.AddTeamUserWithPasswordResp, error) {
+	passwords := make(map[string]string, len(req.Emails))
+	for _, email := range req.Emails {
+		passwords[email] = random.String(16)
+	}
+	users, err := u.repo.CreateUsersWithPassword(ctx, teamUser.GetTeamID(), &domain.AddTeamUserWithPasswordReq{
+		Emails: req.Emails, GroupID: req.GroupID, Passwords: passwords,
+	})
+	if err != nil {
+		return nil, err
+	}
+	u.notifyMembersAdded(ctx, teamUser.GetTeamID(), users)
+	return &domain.AddTeamUserWithPasswordResp{
+		Users: cvt.Iter(users, func(_ int, member *db.User) *domain.TeamUser {
+			return cvt.From(member, &domain.TeamUser{})
+		}),
+		Passwords: cvt.Filter(users, func(_ int, member *db.User) (*domain.TeamUserPassword, bool) {
+			password, ok := passwords[member.Email]
+			if !ok || member.Password == "" || crypto.VerifyPassword(member.Password, password) != nil {
+				return nil, false
+			}
+			return &domain.TeamUserPassword{Email: member.Email, Password: password}, true
+		}),
+	}, nil
+}
+
+func (u *TeamGroupUserUsecase) AddAdmin(ctx context.Context, teamUser *domain.TeamUser, req *domain.AddTeamAdminReq) (*domain.AddTeamAdminResp, error) {
+	member, err := u.repo.CreateAdmin(ctx, teamUser.GetTeamID(), req)
+	if err != nil {
+		return nil, err
+	}
+	u.notifyMembersAdded(ctx, teamUser.GetTeamID(), []*db.User{member})
+	password := random.String(16)
+	if err := u.repo.ResetPassword(ctx, member.ID, password); err != nil {
+		return nil, err
+	}
+	return &domain.AddTeamAdminResp{
+		User:     cvt.From(member, &domain.TeamUser{}),
+		Password: password,
+	}, nil
+}
+
+func (u *TeamGroupUserUsecase) AutoCreateOIDCMember(ctx context.Context, teamID uuid.UUID, external *domain.OIDCExternalUser) (*domain.User, error) {
+	if external == nil || strings.TrimSpace(external.Email) == "" {
+		return nil, errcode.ErrOIDCEmailRequired
+	}
+	password := random.String(32)
+	users, err := u.repo.CreateUsersWithPassword(ctx, teamID, &domain.AddTeamUserWithPasswordReq{
+		Emails: []string{external.Email}, Passwords: map[string]string{external.Email: password},
+	})
+	if err != nil {
+		return nil, err
+	}
+	if len(users) != 1 {
+		return nil, errcode.ErrUserAlreadyExists
+	}
+	member := users[0]
+	if name := strings.TrimSpace(oidcMemberName(external)); name != "" && name != member.Name {
+		member, err = u.repo.UpdateUser(ctx, member.ID, &domain.UpdateTeamUserReq{Name: &name})
+		if err != nil {
+			return nil, err
+		}
+	}
+	u.notifyMembersAdded(ctx, teamID, users)
+	return cvt.From(member, &domain.User{}), nil
+}
+
+func oidcMemberName(external *domain.OIDCExternalUser) string {
+	if external.Name != "" {
+		return external.Name
+	}
+	if external.Username != "" {
+		return external.Username
+	}
+	return external.Email
+}
+
+func (u *TeamGroupUserUsecase) notifyMembersAdded(ctx context.Context, teamID uuid.UUID, users []*db.User) {
+	if u.teamHook == nil {
+		return
+	}
+	for _, member := range users {
+		if err := u.teamHook.OnMemberAdded(ctx, teamID, member.ID); err != nil {
+			u.logger.WarnContext(ctx, "team hook member-added callback failed", "user_id", member.ID, "error", err)
+		}
+	}
+}
+
+func NewMemberManager(i *do.Injector) (domain.MemberManager, error) {
+	manager, ok := do.MustInvoke[domain.TeamGroupUserUsecase](i).(domain.MemberManager)
+	if !ok {
+		return nil, fmt.Errorf("team group user usecase does not implement member manager")
+	}
+	return manager, nil
 }
 
 func (u *TeamGroupUserUsecase) ResetPassword(ctx context.Context, teamUser *domain.TeamUser, req *domain.ResetPasswordReq) (*domain.TeamUserPassword, error) {

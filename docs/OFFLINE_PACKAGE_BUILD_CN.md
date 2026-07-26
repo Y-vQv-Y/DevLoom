@@ -41,19 +41,16 @@ bash deploy/package/inspect-installer.sh deploy/monkeycode-offline-linux-amd64/i
 - DevLoom frontend；
 - DevLoom backend；
 - DevLoom ingress；
+- Taskflow；
+- preview relay；
+- 远程 Orchestrator；
+- devbox 开发镜像；
 - 中心安装、升级准备、校验和验收脚本；
 - host 安装脚本；
 - Compose、项目模板、包清单和 SHA-256 锁定文件；
 - Docker Engine 和 Docker Compose 静态包。
 
-以下运行时没有源码，不能由当前仓库重新编译：
-
-- Taskflow；
-- preview relay；
-- orchestrator；
-- devbox 开发镜像。
-
-构建前必须把经过授权且与当前 API 兼容的固定版本镜像加载到本地 Docker。最终 TGZ 会包含这些镜像，部署服务器不再访问外部仓库。若要做到所有二进制均为自主源码，必须取得或重新实现上述四个项目；仅修改安装脚本无法消除该边界。
+构建前只需把固定版本的 PostgreSQL、Redis、ClickHouse 和 RustFS 基础设施镜像加载到本地 Docker。最终 TGZ 包含从当前源码构建的全部 DevLoom 应用运行时和这些基础镜像，部署服务器不再访问外部仓库。
 
 ## 3. 品牌配置
 
@@ -83,17 +80,13 @@ IMAGE_PREFIX=registry.internal.example/devloom
 构建机必须预先存在以下镜像：
 
 ```bash
-docker image inspect "$TASKFLOW_IMAGE"
-docker image inspect "$PREVIEW_IMAGE"
-docker image inspect "$ORCHESTRATOR_IMAGE"
-docker image inspect "$DEVBOX_IMAGE"
 docker image inspect "$POSTGRES_IMAGE"
 docker image inspect "$REDIS_IMAGE"
 docker image inspect "$CLICKHOUSE_IMAGE"
 docker image inspect "$RUSTFS_IMAGE"
 ```
 
-镜像可以来自企业内部仓库、`docker load` 导入的合规制品，或对应源码的内部构建流水线。构建器只读取本地 Docker，不依赖任何特定离线包目录。
+四个基础镜像可以来自企业内部仓库或 `docker load` 导入的合规制品。应用镜像由构建器生成；整个过程不依赖任何特定外部离线包目录。
 
 ## 5. 构建完整离线包
 
@@ -105,7 +98,7 @@ bash deploy/package/build.sh --version v1.0.0
 
 执行过程：
 
-1. 构建离线版前端及 backend/ingress 镜像；
+1. 构建 frontend、backend、ingress、Taskflow、preview、Orchestrator 和 devbox 镜像；
 2. 导出九个中心镜像；
 3. 导出 orchestrator/devbox 并生成 host runner 包；
 4. 下载固定版本 Docker Engine/Compose 静态二进制；
@@ -166,4 +159,4 @@ sudo bash install.sh \
 - `SHA256SUMS` 在安装开始前逐项验证；
 - 开发主机下载 `host.tgz`/`docker.tgz` 时验证同目录 `.sha256`；
 - `package.env`、构建输出和外部离线包均已从 Git 排除；
-- AGPL 源码、第三方镜像、Taskflow/preview/runner 和 tldraw 等组件必须分别确认再分发许可。
+- AGPL 源码、第三方基础镜像和 tldraw 等组件必须分别确认再分发许可。

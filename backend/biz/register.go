@@ -70,6 +70,7 @@ func InvokeAll(i *do.Injector) {
 
 // RegisterOpenSource 注册仅在开源项目中使用的模块
 func RegisterOpenSource(i *do.Injector) {
+	team.ProvideOpenSource(i)
 	subscription.ProvideSubscription(i)
 	uploader.ProvideUploader(i)
 	llmproxy.ProvideLLMProxy(i)

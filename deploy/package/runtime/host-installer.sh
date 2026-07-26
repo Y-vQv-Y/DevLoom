@@ -138,6 +138,21 @@ tar -xzf "$WORK_DIR/host.tgz" -C "$RUNNER_DIR"
 [[ -f "$RUNNER_DIR/docker-compose.yml" && -f "$RUNNER_DIR/.env" ]] || die "invalid runner host bundle"
 set_env "$RUNNER_DIR/.env" TOKEN "$TOKEN"
 set_env "$RUNNER_DIR/.env" GRPC_URL "$GRPC_URL"
+HOST_IP="$(hostname -I 2>/dev/null | awk '{print $1}')"
+[[ -n "$HOST_IP" ]] || die "cannot determine host IP; set a routable address before starting the runner"
+if [[ -r /etc/machine-id ]]; then
+  MACHINE_ID="$(tr -cd 'a-zA-Z0-9_.-' </etc/machine-id | head -c 64)"
+else
+  MACHINE_ID="$(hostname | tr -cd 'a-zA-Z0-9_.-' | head -c 64)"
+fi
+[[ -n "$MACHINE_ID" ]] || die "cannot determine machine ID"
+set_env "$RUNNER_DIR/.env" CENTER_URL "${BASE_URL%/}/runner"
+set_env "$RUNNER_DIR/.env" MACHINE_ID "$MACHINE_ID"
+set_env "$RUNNER_DIR/.env" HOST_NAME "$(hostname)"
+set_env "$RUNNER_DIR/.env" ADVERTISE_URL "http://$HOST_IP:8890"
+set_env "$RUNNER_DIR/.env" PUBLIC_IP "$HOST_IP"
+set_env "$RUNNER_DIR/.env" WORKSPACE_HOST_ROOT "$RUNNER_DIR/data/workspaces"
+set_env "$RUNNER_DIR/.env" PREVIEW_BASE_URL "http://$HOST_IP:9080"
 chmod 600 "$RUNNER_DIR/.env"
 
 for archive in "$RUNNER_DIR"/images/*.tar.gz; do

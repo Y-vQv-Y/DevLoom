@@ -68,6 +68,21 @@ func (u *TeamHostUsecase) GetInstallCommand(ctx context.Context, teamUser *domai
 
 // List 获取团队宿主机列表
 func (u *TeamHostUsecase) List(ctx context.Context, teamUser *domain.TeamUser) (*domain.ListTeamHostsResp, error) {
+	if teamUser == nil || teamUser.User == nil || teamUser.Team == nil {
+		return nil, fmt.Errorf("team user is incomplete")
+	}
+	owner := *teamUser.User
+	owner.Team = teamUser.Team
+	reportedHosts, err := u.taskflow.Host().List(ctx, owner.ID.String())
+	if err != nil {
+		return nil, err
+	}
+	for _, reportedHost := range reportedHosts {
+		if err := u.repo.UpsertHost(ctx, &owner, reportedHost); err != nil {
+			return nil, err
+		}
+	}
+
 	hosts, err := u.repo.List(ctx, teamUser.GetTeamID())
 	if err != nil {
 		return nil, err

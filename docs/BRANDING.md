@@ -17,9 +17,9 @@ The Go module is `github.com/Y-vQv-Y/DevLoom/backend`. Runtime environment varia
 | Community | GitHub Issues | `VITE_COMMUNITY_URL` |
 | Announcements | GitHub Releases | `VITE_ANNOUNCEMENT_URL` |
 
-## Images to Replace Manually
+## Brand Images
 
-Keep each filename and replace the file contents so existing web, Electron, Expo, email, README, and release packaging references remain valid.
+The web login and authentication pages use `logo-brand.png` for the full DTEC lockup. Sidebars, favicons, and compact surfaces use the transparent compact mark in `logo.png`, `logo-light.png`, and `logo-dark.png`. Keep filenames stable so web and packaging references remain valid.
 
 ```text
 E:\Code\MonkeyCode\frontend\public\logo.png
@@ -60,10 +60,10 @@ E:\Code\MonkeyCode\frontend\src\assets\react.svg
 
 The QR-code images still point to the previous communities until replaced. The `provider-*.png` files are retained only as manual replacement placeholders and are not used by the current login screen. Do not replace third-party assets under `frontend/public/tldraw/` unless separately required by their license or design system.
 
-Visual inspection on 2026-07-18 confirmed that `frontend/public/logo-dark.png`, `desktop/electron/icon.png`, and `mobile/assets/icon.png` still contain the previous mascot artwork. Treat every first-party path above as pending manual replacement even though source text, filenames, package metadata, and links have been renamed.
+Web authentication and compact logo assets were replaced and visually verified on desktop. Desktop and mobile application icons remain separate release assets and must use the same approved mark before publishing those clients.
 
-## External Runtime Dependencies
+## Source Runtime Branding
 
-Runner, Taskflow, preview, and development-image binaries are not built from this repository. Their image names, `DEVLOOM_*` environment variables, `.devloom` paths, and installer bundles must be updated in those repositories before using the renamed Docker Compose stack. Host installer files are expected under the configured `static_files` route instead of an old public download service.
+Runner, Taskflow, preview, devbox, host installers, Compose files, and offline package metadata are built from this repository. Their images use the configured `IMAGE_PREFIX` and `BRAND_SLUG`; runtime variables use the `DEVLOOM_*` namespace for protocol stability. Host installer files are served from the configured `static_files` route.
 
 The open-source backend omits billing, payment, invitation, check-in, recharge, playground, Git identity OAuth authorization-URL, Apple authentication/account-deletion, and enterprise-license routes. Automatic project review is implemented here but remains opt-in and requires a configured development host, review model, development image, and repository webhook access. Keep the corresponding flags in `docs/GITHUB_ACTIONS.md` set to `false` unless compatible services are supplied. The whiteboard uses tldraw; obtain a license appropriate for your distribution and inject it through `VITE_TLDRAW_LICENSE_KEY` instead of reusing a third-party key.

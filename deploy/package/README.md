@@ -5,7 +5,7 @@ the `monkeycode-offline-linux-amd64` directory or its closed installer binary.
 
 ```bash
 cp deploy/package/package.env.example deploy/package/package.env
-# Pin the four external runtime images and the infrastructure images, then:
+# Pin the four infrastructure images; application/runtime images build from source:
 bash deploy/package/build.sh --version v1.0.0
 ```
 

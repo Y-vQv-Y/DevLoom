@@ -75,12 +75,182 @@ func (r *TeamGroupUserRepo) Create(ctx context.Context, teamID uuid.UUID, req *d
 		Save(ctx)
 }
 
+func (r *TeamGroupUserRepo) CreateUsers(ctx context.Context, teamID uuid.UUID, req *domain.AddTeamUserReq) ([]*db.User, error) {
+	if err := r.checkTeamMemberLimit(ctx, teamID, req.Emails); err != nil {
+		return nil, err
+	}
+	users := make([]*db.User, 0, len(req.Emails))
+	for _, emailAddr := range req.Emails {
+		account, err := r.db.User.Query().Where(user.EmailEQ(emailAddr)).First(ctx)
+		if err != nil && !db.IsNotFound(err) {
+			return nil, err
+		}
+		if account == nil {
+			account, err = r.db.User.Create().
+				SetID(uuid.New()).
+				SetName(emailAddr).
+				SetEmail(emailAddr).
+				SetStatus(consts.UserStatusActive).
+				SetPassword("").
+				SetRole(consts.UserRoleSubAccount).
+				Save(ctx)
+			if err != nil {
+				return nil, err
+			}
+		}
+		exists, err := r.db.TeamMember.Query().Where(
+			teammember.TeamIDEQ(teamID),
+			teammember.UserIDEQ(account.ID),
+		).Exist(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if exists {
+			continue
+		}
+		if _, err = r.db.TeamMember.Create().
+			SetID(uuid.New()).
+			SetTeamID(teamID).
+			SetUserID(account.ID).
+			SetRole(consts.TeamMemberRoleUser).
+			Save(ctx); err != nil {
+			return nil, err
+		}
+		users = append(users, account)
+	}
+	return users, nil
+}
+
+func (r *TeamGroupUserRepo) CreateUsersWithPassword(ctx context.Context, teamID uuid.UUID, req *domain.AddTeamUserWithPasswordReq) ([]*db.User, error) {
+	if err := r.checkTeamMemberLimit(ctx, teamID, req.Emails); err != nil {
+		return nil, err
+	}
+	users := make([]*db.User, 0, len(req.Emails))
+	for _, emailAddr := range req.Emails {
+		account, err := r.db.User.Query().Where(user.EmailEQ(emailAddr)).First(ctx)
+		if err != nil && !db.IsNotFound(err) {
+			return nil, err
+		}
+		password := req.Passwords[emailAddr]
+		if account == nil {
+			hashedPassword, err := crypto.HashPassword(password)
+			if err != nil {
+				return nil, errcode.ErrPasswordHashFailed
+			}
+			account, err = r.db.User.Create().
+				SetID(uuid.New()).
+				SetName(emailAddr).
+				SetEmail(emailAddr).
+				SetStatus(consts.UserStatusActive).
+				SetPassword(hashedPassword).
+				SetRole(consts.UserRoleSubAccount).
+				Save(ctx)
+			if err != nil {
+				return nil, err
+			}
+		} else if account.Password == "" {
+			hashedPassword, err := crypto.HashPassword(password)
+			if err != nil {
+				return nil, errcode.ErrPasswordHashFailed
+			}
+			account, err = r.db.User.UpdateOneID(account.ID).SetPassword(hashedPassword).Save(ctx)
+			if err != nil {
+				return nil, err
+			}
+		}
+		exists, err := r.db.TeamMember.Query().Where(
+			teammember.TeamIDEQ(teamID),
+			teammember.UserIDEQ(account.ID),
+		).Exist(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if exists {
+			continue
+		}
+		if _, err = r.db.TeamMember.Create().
+			SetID(uuid.New()).
+			SetTeamID(teamID).
+			SetUserID(account.ID).
+			SetRole(consts.TeamMemberRoleUser).
+			Save(ctx); err != nil {
+			return nil, err
+		}
+		users = append(users, account)
+	}
+	return users, nil
+}
+
 func (r *TeamGroupUserRepo) ResetPassword(ctx context.Context, userID uuid.UUID, newPassword string) error {
 	hashedPassword, err := crypto.HashPassword(newPassword)
 	if err != nil {
 		return errcode.ErrPasswordHashFailed
 	}
 	return r.db.User.UpdateOneID(userID).SetPassword(hashedPassword).Exec(ctx)
+}
+
+func (r *TeamGroupUserRepo) CreateAdmin(ctx context.Context, teamID uuid.UUID, req *domain.AddTeamAdminReq) (*db.User, error) {
+	if err := r.checkTeamMemberLimit(ctx, teamID, []string{req.Email}); err != nil {
+		return nil, err
+	}
+	account, err := r.db.User.Query().Where(user.EmailEQ(req.Email)).First(ctx)
+	if err != nil && !db.IsNotFound(err) {
+		return nil, err
+	}
+	if account == nil {
+		account, err = r.db.User.Create().
+			SetID(uuid.New()).
+			SetName(req.Name).
+			SetEmail(req.Email).
+			SetStatus(consts.UserStatusActive).
+			SetPassword("").
+			SetRole(consts.UserRoleIndividual).
+			Save(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+	exists, err := r.db.TeamMember.Query().Where(
+		teammember.TeamIDEQ(teamID),
+		teammember.UserIDEQ(account.ID),
+	).Exist(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if exists {
+		return nil, errcode.ErrUserAlreadyExists
+	}
+	if _, err = r.db.TeamMember.Create().
+		SetID(uuid.New()).
+		SetTeamID(teamID).
+		SetUserID(account.ID).
+		SetRole(consts.TeamMemberRoleAdmin).
+		Save(ctx); err != nil {
+		return nil, err
+	}
+	return account, nil
+}
+
+func (r *TeamGroupUserRepo) checkTeamMemberLimit(ctx context.Context, teamID uuid.UUID, emails []string) error {
+	team, err := r.db.Team.Get(ctx, teamID)
+	if err != nil {
+		return err
+	}
+	if team.MemberLimit <= 0 {
+		return nil
+	}
+	existingCount, err := r.db.TeamMember.Query().Where(teammember.TeamIDEQ(teamID)).Count(ctx)
+	if err != nil {
+		return err
+	}
+	addCount, err := r.countNewTeamMembers(ctx, teamID, emails)
+	if err != nil {
+		return err
+	}
+	if existingCount+addCount > team.MemberLimit {
+		return errcode.ErrTeamMemberLimitExceeded
+	}
+	return nil
 }
 
 func (r *TeamGroupUserRepo) countNewTeamMembers(ctx context.Context, teamID uuid.UUID, emails []string) (int, error) {

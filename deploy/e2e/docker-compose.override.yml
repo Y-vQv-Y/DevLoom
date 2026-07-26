@@ -1,0 +1,18 @@
+services:
+  e2e-llm:
+    image: devloom.local/devloom-e2ellm:e2e
+    container_name: devloom-e2e-llm
+    restart: always
+    environment:
+      DEVLOOM_E2E_LLM_LISTEN: ":9999"
+    networks:
+      devloom: {}
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:9999/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    environment:
+      DEVLOOM_SECURITY_BLOCK_PRIVATE_NETWORK: "false"

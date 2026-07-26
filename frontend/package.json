@@ -2,6 +2,7 @@
   "name": "devloom",
   "private": true,
   "version": "260323.0.5",
+  "packageManager": "pnpm@11.17.0",
   "description": "DevLoom Web 前端",
   "author": "DevLoom",
   "type": "module",

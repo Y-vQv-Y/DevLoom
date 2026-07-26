@@ -4,13 +4,10 @@
 
 ## 1. 部署边界
 
-本仓库可构建 Go 后端、React Web、Nginx 入口、桌面端和移动端。完整 AI 开发任务还依赖本仓库不提供的兼容组件：
+本仓库可构建 Go 后端、React Web、Nginx 入口、Taskflow、远程 Orchestrator、preview、devbox、桌面端和移动端。完整 AI 开发任务还需要部署方配置：
 
-- Taskflow 服务及 runner/host 安装包；
-- preview 端口中继服务；
-- Ubuntu 等开发环境 OCI 镜像；
-- 离线安装器、Docker 包和项目模板；
-- 部署方选择的大模型服务、Git 平台和基础设施。
+- 部署方选择的大模型服务、Git 平台和基础设施；
+- 可选的企业自定义开发镜像或外部 Workspace Adapter。
 
 隔离工作区和 Agent 接入协议见 [AI Agent 与隔离工作区集成手册](./AGENT_INTEGRATION_CN.md)。
 
@@ -27,7 +24,7 @@
 | `50443` | 开发主机 | ingress 到 Taskflow 的 TLS gRPC 长连接 |
 | `30000-50000` | 浏览器、移动端 | preview 动态端口范围，按外部 preview 实现开放 |
 
-外部 Taskflow 实现还可能要求 `7000`，preview 管理端可能使用 `9080`。当前 Compose 不通过 ingress 发布这两个端口，必须根据所采用运行时的文档确认后再开放。数据库、Redis、ClickHouse 和 RustFS 控制台不应暴露到公网。
+源码 Taskflow 内部使用 `8888`，preview 默认使用 `9080`。远程 Runner 主机必须允许中心访问 Orchestrator `8890`，并允许用户访问该主机的 preview `9080`。数据库、Redis、ClickHouse 和 RustFS 控制台不应暴露到公网。
 
 ## 3. 部署前准备
 
@@ -36,8 +33,8 @@
 准备以下内容：
 
 1. 一个客户端和开发主机均可解析的域名，例如 `devloom.intra.example`。
-2. PostgreSQL、Redis、ClickHouse、RustFS 及 DevLoom 三个公开镜像。
-3. 与当前后端协议兼容的 Taskflow、preview、host、Workspace Adapter 和开发镜像。
+2. PostgreSQL、Redis、ClickHouse、RustFS 及本仓库构建的 DevLoom 镜像。
+3. 内网模型服务；默认 Docker Taskflow、preview、host 和开发镜像由本仓库提供。
 4. 内网 CA 或受信任证书。`backend/build/nginx.conf` 启动时必须读取 `server.crt` 和 `server.key`。
 5. 管理员邮箱、强密码，以及随机生成的数据库、缓存、对象存储和 relay 密钥。
 
@@ -62,7 +59,7 @@ cd /opt/devloom/source
 /opt/devloom/static/installer/aarch64/docker.tgz
 ```
 
-这些文件不在本仓库中，缺失时“开发主机”页面生成的离线安装命令无法完成安装。
+这些文件由 `deploy/package/build.sh` 生成并放入完整离线包，源码 checkout 本身不提交二进制归档。
 
 ## 5. 配置 Compose
 
@@ -236,13 +233,13 @@ curl -i http://devloom.intra.example/api/v1/users/info
 
 内网部署支持浏览器访问、内部 GitLab、内部模型服务和内部开发主机。若启用 Eclipse Che/Coder 或 OpenHands，还必须将其部署到同一受控网络并使用独立工作区。完全离线部署还必须完成以下工作：
 
-1. 将全部基础镜像、DevLoom 镜像、Taskflow、preview 和开发镜像同步到内网仓库，或使用 `docker save`/`docker load` 导入。
-2. 提供 `project-tpl.zip`、host、Docker 和安装器离线包。
+1. 使用 `deploy/package/build.sh` 构建并导出全部基础镜像、DevLoom 镜像、Taskflow、preview、Orchestrator 和开发镜像。
+2. 使用生成包内的 `project-tpl.zip`、host、Docker 和可读安装脚本。
 3. 将模型 `base_url` 指向内网 OpenAI 兼容、Anthropic 或其他受支持服务。
 4. 使用内网 DNS、NTP、CA、SMTP 和 GitLab，禁用不需要的公网 OAuth、更新和社区链接。
 5. 确保后端、Taskflow、preview、开发主机、模型和 GitLab 之间路由可达。
 
-“源码可离线部署”不等于“本仓库包含全部 AI 运行时”。缺少外部 Taskflow/runner/preview 时，管理面可用，但任务执行、终端、文件和预览不可用。
+完整离线包包含本项目所需的 AI 执行运行时。模型服务仍由部署方选择；把模型 `base_url` 指向内网兼容服务即可实现不依赖公网的任务链路。
 
 ## 9. 安全基线
 

@@ -96,6 +96,15 @@ services:
     image: ${INGRESS_IMAGE}
     container_name: ${CONTAINER_PREFIX:-devloom}-ingress
     restart: always
+    depends_on:
+      rustfs:
+        condition: service_healthy
+      taskflow:
+        condition: service_healthy
+      frontend:
+        condition: service_started
+      backend:
+        condition: service_started
     ports:
       - ${NGINX_PORT:-80}:80
       - 50443:50443
@@ -110,6 +119,18 @@ services:
     container_name: ${CONTAINER_PREFIX:-devloom}-taskflow
     restart: always
     environment:
+
+      DEVLOOM_TASKFLOW_LISTEN: ":8888"
+      DEVLOOM_TASKFLOW_HOST_ID: local-docker
+      DEVLOOM_TASKFLOW_HOST_NAME: ${TEAM_NAME:-DevLoom Local Docker}
+      DEVLOOM_VM_CONTAINER_PREFIX: ${CONTAINER_PREFIX:-devloom}-vm
+      DEVLOOM_WORKSPACE_ROOT: /workspaces
+      DEVLOOM_WORKSPACE_HOST_ROOT: ${INSTALL_DIR}/data/workspaces
+      DEVLOOM_PREVIEW_BASE_URL: http://${REMOTE_IP}:9080
+      DEVLOOM_BACKEND_INTERNAL_URL: http://backend:8888
+      DEVLOOM_PUBLIC_IP: ${REMOTE_IP}
+      DEVLOOM_DEFAULT_DEVBOX_IMAGE: ${DEVBOX_IMAGE}
+      DEVLOOM_RUNNER_SIGNING_SECRET: ${RELAY_SECRET}
       DEVLOOM_DATABASE_MASTER: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable&timezone=Asia/Shanghai
       DEVLOOM_REDIS_HOST: redis
       DEVLOOM_REDIS_PASS: ${REDIS_PASSWORD}
@@ -136,6 +157,14 @@ services:
       MCAI_JWT_RELAY_HOST: ${REMOTE_IP}
       MCAI_JWT_RELAY_PORT: 7000
       MCAI_JWT_RELAY_USE_TLS: false
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${INSTALL_DIR}/data/workspaces:/workspaces
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8888/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
     networks:
       devloom:
         ipv4_address: "${SUBNET_PREFIX:-10.100.50}.16"
@@ -152,6 +181,17 @@ services:
     image: ${BACKEND_IMAGE}
     container_name: ${CONTAINER_PREFIX:-devloom}-backend
     restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      clickhouse:
+        condition: service_healthy
+      rustfs:
+        condition: service_healthy
+      taskflow:
+        condition: service_healthy
     environment:
       DEVLOOM_LOGGER_LEVEL: debug
       TASKFLOW_SERVER: http://taskflow:8888
@@ -177,6 +217,7 @@ services:
       DEVLOOM_INIT_TEAM_IMAGE: ${INIT_TEAM_IMAGE:-}
       DEVLOOM_OBJECT_STORAGE_ENABLED: true
       DEVLOOM_OBJECT_STORAGE_INIT_BUCKET: true
+      DEVLOOM_OBJECT_STORAGE_ENDPOINT: http://rustfs:9000
       DEVLOOM_OBJECT_STORAGE_ACCESS_KEY: ${RUSTFS_ACCESS_KEY}
       DEVLOOM_OBJECT_STORAGE_ACCESS_KEY_SECRET: ${RUSTFS_SECRET_KEY}
       DEVLOOM_OBJECT_STORAGE_ACCESS_ENDPOINT: http://${REMOTE_IP}:${NGINX_PORT:-80}/oss
@@ -193,10 +234,20 @@ services:
     restart: always
     network_mode: host
     environment:
+
+      DEVLOOM_PREVIEW_LISTEN: ":9080"
+      DEVLOOM_VM_CONTAINER_PREFIX: ${CONTAINER_PREFIX:-devloom}-vm
       RELAY_DOMAIN: ${REMOTE_IP}
       RELAY_TUNNEL_PORT_RANGES: 30000-50000
       RELAY_JWT_SECRET: ${RELAY_SECRET}
       RELAY_LISTEN_HTTP: ":9080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:9080/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
 
 networks:
   devloom:

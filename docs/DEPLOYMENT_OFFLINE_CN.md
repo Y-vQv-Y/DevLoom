@@ -1,16 +1,16 @@
 # DevLoom 内网离线部署
 
-本文对应官方部署说明，目标是让内网服务器具备完整的 Web、API、任务执行、终端、文件和预览能力。仓库源码本身不包含 Taskflow/runner、preview、开发主机安装包和全部 OCI 镜像；这些运行时必须从官方离线包或企业内部镜像仓库准备，不能用占位镜像替代。
+本文说明如何使用本仓库生成的自有离线包，让内网服务器具备完整的 Web、API、任务执行、终端、文件和预览能力。Taskflow、远程 Orchestrator、preview、devbox、前后端和安装脚本均从当前仓库构建；包内不读取、不复制也不执行 MonkeyCode 官方离线包内容。
 
 ## 1. 准备离线介质
 
-在可联网机器下载官方离线包，并将它和镜像、静态资源转移到内网：
+在 Linux amd64 构建机生成自有离线包：
 
 ```text
-https://monkeycode-release.oss-cn-hangzhou.aliyuncs.com/public/offline-package/monkeycode-offline-linux-amd64.tgz
+bash deploy/package/build.sh --version v1.0.0
 ```
 
-同时准备以下文件（按服务器架构选择 `amd64` 或 `arm64`）：
+构建结果包含以下自有文件：
 
 ```text
 /opt/devloom/static/project-tpl.zip
@@ -19,20 +19,20 @@ https://monkeycode-release.oss-cn-hangzhou.aliyuncs.com/public/offline-package/m
 /opt/devloom/static/installer/<arch>/docker.tgz
 ```
 
-镜像仓库必须提供 PostgreSQL、Redis、ClickHouse、RustFS、frontend、backend、ingress、Taskflow 和 preview 的固定版本或 digest。Taskflow 和 preview 是任务执行、终端和预览功能的必要依赖。
+只有 PostgreSQL、Redis、ClickHouse、RustFS 是固定版本的第三方基础设施镜像；frontend、backend、ingress、Taskflow、preview、Orchestrator 和 devbox 均由构建脚本从本仓库源码生成并导出。
 
 ## 2. 一键安装
 
-在 Linux 服务器以 root 执行。脚本会检查架构、下载/校验离线包并调用包内官方安装器：
+将 TGZ 和校验文件复制到内网 Linux amd64 服务器，以 root 执行可读安装脚本：
 
 ```bash
-sudo bash deploy/offline/install.sh \
-  --package /media/monkeycode-offline-linux-amd64.tgz \
-  --install-root /opt/devloom \
-  --sha256 '<官方发布的 SHA256>'
+sha256sum -c devloom-offline-linux-amd64.tgz.sha256
+tar -xzf devloom-offline-linux-amd64.tgz
+cd devloom-offline-linux-amd64
+sudo bash install.sh --host devloom.intra.example --admin-email admin@intra.example
 ```
 
-如果服务器不能访问外网，必须使用 `--package`；脚本不会自动制造缺失的 AI 运行时。
+安装和主机注册阶段不访问外部镜像仓库；Docker Engine、Compose、中心镜像、host 镜像、项目模板和校验清单均在包内。
 
 ## 3. 配置与启动前检查
 
@@ -59,7 +59,7 @@ sudo bash deploy/offline/preflight.sh --root /opt/devloom
 
 ## 4. 启动和验收
 
-若官方安装器没有自动启动服务，使用安装目录中的 Compose 文件：
+安装器会自动启动服务；需要人工恢复时使用安装目录中的 Compose 文件：
 
 ```bash
 cd /opt/devloom/source
@@ -83,4 +83,4 @@ sudo bash deploy/offline/verify.sh --root /opt/devloom
 - `.env`、配置文件、私钥和 token 不得提交 Git。首次登录后立即修改管理员密码并配置模型、Git 平台、镜像和主机资源。
 - 商业计费、企业授权、社区 playground、Git OAuth 快捷入口和自动审查等特性默认关闭；它们不是私有内网任务执行的前置条件。
 
-源码离线部署不等于 AI 运行时离线。缺少官方 Taskflow/runner/preview 或 host 包时，管理页面可以启动，但任务执行、终端、文件和预览无法完整使用。
+模型推理是否完全离线取决于部署方配置的模型 `base_url`。将模型指向内网兼容服务后，DevLoom 本身的中心、Runner、开发镜像和预览链路无需公网。

@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# Install the official offline bundle and keep runtime data separate from source.
+# Bootstrap an independently built DevLoom offline bundle.
 
-DEFAULT_PACKAGE_URL="https://monkeycode-release.oss-cn-hangzhou.aliyuncs.com/public/offline-package/monkeycode-offline-linux-amd64.tgz"
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_ROOT="${INSTALL_ROOT:-/opt/devloom}"
 PACKAGE="${OFFLINE_PACKAGE:-}"
-PACKAGE_URL="${OFFLINE_PACKAGE_URL:-$DEFAULT_PACKAGE_URL}"
 CHECKSUM="${OFFLINE_PACKAGE_SHA256:-}"
 PASSTHROUGH=()
 
@@ -17,10 +14,8 @@ Usage: install.sh [options] [-- package-installer-args]
 
 Options:
   --package FILE       use a local offline package
-  --url URL            download the offline package from URL
   --install-root DIR   installation root (default: /opt/devloom)
   --sha256 HEX         verify the package checksum
-  --no-download        fail if --package/OFFLINE_PACKAGE is not present
   -h, --help           show this help
 EOF
 }
@@ -37,22 +32,14 @@ need_cmd() {
 ARCH="$(uname -m)"
 case "$ARCH" in
   x86_64|amd64) ARCH_DIR=amd64 ;;
-  aarch64|arm64) ARCH_DIR=arm64 ;;
-  *) die "unsupported CPU architecture: $ARCH (expected x86_64 or arm64)" ;;
+  *) die "unsupported CPU architecture: $ARCH (this package targets linux/amd64)" ;;
 esac
 
-NO_DOWNLOAD=0
 while (($#)); do
   case "$1" in
     --package)
       (($# >= 2)) || die "--package requires a file"
       PACKAGE=$2
-      shift 2
-      ;;
-    --url)
-      (($# >= 2)) || die "--url requires a URL"
-      PACKAGE_URL=$2
-      PACKAGE=""
       shift 2
       ;;
     --install-root)
@@ -64,10 +51,6 @@ while (($#)); do
       (($# >= 2)) || die "--sha256 requires a checksum"
       CHECKSUM=$2
       shift 2
-      ;;
-    --no-download)
-      NO_DOWNLOAD=1
-      shift
       ;;
     -h|--help)
       usage
@@ -94,18 +77,8 @@ WORK_DIR="$(mktemp -d)"
 cleanup() { rm -rf -- "$WORK_DIR"; }
 trap cleanup EXIT
 
-if [[ -z "$PACKAGE" ]]; then
-  if ((NO_DOWNLOAD)); then
-    die "no local package supplied and --no-download was set"
-  fi
-  if [[ "$ARCH_DIR" == arm64 && "$PACKAGE_URL" == "$DEFAULT_PACKAGE_URL" ]]; then
-    die "the published default bundle is amd64; provide an arm64 package with --package or --url"
-  fi
-  need_cmd curl
-  PACKAGE="$WORK_DIR/monkeycode-offline.tgz"
-  printf 'Downloading offline bundle for %s...\n' "$ARCH_DIR"
-  curl --fail --location --retry 3 --connect-timeout 20 --output "$PACKAGE" "$PACKAGE_URL"
-elif [[ "$PACKAGE" == file://* ]]; then
+[[ -n "$PACKAGE" ]] || die "provide the independently built DevLoom TGZ with --package"
+if [[ "$PACKAGE" == file://* ]]; then
   PACKAGE="${PACKAGE#file://}"
 fi
 
@@ -123,8 +96,8 @@ fi
 
 tar -tzf "$PACKAGE" >/dev/null || die "invalid gzip tar package: $PACKAGE"
 tar -xzf "$PACKAGE" -C "$WORK_DIR"
-INSTALLER="$(find "$WORK_DIR" -type f -name install.sh -print -quit)"
-[[ -n "$INSTALLER" ]] || die "offline package does not contain install.sh"
+INSTALLER="$(find "$WORK_DIR" -mindepth 2 -maxdepth 2 -type f -path '*/devloom-offline-linux-amd64/install.sh' -print -quit)"
+[[ -n "$INSTALLER" ]] || die "package does not contain devloom-offline-linux-amd64/install.sh"
 
 chmod +x "$INSTALLER"
 export INSTALL_DIR="$INSTALL_ROOT"
@@ -139,4 +112,4 @@ printf 'Running bundle installer from %s (arch=%s, root=%s)...\n' "$INSTALLER" "
   bash "$INSTALLER" "${PASSTHROUGH[@]}"
 )
 
-printf '\nOffline bundle installation finished. Run:\n  %s/preflight.sh --root %s\n' "$SCRIPT_DIR" "$INSTALL_ROOT"
+printf '\nOffline bundle installation finished. Run:\n  %s/tools/verify.sh --root %s\n' "$INSTALL_ROOT" "$INSTALL_ROOT"

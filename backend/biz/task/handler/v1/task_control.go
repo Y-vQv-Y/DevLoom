@@ -3,6 +3,7 @@ package v1
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"time"
@@ -415,6 +416,9 @@ func (h *TaskHandler) controlSubscribeTaskEvents(ctx context.Context, wsConn *ws
 		}
 
 		err := h.taskflow.TaskLive(ctx, taskID, false, func(chunk *taskflow.TaskChunk) error {
+			if chunk.Event == "task-ended" {
+				return errTurnEnded
+			}
 			if chunk.Event != "task-event" {
 				return nil
 			}
@@ -429,6 +433,9 @@ func (h *TaskHandler) controlSubscribeTaskEvents(ctx context.Context, wsConn *ws
 
 		if ctx.Err() != nil {
 			return ctx.Err()
+		}
+		if errors.Is(err, errTurnEnded) {
+			return nil
 		}
 
 		logger.WarnContext(ctx, "control task-event subscription disconnected, reconnecting", "error", err)

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { ShieldCheck } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
 import { apiRequest } from '@/utils/requestUtils'
+import { BrandLockup } from '@/components/common/brand-lockup'
 
 type PublicConfig = {
   team_id?: string
@@ -41,9 +42,7 @@ export default function TeamOIDCLoginPage() {
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <Link to="/">
-          <h1 className="mb-6 text-2xl hover:font-bold">{t("login.title")}</h1>
-        </Link>
+        <BrandLockup className="mb-6" />
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

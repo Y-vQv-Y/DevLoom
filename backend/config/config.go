@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -441,6 +442,11 @@ func Init(dir string) (*Config, error) {
 	v.AddConfigPath(dir)
 	v.SetConfigName("config")
 	v.ReadInConfig()
+	if _, configured := os.LookupEnv("DEVLOOM_SECURITY_BLOCK_PRIVATE_NETWORK"); !configured {
+		if legacy, ok := os.LookupEnv("MCAI_SECURITY_BLOCK_PRIVATE_NETWORK"); ok {
+			v.Set("security.block_private_network", legacy)
+		}
+	}
 
 	if err := normalizeWechatMPTemplates(v); err != nil {
 		return nil, err

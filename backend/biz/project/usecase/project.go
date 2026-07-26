@@ -186,7 +186,7 @@ func (u *ProjectUsecase) EnableAutoReview(ctx context.Context, uid, id uuid.UUID
 		return nil, errcode.ErrDatabaseOperation.Wrap(err)
 	}
 
-	client, clientCtx, err := u.getClient(p)
+	client, clientCtx, err := u.getClient(ctx, p)
 	if err == nil {
 		err = client.CreateWebhook(ctx, &domain.CreateWebhookOptions{
 			Token: token, RepoURL: p.RepoURL, WebhookURL: bot.WebhookURL,
@@ -225,7 +225,7 @@ func (u *ProjectUsecase) DisableAutoReview(ctx context.Context, uid, id uuid.UUI
 	if len(p.Edges.GitBots) == 0 {
 		return nil
 	}
-	client, clientCtx, err := u.getClient(p)
+	client, clientCtx, err := u.getClient(ctx, p)
 	if err != nil {
 		return err
 	}

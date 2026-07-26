@@ -124,4 +124,4 @@ Do not commit generated `mobile/android` or `mobile/ios` directories, certificat
 
 ## Backend Runtime Check
 
-The GitHub build validates source and packages artifacts; it does not provide the runtime service. A deployment must set `TASKFLOW_SERVER` to an absolute internal `http://` or `https://` endpoint before starting the Go backend. If it is missing, startup fails with a clear external-runtime configuration error rather than starting a partially working server. For private deployments, install Taskflow/runner and its host agent on the internal network, then register the host and images from the web or mobile client.
+The source build validates and packages the backend, frontend, Taskflow, preview, Orchestrator, and devbox runtime. `TASKFLOW_SERVER` remains an internal absolute HTTP(S) endpoint and the supplied Compose points it at the bundled Taskflow service. Private deployments install the center bundle, then register source Runners from the web or mobile client.

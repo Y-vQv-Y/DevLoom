@@ -69,7 +69,7 @@
 3. 确保所有开发 host 能登录镜像仓库并拉取该镜像。
 4. 将镜像授权给需要的团队分组。
 
-DevLoom 不负责生成 Ubuntu、Debian 或其他开发镜像。镜像必须与所采用 runner/Taskflow 的约定兼容，且包含任务所需的 shell、Git 和开发工具。
+完整离线包自带从本仓库 `devbox/` 构建的默认开发镜像。管理员也可以添加固定版本的 Ubuntu、Debian 或企业自定义镜像；自定义镜像必须包含任务所需的 shell、Git 和开发工具，并与 Taskflow 的 Docker 执行约定兼容。
 
 ### 安装并注册开发主机
 

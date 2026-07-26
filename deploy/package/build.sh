@@ -33,7 +33,7 @@ set -a
 . "$CONFIG_FILE"
 set +a
 
-for command in docker pnpm python3 tar gzip sha256sum git cp; do
+for command in docker python3 tar gzip sha256sum git cp; do
   command -v "$command" >/dev/null 2>&1 || die "missing build dependency: $command"
 done
 docker info >/dev/null 2>&1 || die "Docker Engine is not running"
@@ -57,7 +57,11 @@ BUILD_TIME="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 FRONTEND_IMAGE="${IMAGE_PREFIX}/${BRAND_SLUG}-frontend:${VERSION}"
 BACKEND_IMAGE="${IMAGE_PREFIX}/${BRAND_SLUG}-backend:${VERSION}"
 INGRESS_IMAGE="${IMAGE_PREFIX}/${BRAND_SLUG}-ingress:${VERSION}"
-RUNTIME_VARS=(TASKFLOW_IMAGE PREVIEW_IMAGE ORCHESTRATOR_IMAGE DEVBOX_IMAGE POSTGRES_IMAGE REDIS_IMAGE CLICKHOUSE_IMAGE RUSTFS_IMAGE)
+TASKFLOW_IMAGE="${IMAGE_PREFIX}/${BRAND_SLUG}-taskflow:${VERSION}"
+PREVIEW_IMAGE="${IMAGE_PREFIX}/${BRAND_SLUG}-preview:${VERSION}"
+DEVBOX_IMAGE="${IMAGE_PREFIX}/${BRAND_SLUG}-devbox:${VERSION}"
+ORCHESTRATOR_IMAGE="${IMAGE_PREFIX}/${BRAND_SLUG}-orchestrator:${VERSION}"
+RUNTIME_VARS=(POSTGRES_IMAGE REDIS_IMAGE CLICKHOUSE_IMAGE RUSTFS_IMAGE)
 for name in "${RUNTIME_VARS[@]}"; do
   value="${!name:-}"
   [[ -n "$value" ]] || die "$name is empty in $CONFIG_FILE"
@@ -77,11 +81,8 @@ rm -rf -- "$PACKAGE_ROOT"
 mkdir -p "$PACKAGE_ROOT"/{images,static/installer/x86_64,extensions/packages,tools}
 
 log "building $BRAND_NAME frontend ($FRONTEND_IMAGE)"
-pnpm --dir "$REPO_ROOT/frontend" build:offline
-rm -rf -- "$REPO_ROOT/frontend/docker/dist"
-mkdir -p "$REPO_ROOT/frontend/docker/dist"
-cp -a "$REPO_ROOT/frontend/dist/." "$REPO_ROOT/frontend/docker/dist/"
-docker buildx build --load --platform linux/amd64 --tag "$FRONTEND_IMAGE" "$REPO_ROOT/frontend/docker"
+docker buildx build --load --platform linux/amd64 --tag "$FRONTEND_IMAGE" \
+  --file "$REPO_ROOT/frontend/docker/Dockerfile.source" "$REPO_ROOT/frontend"
 
 log "building backend ($BACKEND_IMAGE)"
 docker buildx build --load --platform linux/amd64 --tag "$BACKEND_IMAGE" \
@@ -90,6 +91,21 @@ docker buildx build --load --platform linux/amd64 --tag "$BACKEND_IMAGE" \
 log "building ingress ($INGRESS_IMAGE)"
 docker buildx build --load --platform linux/amd64 --tag "$INGRESS_IMAGE" \
   --file "$REPO_ROOT/backend/build/Dockerfile.ingress" "$REPO_ROOT/backend"
+
+log "building source Taskflow ($TASKFLOW_IMAGE)"
+docker buildx build --load --platform linux/amd64 --tag "$TASKFLOW_IMAGE" \
+  --file "$REPO_ROOT/backend/build/Dockerfile.taskflow" "$REPO_ROOT/backend"
+
+log "building source preview relay ($PREVIEW_IMAGE)"
+docker buildx build --load --platform linux/amd64 --tag "$PREVIEW_IMAGE" \
+  --file "$REPO_ROOT/backend/build/Dockerfile.preview" "$REPO_ROOT/backend"
+
+log "building source development image ($DEVBOX_IMAGE)"
+docker buildx build --load --platform linux/amd64 --tag "$DEVBOX_IMAGE" "$REPO_ROOT/devbox"
+
+log "building source host orchestrator ($ORCHESTRATOR_IMAGE)"
+docker buildx build --load --platform linux/amd64 --tag "$ORCHESTRATOR_IMAGE" \
+  --file "$REPO_ROOT/backend/build/Dockerfile.orchestrator" "$REPO_ROOT/backend"
 
 save_image() {
   local name=$1 image=$2 output=$3
@@ -114,11 +130,13 @@ cp "$SCRIPT_DIR/runtime/runner-compose.yml" "$RUNNER_ROOT/docker-compose.yml"
 cp "$SCRIPT_DIR/runtime/runner.env" "$RUNNER_ROOT/.env"
 python3 "$SCRIPT_DIR/manifest_tool.py" render-env "$RUNNER_ROOT/.env" "$RUNNER_ROOT/.env.tmp" \
   --set "ORCHESTRATOR_IMAGE=$ORCHESTRATOR_IMAGE" \
+  --set "PREVIEW_IMAGE=$PREVIEW_IMAGE" \
   --set "DEVBOX_IMAGE=$DEVBOX_IMAGE" \
   --set "RUNNER_COMPOSE_PROJECT_NAME=${BRAND_SLUG}_runner" \
   --set "RUNNER_CONTAINER_PREFIX=$BRAND_SLUG"
 mv "$RUNNER_ROOT/.env.tmp" "$RUNNER_ROOT/.env"
 save_image orchestrator "$ORCHESTRATOR_IMAGE" "$RUNNER_ROOT/images/orchestrator.tar.gz"
+save_image preview "$PREVIEW_IMAGE" "$RUNNER_ROOT/images/preview.tar.gz"
 save_image devbox "$DEVBOX_IMAGE" "$RUNNER_ROOT/images/devbox.tar.gz"
 tar -C "$RUNNER_ROOT" -cf - . | gzip -n > "$PACKAGE_ROOT/static/installer/x86_64/host.tgz"
 
@@ -168,6 +186,7 @@ python3 "$SCRIPT_DIR/manifest_tool.py" render-env "$REPO_ROOT/deploy/offline/.en
   --set "INGRESS_IMAGE=$INGRESS_IMAGE" \
   --set "TASKFLOW_IMAGE=$TASKFLOW_IMAGE" \
   --set "PREVIEW_IMAGE=$PREVIEW_IMAGE" \
+  --set "DEVBOX_IMAGE=$DEVBOX_IMAGE" \
   --set "TEAM_EMAIL=CHANGE_ME_ADMIN_EMAIL" \
   --set "TEAM_NAME=$BRAND_NAME" \
   --set "INIT_TEAM_IMAGE=$DEVBOX_IMAGE" \

@@ -19,6 +19,7 @@ import (
 	"github.com/Y-vQv-Y/DevLoom/backend/consts"
 	"github.com/Y-vQv-Y/DevLoom/backend/db"
 	"github.com/Y-vQv-Y/DevLoom/backend/domain"
+	"github.com/Y-vQv-Y/DevLoom/backend/errcode"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/cvt"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/llm"
 	"github.com/Y-vQv-Y/DevLoom/backend/pkg/netguard"

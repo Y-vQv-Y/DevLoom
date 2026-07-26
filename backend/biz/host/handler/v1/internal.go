@@ -95,6 +95,7 @@ func NewInternalHostHandler(i *do.Injector) (*InternalHostHandler, error) {
 	g.POST("/host-info", web.BindHandler(h.ReportHostInfo))
 	g.POST("/vm-info", web.BindHandler(h.ReportVirtualMachine))
 	g.POST("/vm-ready", web.BindHandler(h.VmReady))
+	g.POST("/task-status", web.BindHandler(h.TaskStatus))
 	g.POST("/vm-conditions", web.BindHandler(h.VmConditions))
 	g.POST("/llms", web.BindHandler(h.ListLLM))
 	g.POST("/coding-config", web.BindHandler(h.GetCodingConfig))
@@ -388,16 +389,18 @@ return nil
 			// 持久化宿主机与用户的映射
 			if u.Team == nil {
 				if err := h.repo.UpsertHost(context.Background(), &taskflow.Host{
-					ID:     token,
-					UserID: u.ID.String(),
+					ID:        token,
+					MachineID: mid,
+					UserID:    u.ID.String(),
 				}); err != nil {
 					return nil, err
 				}
 			} else {
 				h.logger.With("team", u.Team, "user", u.ID).DebugContext(ctx, "upsert host to team")
 				if err := h.teamRepo.UpsertHost(context.Background(), &u, &taskflow.Host{
-					ID:     token,
-					UserID: u.ID.String(),
+					ID:        token,
+					MachineID: mid,
+					UserID:    u.ID.String(),
 				}); err != nil {
 					return nil, err
 				}
@@ -450,6 +453,32 @@ func (h *InternalHostHandler) VmReady(c *web.Context, req taskflow.VirtualMachin
 		}
 	}
 
+	return c.Success(nil)
+}
+
+func (h *InternalHostHandler) TaskStatus(c *web.Context, req taskflow.TaskStatusCallbackReq) error {
+	if req.ID == uuid.Nil {
+		return fmt.Errorf("task id is required")
+	}
+	var target consts.TaskStatus
+	switch req.Status {
+	case "completed", "cancelled":
+		target = consts.TaskStatusFinished
+	case "failed":
+		target = consts.TaskStatusError
+	default:
+		return fmt.Errorf("unsupported task status %q", req.Status)
+	}
+	current, err := h.taskLifecycle.GetState(c.Request().Context(), req.ID)
+	if err == nil && current == target {
+		return c.Success(nil)
+	}
+	if err := h.taskLifecycle.Transition(c.Request().Context(), req.ID, target, lifecycle.TaskMetadata{
+		TaskID: req.ID,
+		Error:  req.Error,
+	}); err != nil {
+		return err
+	}
 	return c.Success(nil)
 }
 

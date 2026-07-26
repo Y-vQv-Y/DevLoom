@@ -46,6 +46,12 @@ func ProvideTeam(i *do.Injector) {
 	do.Provide(i, v1.NewTeamGroupUserHandler)
 }
 
+// ProvideOpenSource registers the in-repository member manager used by the
+// standalone server. Embedded distributions can still inject their own manager.
+func ProvideOpenSource(i *do.Injector) {
+	do.Provide(i, usecase.NewMemberManager)
+}
+
 // InvokeTeam 触发 team 模块的 handler 初始化
 func InvokeTeam(i *do.Injector) {
 	_, err := do.Invoke[*v1.TeamGroupUserHandler](i)

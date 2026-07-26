@@ -6,12 +6,33 @@ services:
     restart: always
     init: true
     environment:
-      ORCHESTRATOR_GRPC_URL: ${GRPC_URL}
-      ORCHESTRATOR_AUTH_TOKEN: ${TOKEN}
-      ORCHESTRATOR_TYPE: docker
-      ORCHESTRATOR_LOG_LEVEL: ${ORCHESTRATOR_LOG_LEVEL:-info}
-      ORCHESTRATOR_GRPC_PROXY: ${GRPC_PROXY:-}
+      DEVLOOM_CENTER_RUNNER_URL: ${CENTER_URL}
+      DEVLOOM_RUNNER_REGISTRATION_TOKEN: ${TOKEN}
+      DEVLOOM_RUNNER_MACHINE_ID: ${MACHINE_ID}
+      DEVLOOM_RUNNER_HOST_NAME: ${HOST_NAME}
+      DEVLOOM_RUNNER_ADVERTISE_URL: ${ADVERTISE_URL}
+      DEVLOOM_RUNNER_LISTEN: ":8890"
+      DEVLOOM_PUBLIC_IP: ${PUBLIC_IP}
+      DEVLOOM_VM_CONTAINER_PREFIX: ${RUNNER_CONTAINER_PREFIX:-devloom}-vm
+      DEVLOOM_WORKSPACE_ROOT: /workspaces
+      DEVLOOM_WORKSPACE_HOST_ROOT: ${WORKSPACE_HOST_ROOT}
+      DEVLOOM_PREVIEW_BASE_URL: ${PREVIEW_BASE_URL}
+      DEVLOOM_DEFAULT_DEVBOX_IMAGE: ${DEVBOX_IMAGE}
       TZ: Asia/Shanghai
     volumes:
-      - ./data:/app/data
+      - ./data/workspaces:/workspaces
       - /var/run/docker.sock:/var/run/docker.sock
+    network_mode: host
+
+  preview:
+    image: ${PREVIEW_IMAGE}
+    container_name: ${RUNNER_CONTAINER_PREFIX:-devloom}-preview
+    restart: always
+    init: true
+    environment:
+      DEVLOOM_PREVIEW_LISTEN: ":9080"
+      DEVLOOM_VM_CONTAINER_PREFIX: ${RUNNER_CONTAINER_PREFIX:-devloom}-vm
+      TZ: Asia/Shanghai
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    network_mode: host
