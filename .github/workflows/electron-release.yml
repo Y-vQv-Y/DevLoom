@@ -116,7 +116,7 @@ jobs:
             suffix: ""
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v7
         with:
           go-version: ${{ env.GO_VERSION }}
@@ -131,7 +131,7 @@ jobs:
         run: |
           mkdir -p ../release
           go build -trimpath -ldflags="-s -w" -o "../release/devloom-server-${{ matrix.name }}${{ matrix.suffix }}" ./cmd/server
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: backend-${{ matrix.name }}
           path: release/devloom-server-*
@@ -149,11 +149,11 @@ jobs:
       VITE_GLOBAL_GITHUB_APP_INSTALL_URL: ${{ vars.VITE_GLOBAL_GITHUB_APP_INSTALL_URL }}
       VITE_TLDRAW_LICENSE_KEY: ${{ secrets.VITE_TLDRAW_LICENSE_KEY }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: ${{ env.PNPM_VERSION }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
@@ -170,7 +170,7 @@ jobs:
         run: |
           pnpm build:offline
           tar -C dist -czf devloom-frontend-offline.tar.gz .
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: frontend-distributions
           path: frontend/devloom-frontend-*.tar.gz
@@ -196,11 +196,11 @@ jobs:
       VITE_GLOBAL_GITHUB_APP_INSTALL_URL: ${{ vars.VITE_GLOBAL_GITHUB_APP_INSTALL_URL }}
       VITE_TLDRAW_LICENSE_KEY: ${{ secrets.VITE_TLDRAW_LICENSE_KEY }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: ${{ env.PNPM_VERSION }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
@@ -229,7 +229,7 @@ jobs:
         if: runner.os == 'macOS'
         working-directory: desktop
         run: pnpm exec electron-builder --mac dmg --x64 --arm64 --publish never
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: desktop-${{ matrix.name }}
           path: desktop/release/**/*
@@ -240,8 +240,8 @@ jobs:
     needs: [metadata, frontend]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with:
           name: frontend-distributions
           path: artifacts/frontend
@@ -249,17 +249,17 @@ jobs:
         run: |
           mkdir -p frontend/docker/dist
           tar -xzf artifacts/frontend/devloom-frontend-online.tar.gz -C frontend/docker/dist
-      - uses: docker/setup-qemu-action@v3
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-qemu-action@v4
+      - uses: docker/setup-buildx-action@v4
       - name: Log in to GHCR
         if: needs.metadata.outputs.publish == 'true'
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and publish frontend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: frontend/docker
           platforms: linux/amd64,linux/arm64
@@ -268,7 +268,7 @@ jobs:
             ghcr.io/y-vqv-y/devloom-frontend:${{ needs.metadata.outputs.version }}
             ghcr.io/y-vqv-y/devloom-frontend:latest
       - name: Build and publish backend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: backend
           file: backend/build/Dockerfile
@@ -278,7 +278,7 @@ jobs:
             ghcr.io/y-vqv-y/devloom-backend:${{ needs.metadata.outputs.version }}
             ghcr.io/y-vqv-y/devloom-backend:latest
       - name: Build and publish ingress
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: backend
           file: backend/build/Dockerfile.ingress
@@ -303,17 +303,17 @@ jobs:
       EXPO_PUBLIC_DEFAULT_SKILL_IDS: ${{ vars.EXPO_PUBLIC_DEFAULT_SKILL_IDS }}
       ANDROID_PACKAGE: ${{ vars.ANDROID_PACKAGE || 'io.github.yvqvy.devloom' }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: mobile/package-lock.json
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
       - run: npm ci
         working-directory: mobile
       - name: Generate Android project
@@ -352,7 +352,7 @@ jobs:
             ./android/gradlew -p android --no-daemon assembleDebug
             cp android/app/build/outputs/apk/debug/app-debug.apk "release/devloom-android-debug-${{ needs.metadata.outputs.version }}.apk"
           fi
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: mobile-android
           path: mobile/release/*
@@ -375,8 +375,8 @@ jobs:
       IOS_TEAM_ID: ${{ vars.IOS_TEAM_ID || secrets.IOS_TEAM_ID }}
       IOS_EXPORT_METHOD: ${{ vars.IOS_EXPORT_METHOD || 'ad-hoc' }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
@@ -534,7 +534,7 @@ jobs:
           security delete-keychain "${{ steps.signing.outputs.keychain }}" || true
           rm -f "$RUNNER_TEMP/devloom-signing.p12" "$RUNNER_TEMP/devloom.mobileprovision" "$RUNNER_TEMP/devloom-profile.plist"
           rm -rf "$HOME/Library/MobileDevice/Provisioning Profiles"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: mobile-ios
           path: mobile/release/*
@@ -546,31 +546,31 @@ jobs:
     if: always() && needs.metadata.result == 'success' && needs.backend-binaries.result == 'success' && needs.frontend.result == 'success' && needs.desktop.result == 'success' && needs.docker.result == 'success' && (needs.mobile_android.result == 'success' || needs.mobile_android.result == 'skipped') && (needs.mobile_ios.result == 'success' || needs.mobile_ios.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with:
           pattern: backend-*
           path: release-artifacts
           merge-multiple: true
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: frontend-distributions
           path: release-artifacts
           merge-multiple: true
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: desktop-*
           path: release-artifacts
           merge-multiple: true
       - name: Download Android package
         if: needs.mobile_android.result == 'success'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: mobile-android
           path: release-artifacts/mobile-android
       - name: Download iOS package
         if: needs.mobile_ios.result == 'success'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: mobile-ios
           path: release-artifacts/mobile-ios
@@ -578,13 +578,13 @@ jobs:
         run: |
           tar --exclude=.git --exclude=node_modules --exclude=release-artifacts --transform 's,^,DevLoom/,' -czf "$RUNNER_TEMP/devloom-source.tar.gz" .
           mv "$RUNNER_TEMP/devloom-source.tar.gz" release-artifacts/
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: release-${{ needs.metadata.outputs.version }}
           path: release-artifacts
       - name: Publish GitHub Release
         if: needs.metadata.outputs.publish == 'true'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ needs.metadata.outputs.version }}
           generate_release_notes: true
