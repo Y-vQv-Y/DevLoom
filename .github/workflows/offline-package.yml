@@ -1,0 +1,122 @@
+name: Offline Package
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Package version, for example v1.0.0-adtec.7
+        required: false
+        type: string
+      publish:
+        description: Attach the package to a GitHub Release
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: offline-package-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: Linux amd64 offline package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    outputs:
+      version: ${{ steps.metadata.outputs.version }}
+      publish: ${{ steps.metadata.outputs.publish }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve package metadata
+        id: metadata
+        shell: bash
+        env:
+          REQUESTED_VERSION: ${{ inputs.version }}
+          REQUESTED_PUBLISH: ${{ inputs.publish }}
+        run: |
+          set -Eeuo pipefail
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            version="$GITHUB_REF_NAME"
+            publish=true
+          else
+            version="${REQUESTED_VERSION:-v0.0.${GITHUB_RUN_NUMBER}}"
+            publish="${REQUESTED_PUBLISH:-false}"
+          fi
+          [[ "$version" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] || {
+            echo "Version must be SemVer, for example v1.0.0-adtec.7" >&2
+            exit 1
+          }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "publish=$publish" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Prepare pinned package configuration
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cp deploy/package/package.env.example deploy/package/package.env
+          printf '\nSOURCE_COMMIT=%s\n' "$GITHUB_SHA" >> deploy/package/package.env
+          source deploy/package/package.env
+          for image in "$POSTGRES_IMAGE" "$REDIS_IMAGE" "$CLICKHOUSE_IMAGE" "$RUSTFS_IMAGE"; do
+            docker pull --platform linux/amd64 "$image"
+          done
+
+      - name: Build all images and offline package
+        shell: bash
+        run: bash deploy/package/build.sh --version "${{ steps.metadata.outputs.version }}"
+
+      - name: Verify archive, manifest, and package boundaries
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          sha256sum --check deploy/out/devloom-offline-linux-amd64.tgz.sha256
+          python3 deploy/package/manifest_tool.py verify deploy/out/devloom-offline-linux-amd64
+          tar -tzf deploy/out/devloom-offline-linux-amd64.tgz > "$RUNNER_TEMP/offline-package-files.txt"
+          test -s "$RUNNER_TEMP/offline-package-files.txt"
+          if grep -Eiq '(^|/)(docs/patent|patent)(/|$)|monkeycode|chaitin' "$RUNNER_TEMP/offline-package-files.txt"; then
+            echo "Forbidden external or patent material was found in the package" >&2
+            exit 1
+          fi
+          file deploy/out/devloom-offline-linux-amd64/install.sh
+          file deploy/out/devloom-offline-linux-amd64/static/installer/x86_64/installer
+
+      - name: Write build summary
+        shell: bash
+        run: |
+          {
+            echo '## ADTEC DevLoom offline package'
+            echo
+            echo '- Version: `${{ steps.metadata.outputs.version }}`'
+            echo "- Source commit: \`$GITHUB_SHA\`"
+            echo "- SHA256: \`$(awk '{print $1}' deploy/out/devloom-offline-linux-amd64.tgz.sha256)\`"
+            echo "- Size: \`$(stat -c '%s' deploy/out/devloom-offline-linux-amd64.tgz) bytes\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: devloom-offline-linux-amd64-${{ steps.metadata.outputs.version }}
+          path: |
+            deploy/out/devloom-offline-linux-amd64.tgz
+            deploy/out/devloom-offline-linux-amd64.tgz.sha256
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
+
+      - name: Publish offline package
+        if: steps.metadata.outputs.publish == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ startsWith(steps.metadata.outputs.version, 'v') && steps.metadata.outputs.version || format('v{0}', steps.metadata.outputs.version) }}
+          generate_release_notes: true
+          files: |
+            deploy/out/devloom-offline-linux-amd64.tgz
+            deploy/out/devloom-offline-linux-amd64.tgz.sha256

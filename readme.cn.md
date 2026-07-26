@@ -4,6 +4,15 @@
   <img src="./frontend/public/logo-brand.png" alt="ADTEC DevLoom" width="260" />
 </p>
 
+<p align="center">
+  <a href="./README.md">English</a> | <strong>简体中文</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/build.yml"><img src="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/build.yml/badge.svg" alt="持续集成" /></a>
+  <a href="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/offline-package.yml"><img src="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/offline-package.yml/badge.svg" alt="离线包" /></a>
+</p>
+
 ADTEC DevLoom 是面向企业内网的软件研发平台，统一管理代码仓库、项目、模型、AI
 任务、隔离开发环境、远程终端、文件与差异以及在线预览。完整 Linux 运行时均由本仓库
 源码构建，包括 Web、Go API、ingress、Taskflow、preview relay、远程
@@ -72,6 +81,26 @@ Compose 并执行部署验收。登录后至少配置一个模型；远程开发
 
 完整说明见[离线部署手册](./docs/DEPLOYMENT_OFFLINE_CN.md)和
 [离线包构建手册](./docs/OFFLINE_PACKAGE_BUILD_CN.md)。
+
+## 自动生成离线包
+
+GitHub Actions 的 `Offline Package` 工作流会在全新的 Linux amd64 Runner 上复现相同的
+完整离线包：从当前提交构建 frontend、backend、ingress、Taskflow、preview relay、
+Orchestrator 和 devbox 镜像，导出固定版本的基础设施镜像，加入经过 SHA256 校验的
+Docker Engine 与 Compose 离线组件，再校验包内清单并上传：
+
+```text
+devloom-offline-linux-amd64.tgz
+devloom-offline-linux-amd64.tgz.sha256
+```
+
+在 GitHub 仓库进入 `Actions > Offline Package > Run workflow`，可输入例如
+`v1.0.0-adtec.7` 的 SemVer 版本。推送 `v*` 标签时会自动构建并附加到对应的 GitHub
+Release；手动运行默认只上传 Actions Artifact，开启 `publish` 后才发布 Release。
+
+构建阶段需要联网下载固定版本的基础镜像 layer 和第三方基础设施制品；生成的 TGZ
+自身是完整离线介质，安装时不需要访问 GitHub、软件仓库、镜像仓库或原 MonkeyCode
+离线包。模型 API Key 不会被编译或写入 Actions 产物。
 
 ## 源码验证
 

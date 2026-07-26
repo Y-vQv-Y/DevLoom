@@ -4,6 +4,15 @@
   <img src="./frontend/public/logo-brand.png" alt="ADTEC DevLoom" width="260" />
 </p>
 
+<p align="center">
+  <strong>English</strong> | <a href="./readme.cn.md">简体中文</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/build.yml"><img src="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/build.yml/badge.svg" alt="CI" /></a>
+  <a href="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/offline-package.yml"><img src="https://github.com/Y-vQv-Y/DevLoom/actions/workflows/offline-package.yml/badge.svg" alt="Offline Package" /></a>
+</p>
+
 ADTEC DevLoom is a self-hosted AI software-delivery platform for teams that need
 repository, project, model, task, workspace, terminal, file, diff, and live
 preview workflows inside a controlled network. The complete Linux runtime is
@@ -78,6 +87,30 @@ development host can then use the readable installer served from
 See [offline deployment](./docs/DEPLOYMENT_OFFLINE_CN.md) and
 [offline package build](./docs/OFFLINE_PACKAGE_BUILD_CN.md) for the complete
 contract, upgrades, firewalls, and verification.
+
+## Automated Offline Package
+
+The `Offline Package` GitHub Actions workflow reproduces the same complete
+Linux amd64 bundle on a clean GitHub-hosted runner. It builds the frontend,
+backend, ingress, Taskflow, preview relay, Orchestrator, and devbox images from
+this commit, exports the pinned infrastructure images, adds the verified Docker
+Engine and Compose bundle, verifies the manifest, and uploads both files:
+
+```text
+devloom-offline-linux-amd64.tgz
+devloom-offline-linux-amd64.tgz.sha256
+```
+
+Run it from `Actions > Offline Package > Run workflow` and optionally supply a
+SemVer such as `v1.0.0-adtec.7`. Pushing a `v*` tag builds the package and
+attaches it to the corresponding GitHub Release automatically. A manual run
+only uploads an Actions artifact unless `publish` is enabled.
+
+The build job needs network access to obtain pinned source-image layers and
+third-party infrastructure artifacts. The resulting archive is self-contained
+and installs without access to GitHub, package registries, image registries, or
+the original MonkeyCode package. Model credentials are never compiled into or
+uploaded with the archive.
 
 ## Source Validation
 

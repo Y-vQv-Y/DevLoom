@@ -6,6 +6,8 @@ This repository builds on GitHub-hosted runners. The mobile workflow uses Expo P
 
 - `build.yml` runs tests, static checks, web builds, and Docker build checks.
 - `electron-release.yml` runs for `v*` tags or from `Actions > Release > Run workflow`.
+- `offline-package.yml` builds and verifies the complete Linux amd64 offline
+  installation archive from the current source tree.
 - Set `publish=true` for a manual run to publish GHCR images and a GitHub Release. `publish=false` keeps the generated artifacts in Actions only.
 - Set `mobile=true` for a manual run, or set the repository variable `ENABLE_MOBILE_RELEASE=true` to include mobile jobs in tag releases. When disabled, both mobile jobs are `skipped` and the rest of the release continues.
 
@@ -105,6 +107,21 @@ devloom-android-debug-<version>.apk   # when Android signing is absent
 devloom-ios-<version>.ipa
 devloom-ios-simulator-<version>.app.zip   # when Apple signing is absent
 ```
+
+The `Offline Package` workflow uploads an uncompressed Actions artifact that
+contains the already-compressed server archive and its outer checksum:
+
+```text
+devloom-offline-linux-amd64.tgz
+devloom-offline-linux-amd64.tgz.sha256
+```
+
+Run it manually with an optional SemVer version and `publish` flag, or push a
+`v*` tag. Tag runs attach these two files to the matching GitHub Release. The
+workflow uses `deploy/package/package.env.example`, records the exact source
+commit, pulls only the pinned infrastructure images, builds all DevLoom runtime
+images from source, and runs both manifest and archive verification before
+uploading anything. It does not use repository secrets or include model keys.
 
 Create a release with:
 
