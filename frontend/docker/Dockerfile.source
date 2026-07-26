@@ -4,11 +4,10 @@ WORKDIR /src
 ARG NPM_REGISTRY=https://registry.npmjs.org
 ENV COREPACK_NPM_REGISTRY=${NPM_REGISTRY}
 RUN corepack enable
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
     pnpm config set registry ${NPM_REGISTRY} \
-    && pnpm install --frozen-lockfile --ignore-scripts \
-    && pnpm rebuild esbuild msw
+    && pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build:offline
 
