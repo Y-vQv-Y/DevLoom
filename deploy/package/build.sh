@@ -33,9 +33,12 @@ set -a
 . "$CONFIG_FILE"
 set +a
 
-for command in docker python3 tar gzip sha256sum git cp; do
+for command in docker python3 tar gzip sha256sum cp; do
   command -v "$command" >/dev/null 2>&1 || die "missing build dependency: $command"
 done
+if [[ -z "${SOURCE_COMMIT:-}" || -z "$VERSION" ]]; then
+  command -v git >/dev/null 2>&1 || die "git is required unless SOURCE_COMMIT and --version are provided"
+fi
 docker info >/dev/null 2>&1 || die "Docker Engine is not running"
 docker buildx version >/dev/null 2>&1 || die "Docker Buildx is unavailable"
 
@@ -49,7 +52,8 @@ PROJECT_TEMPLATE_DIR="${PROJECT_TEMPLATE_DIR:-deploy/package/project-template}"
 [[ "$TARGET_ARCH" == amd64 ]] || die "the current builder supports TARGET_ARCH=amd64"
 [[ "$BRAND_SLUG" =~ ^[a-z0-9][a-z0-9_-]*$ ]] || die "BRAND_SLUG must contain lowercase letters, numbers, underscore, or dash"
 
-COMMIT="$(git -C "$REPO_ROOT" rev-parse HEAD)"
+COMMIT="${SOURCE_COMMIT:-$(git -C "$REPO_ROOT" rev-parse HEAD)}"
+[[ "$COMMIT" =~ ^[0-9a-fA-F]{40}$ ]] || die "SOURCE_COMMIT must be a full 40-character Git commit"
 [[ -n "$VERSION" ]] || VERSION="$(git -C "$REPO_ROOT" describe --tags --always --dirty | tr '/ ' '--')"
 [[ "$VERSION" =~ ^[A-Za-z0-9._-]+$ ]] || die "invalid package version: $VERSION"
 BUILD_TIME="$(date -u +%Y-%m-%dT%H:%M:%SZ)"

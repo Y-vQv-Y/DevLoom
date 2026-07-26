@@ -9,6 +9,9 @@ cp deploy/package/package.env.example deploy/package/package.env
 bash deploy/package/build.sh --version v1.0.0
 ```
 
+Set `SOURCE_COMMIT` in `package.env` to the full 40-character source revision
+when the build tree does not carry its original Git metadata.
+
 The build host must be Linux amd64 with Docker Buildx, Node.js, pnpm, Python 3,
 tar, gzip, curl, and sha256sum. Every image named in `package.env` must already
 exist in the local Docker daemon. The generated archive is written to
