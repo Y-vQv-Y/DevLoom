@@ -31,7 +31,7 @@ jobs:
       version: ${{ steps.metadata.outputs.version }}
       publish: ${{ steps.metadata.outputs.publish }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -57,7 +57,7 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "publish=$publish" >> "$GITHUB_OUTPUT"
 
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
 
       - name: Prepare pinned package configuration
         shell: bash
@@ -101,7 +101,7 @@ jobs:
             echo "- Size: \`$(stat -c '%s' deploy/out/devloom-offline-linux-amd64.tgz) bytes\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: devloom-offline-linux-amd64-${{ steps.metadata.outputs.version }}
           path: |
@@ -113,7 +113,7 @@ jobs:
 
       - name: Publish offline package
         if: steps.metadata.outputs.publish == 'true'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ startsWith(steps.metadata.outputs.version, 'v') && steps.metadata.outputs.version || format('v{0}', steps.metadata.outputs.version) }}
           generate_release_notes: true
