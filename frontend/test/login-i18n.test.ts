@@ -9,6 +9,10 @@ const loginSource = readFileSync(
   new URL("../src/pages/login.tsx", import.meta.url),
   "utf8",
 );
+const brandLockupSource = readFileSync(
+  new URL("../src/components/common/brand-lockup.tsx", import.meta.url),
+  "utf8",
+);
 
 test("登录页使用 i18n 翻译 key 渲染主要文案", () => {
   assert.match(loginSource, /useTranslation/);
@@ -34,6 +38,11 @@ test("登录页翻译资源提供中英文文案", () => {
   assert.equal(en.login.choices.google, "Google Sign-in");
   assert.equal(cn.login.toast.captchaFailed, "验证码验证失败");
   assert.equal(en.login.toast.captchaFailed, "Captcha verification failed");
+});
+
+test("品牌图形作为装饰图片不会重复读屏标题", () => {
+  assert.match(brandLockupSource, /alt=""/);
+  assert.match(brandLockupSource, /<h1 className="sr-only">/);
 });
 
 test("登录页只记住邮箱且会清理旧明文密码", () => {
