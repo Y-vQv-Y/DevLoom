@@ -192,6 +192,17 @@ if [[ ! -f "$ENV_FILE" ]]; then
 else
   log "preserving existing $ENV_FILE"
 fi
+
+PACKAGE_MANAGED_ENV_KEYS=(
+  POSTGRES_IMAGE REDIS_IMAGE CLICKHOUSE_IMAGE RUSTFS_IMAGE
+  FRONTEND_IMAGE BACKEND_IMAGE INGRESS_IMAGE
+  TASKFLOW_IMAGE PREVIEW_IMAGE DEVBOX_IMAGE INIT_TEAM_IMAGE
+)
+for key in "${PACKAGE_MANAGED_ENV_KEYS[@]}"; do
+  value="$(awk -F= -v key="$key" '$1 == key {print substr($0, index($0, "=") + 1); exit}' "$PACKAGE_DIR/.env.example")"
+  [[ -n "$value" ]] || die "package environment value is empty: $key"
+  set_env "$ENV_FILE" "$key" "$value"
+done
 PACKAGE_VERSION="$(awk -F'"' '/"version"[[:space:]]*:/ {print $4; exit}' "$PACKAGE_DIR/manifest.json")"
 [[ -n "$PACKAGE_VERSION" ]] || die "package manifest version is empty"
 set_env "$ENV_FILE" DEVLOOM_VERSION "$PACKAGE_VERSION"
